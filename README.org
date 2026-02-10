@@ -1,0 +1,6 @@
+#+TITLE: Personal dotfiles of my Linux system
+#+auto_tangle: t
+
+This dotfiles repo contains my personal dotfiles of my Wayland hyprland system. It contains my doom emacs config and other things.
+
+
