@@ -1,0 +1,1195 @@
+#+TITLE: My configuration of Doom Emacs
+#+auto_tangle: t
+#+AUTHOR: Prutserdt
+[[file:doom-emacs-stallman.png]]
+
+* Table Of Contents :toc:
+- [[#about-this-config][About this config]]
+- [[#initel][init.el]]
+- [[#packagesel][packages.el]]
+- [[#configel][config.el]]
+  - [[#custom-keybindings][Custom keybindings]]
+  - [[#smart-parens][Smart parens]]
+  - [[#theming-and-graphical-settings][Theming and graphical settings]]
+  - [[#distractionsdistraction-free][Distractions/distraction free]]
+  - [[#evil-mode-configuration][Evil mode configuration]]
+  - [[#general-settings][General settings]]
+  - [[#vterm-toggle][Vterm-toggle]]
+  - [[#llms-in-emacs][LLMs in emacs]]
+  - [[#jumping-around][Jumping around]]
+  - [[#org-mode-configuration][Org-mode configuration]]
+  - [[#org-roam-configuration][Org-roam configuration]]
+  - [[#org-roam-ui-configuration][Org-roam-ui configuration]]
+  - [[#layout-for-hacking-code-scratch-buffer-and-emacs-messages][Layout for hacking code (scratch buffer and emacs messages)]]
+  - [[#download-emacs-configuration][Download Emacs configuration]]
+  - [[#nsxiv-create-org-link-to-open-pictures-via-a-shell-script][NSXIV: create org link to open pictures via a shell script]]
+  - [[#run-python-py][Run Python py]]
+  - [[#show-asset-allocation][Show asset allocation]]
+  - [[#keyboard-functions][Keyboard functions]]
+  - [[#pdf-helpers][PDF helpers]]
+  - [[#inserting-characters-words-and-strings][Inserting characters, words and strings]]
+  - [[#handling-the-smiles-in-chemistry][Handling the SMILES in chemistry]]
+  - [[#splash-screen][Splash screen]]
+- [[#code-snippets][Code snippets]]
+- [[#credits][Credits]]
+
+* About this config
+This is my personal [[https://github.com/hlissner/doom-emacs][Doom Emacs]] config. Nothing much to see here. Just started this journey in the winter of 2022 and learning [[https://www.gnu.org/software/emacs/][Emacs]] and [[https://en.wikipedia.org/wiki/Literate_programming][literate programming]] along the way. The Emacs Lisp files [[https://github.com/Prutserdt/dotfiles/blob/master/.config/doom/init.el][init.el]], [[https://github.com/Prutserdt/dotfiles/blob/master/.config/doom/packages.el][packages.el]] and [[https://github.com/Prutserdt/dotfiles/blob/master/.config/doom/config.el][config.el]] are generated from [[https://github.com/Prutserdt/dotfiles/blob/master/.config/doom/README.org][this README.org file]] by tangling in Emacs: ~M-x~ ~org-babel-tangle~. Remember to run =~/.config/emacs/bin/doom sync= in the terminal, or ~M-x~ ~doom/reload~ in Doom Emacs after modifying this README.org!
+NOTE: if the startup is slow then it has nothing to do with the configuration but the daemon is probably not running. Start it by entering ~emacs --daemon~ to the terminal. After that it should open much snapier.
+
+* init.el
+This file controls what Doom modules are enabled and what order they load in and the first line of the file is lexical binding. This makes the file run (slightly) faster.
+#+BEGIN_SRC emacs-lisp :tangle init.el :results silent
+;;; init.el -*- lexical-binding: t; -*-
+#+END_SRC
+
+Add a note to ~init.el~ to highlight that this file should not be edited directly.
+#+BEGIN_SRC emacs-lisp :tangle init.el :results silent
+;; NOTE: This file is generated from ~/.config/doom/README.org
+;;      Please only edit that file and org-babel-tangle (emacs)
+#+END_SRC
+
+The list of available modules can be checked in Doom Emacs by ~M-x~ ~Doom/help-modules~ and can be added to the list of modules listed below. Online module info can also be found [[https://github.com/doomemacs/doomemacs/blob/master/docs/modules.org][here]].
+#+BEGIN_SRC emacs-lisp :tangle init.el :results silent
+
+(doom! :completion
+       company             ; the ultimate code completion backend
+       (ivy +childframe)   ; a search engine for love and life
+
+       :ui
+       doom                ; what makes DOOM look the way it does
+       doom-dashboard      ; a nifty splash screen for Emacs
+       (emoji +unicode)    ; ð
+       hl-todo             ; highlight TODO/FIXME/NOTE/DEPRECATED/HACK/REVIEW
+       modeline            ; snazzy, Atom-inspired modeline, plus API
+       nav-flash           ; blink the current line after jumping
+       ophints             ; highlight the region an operation acts on
+       (popup +defaults)   ; tame sudden yet inevitable temporary windows
+       smooth-scroll     ; So smooth you won't believe it's not butter
+       vi-tilde-fringe     ; fringe tildes to mark beyond EOB
+
+       :editor
+       (evil +everywhere)  ; come to the dark side, we have cookies
+       file-templates      ; auto-snippets for empty files
+       fold                ; (nigh) universal code folding
+       snippets            ; my elves. They type so I don't have to
+
+       :emacs
+       (dired +icons)      ; making dired pretty [functional]
+       electric            ; smarter, keyword-based electric-indent
+       undo                ; persistent, smarter undo for your inevitable mistakes
+       vc                  ; version-control and :Emacs, sitting in a tree
+
+       :term
+       vterm               ; the best terminal emulation in Emacs
+
+       :checkers
+       syntax              ; tasing you for every semicolon you forget
+       ;;grammar           ; tasing grammar mistake every you make
+
+       :tools
+       debugger            ; stepping through code, to help you add bugs
+       (eval +overlay)     ; run code, run (also, repls)
+       lookup              ; navigate your code and its documentation
+       pdf                 ; pdf enhancements
+       lsp                 ; M-x vscode
+       ;;evil-magit        ; An evil porcelain for Emacs
+
+       :lang
+       emacs-lisp          ; drown in parentheses
+       (org                ; organize your plain life in plain text
+        +pretty            ; pretty is better than ugly
+        +roam2             ; wander around notes
+        +dragndrop)        ; drop files/images into org
+      (python +lsp +pyenv) ; beautiful is better than ugly
+                           ; +pyright. Tried pyright, could not get it to work on all of my machines
+       sh                  ; she sells {ba,z,fi}sh shells on the C xor
+
+       :os
+       tty                 ; zou terminal experience moeten verbeteren...
+
+       :config
+       (default +bindings +smartparens)
+)
+#+END_SRC
+
+NOTE: some packages should be installed on the system: =sudo pacman -S python-pytest python-nose=
+
+* packages.el
+Here the packages are defined which should be installed. This is an addition to the already installed and loaded modules of ~init.el~. This file shouln't be byte compiled.
+#+BEGIN_SRC emacs-lisp :tangle packages.el :results silent
+;; -*- no-byte-compile: t; -*-
+#+END_SRC
+
+Again a NOTE is added to ~packages.el~ to *not* edit this file.
+#+BEGIN_SRC emacs-lisp :tangle packages.el :results silent
+;; NOTE: This file is generated from ~/.config/doom/README.org
+;;      Please only edit that file and org-babel-tangle (emacs)
+#+END_SRC
+
+Centering text to the middle of the window can be done by the visual-fill-column package.
+#+BEGIN_SRC emacs-lisp :tangle packages.el :results silent
+(package! visual-fill-column)
+#+END_SRC
+
+Settings for python hacking.
+#+BEGIN_SRC emacs-lisp :tangle packages.el :results silent
+(package! org-babel-eval-in-repl)
+(package! eval-in-repl)
+(package! jupyter)
+#+END_SRC
+
+To automate tangling of code blocks in org-mode, the following package is installed. For auto tangling to work the following line should be added to the start of the org file ~#+auto_tangle: t~. When this is added the source blocks are automatically tangled when an org document is saved, pretty sweet😃.
+#+BEGIN_SRC emacs-lisp :tangle packages.el :results silent
+(package! org-auto-tangle)
+#+END_SRC
+
+The vterm-toggle package.
+#+BEGIN_SRC emacs-lisp :tangle packages.el :results silent
+(package! vterm-toggle)
+#+END_SRC
+
+A chatgpt package gptel.
+#+BEGIN_SRC emacs-lisp :tangle packages.el :results silent
+(package! gptel)
+(package! python-mode)
+#+END_SRC
+
+~org-roam~ is a plain-text knowledge management system. It brings some of Roam's more powerful features into the Org-mode ecosystem. ~org-roam-ui~ is a frontend for exploring and interacting with your org-roam notes.
+#+BEGIN_SRC emacs-lisp :tangle packages.el :results silent
+(unpin! org-roam) ; unpinning is necessary for Roam emacs according to de developer of org-roam-ui
+(package! org-roam-ui)
+#+END_SRC
+
+* config.el
+My custom configurations are set here. For instance theme settings, image to the doom splash screen, transparency, relative numbering and org-mode settings.
+
+Let's remind the reader of ~config.el~ to not edit this file directly.
+#+BEGIN_SRC emacs-lisp :tangle config.el :results silent
+;; NOTE: This file is generated from ~/.config/doom/README.org
+;;      Please only edit that file and org-babel-tangle (emacs)
+#+END_SRC
+
+** Custom keybindings
+Emacs uses a lot of keybindings and Doom Emacs adds even more on top of it, much of them are Evil mode which is VIM emulation. Now let's add some extra!
+
+I want to use the =undo-redo= package in Evil mode and therefore add the keybinding =U= here.
+#+BEGIN_SRC emacs-lisp :tangle config.el :results silent
+(after! evil
+  (define-key evil-normal-state-map "U" 'undo-redo))
+#+END_SRC
+
+The following are keybindings that are bound to my leader key, which is =space=, the default leader key of Doom Emacs Evil mode.
+#+BEGIN_SRC emacs-lisp :tangle config.el :results silent
+(map! :leader
+      :desc "Unbind SPC SPC" "SPC" nil
+      :desc "Scratch buffer" "[" (lambda () (interactive) (switch-to-buffer "scratch.org"))
+
+      (:prefix ("SPC" . "Personal Bindings")
+        :desc "Vterm toggle"                   "SPC" #'vterm-toggle
+        :desc "Run aandelen elisp script"        "a" (lambda () (interactive) (load-file "~/stack/Documenten/Aandelen/aandelen.el"))
+        :desc "Beach mode/dark mode toggle"      "b" #'my-beach-or-dark-theme-switch
+        (:prefix ("d" . "Distraction free")
+            :desc "Toggle distraction free"      "d" #'my-distractionfree-toggle
+            :desc "Transparency togglee"         "t" #'my-transparency-toggle
+            :desc "Modeline toggle"              "m" #'my-modeline-toggle
+            :desc "Line numbers toggle"          "l" #'my-line-numbers-toggle
+            :desc "Column width toggle"          "c" #'my-column-width-toggle)
+        (:prefix ("e" . "Excel table stuff")
+            :desc "At point org tbl to exl"      "a" #'my-export-org-table-to-system-clipboard
+            :desc "Clipb.: org to exl"           "e" #'my-convert-tabs-to-org-table-in-clipboard
+            :desc "Clipb.: exl to org"           "o" #'my-convert-tabs-to-org-table-in-clipboard)
+        (:prefix ("f" . "Financial stuff")
+            :desc "Show my capital"              "c" #'my-asset-allocation-in-time)
+        :desc "Toggle hacking mode"              "h" #'my-toggle-hacking-layout
+        :desc "Insert key words"                 "i" #'my-insert-characters-and-text
+        :desc "Keyboard reset"                   "k" #'my-keyboard-reset
+        :desc "Watch images via org links"       "l" #'my-generate-org-links-to-pictures-subdir
+        :desc "Reload Doom: doom/reload"         "r" #'doom/reload
+        (:prefix ("o" . "org mode")
+            :desc "Fold all"                     "f" #'org-fold-hide-sublevels
+            :desc "Unfold all"                   "u" #'org-fold-show-all)
+        (:prefix ("p" . "pdf helpers")
+            :desc "Select pdf to org buffer"     "b" #'my-open-pdf-as-org-text
+            :desc "Convert image to pdf"         "i" #'my-image-to-pdf
+            :desc "Select pdf ocrtext to org buffer" "o" #'my-open-pdf-to-org-as-text-with-ocr
+            :desc "Remove password from pdf"     "z" 'my-pdf-password-removal)
+        :desc "Plak keuze uit kill ring"         "P" #'counsel-yank-pop
+        :desc "Tangling: org-babel-tangle"       "t" #'org-babel-tangle
+        (:prefix ("s" . "SMILES chemistry")
+            :desc "Insert image under Smiles"    "i" #'my-obabel-smiles-insert-image
+            :desc "Show image in sxiv"           "s" #'my-obabel-smiles-show-image)
+        :desc "Update emacs README.org!!!"       "u" #'my-emacs-config-download-overwrite
+        :desc "Visualized undo: vundo"           "v" #'vundo
+        :desc "Write this buffer to file"        "w" #'write-file
+        :desc "Run python async"                 "z" #'my-run-python-code-in-new-frame-select-manually
+        :desc "Escape evil mode"                 "Z" #'evil-escape)
+
+    (:prefix ("b") ;; Default Doom keybinding
+         :desc "Switch to another buffer"        "b" #'counsel-switch-buffer)
+
+    (:prefix ("c") ;; Default Doom keybinding
+        (:prefix ("h" . "ChatGPT, GPTel options")
+            :desc "At point to bottom ChatGPT"   "a" #'my-region-select-gptel-send
+            :desc "ChatGPT of selected region"   "A" #'gptel-send
+            :desc "Open ChatGPT in new buffer"   "c" #'gptel
+            :desc "gptel-menu"                   "m" #'gptel-menu
+            :desc "API for LLM interaction"      "R" #'gptel-request
+            :desc "gptel-rewrite-menu"           "r" #'gptel-rewrite-menu))
+
+    (:desc "Open files in emacs" "e" #'recentf-open-files)
+
+    (:prefix ("j" . "Jump around");; An addition to the default Doom keybinding (j is not present!)
+            :desc "jump backward one step"       "j" #'evil-jump-backward
+            :desc "jump forward one step"        "k" #'evil-jump-forward
+            :desc "jump forward completely"      "K" #'my-evil-jump-forward-to-end
+            :desc "jump list"                    "l" #'+ivy/jump-list)
+
+    (:prefix ("r" . "org-roam") ;; Similar to the Doom default, SPC n r, but shorter
+        :desc "Open random node"                 "a" #'org-roam-node-random
+        (:prefix ("d" . "dailies")
+            :desc "Previous daily (from daily)"  "<" #'org-roam-dailies-goto-previous-note
+            :desc "Next daily (from daily)"      ">" #'org-roam-dailies-goto-next-note
+            :desc "Capture date"                 "D" #'org-roam-dailies-capture-date
+            :desc "Goto the last daily"          "l" #'my-open-latest-org-roam-daily
+            :desc "Goto tomorrow"                "m" #'org-roam-dailies-goto-tomorrow
+            :desc "Capture tomorrow"             "M" #'org-roam-dailies-capture-tomorrow
+            :desc "Select dailies calendar"      "o" #'org-roam-dailies-goto-date
+           ;:desc "Goto today"                   "t" #'org-roam-dailies-goto-today
+            :desc "Goto today, paste previous"   "t" #'my-goto-today-paste-previous-daily
+            :desc "Capture today"                "T" #'org-roam-dailies-capture-today
+            :desc "Goto yesterday"               "y" #'org-roam-dailies-goto-yesterday
+            :desc "Capture yesterday"            "Y" #'org-roam-dailies-capture-yesterday)
+        :desc "Database sync"                    "D" #'org-roam-db-sync
+        :desc "Find node"                        "f" #'org-roam-node-find
+        :desc "Find ref"                         "F" #'org-roam-ref-find
+        :desc "Insert node"                      "i" #'org-roam-node-insert
+        :desc "Message: show roam dir info"      "m" #'my-org-roam-info
+        :desc "Capture to node"                  "n" #'org-roam-capture
+        :desc "Toggle roam buffer"               "r" #'org-roam-buffer-toggle
+        :desc "Launch roam buffer"               "R" #'org-roam-buffer-display-dedicated
+        :desc "Search text"                      "s" #'my-search-roam-files
+        :desc "Search filename"                  "S" #'my-search-roam-filename
+        :desc "UI in browser"                    "u" #'org-roam-ui-mode))
+#+END_SRC
+
+*** Emacs keybindings
+I want to use the escape key to exit keychords, similar to C-g. Why is this not the default?
+#+BEGIN_SRC emacs-lisp :tangle config.el :results silent
+(global-set-key (kbd "<escape>")      'keyboard-escape-quit)
+#+END_SRC
+
+In Doom Emacs the =transpose-words= is using the keybinding Meta-t. For the oposite transposition I will use the keybinding Meta-T.
+#+BEGIN_SRC emacs-lisp :tangle config.el :results silent
+(global-set-key (kbd "M-T") (lambda () (interactive) (transpose-words -1)))
+#+END_SRC
+
+** Smart parens
+The =smartparens= package in Emacs is designed to enhance editing parentheses and other paired structures (like brackets and quotes). I am adding the '=' and '~' signs to it, but only for org mode, therefore it is a mode specific keybindings (sp-local-pair)'.
+#+BEGIN_SRC emacs-lisp :tangle config.el :results silent
+(require 'smartparens)
+
+;; Enable smartparens only in org mode
+(sp-local-pair 'org-mode "=" "=" :post-handlers '(:add ("||_" "SPC")))
+(sp-local-pair 'org-mode "~" "~" :post-handlers '(:add ("||_" "SPC")))
+
+(defun sp-insert-equal ()
+  "Insert '==' and place the cursor in the middle."
+  (interactive)
+  (insert "==")
+  (backward-char 1))
+
+(defun sp-insert-tilde ()
+  "Insert '~~' and place the cursor in the middle."
+  (interactive)
+  (insert "~~")
+  (backward-char 1))
+
+;; Bind the functions to the = and ~ keys in org mode
+(with-eval-after-load 'smartparens
+  (define-key smartparens-mode-map (kbd "=") 'sp-insert-equal)
+  (define-key smartparens-mode-map (kbd "~") 'sp-insert-tilde))
+
+(add-hook 'org-mode-hook 'smartparens-mode)
+#+END_SRC
+
+** Theming and graphical settings
+Setting the *superior* tokyo-night theme.😎
+#+BEGIN_SRC emacs-lisp :tangle config.el :results silent
+(setq doom-theme 'doom-tokyo-night)
+#+END_SRC
+
+A *superior* font is set here for all the text.
+#+BEGIN_SRC emacs-lisp :tangle config.el :results silent
+(set-face-attribute 'default nil :height 130 :font "Hack 13")
+#+END_SRC
+
+Make the highlighting global for the hl-words TODO/FIXME/NOTE/DEPRECATED/HACK/REVIEW with ~hl-todo-mode~.
+#+BEGIN_SRC emacs-lisp :tangle config.el :results silent
+(define-globalized-minor-mode my-global-hl-todo-mode hl-todo-mode
+    (lambda () (hl-todo-mode 1)))
+(my-global-hl-todo-mode 1)
+#+END_SRC
+
+To align the Emacs window with text in the middle of the screen  visual-fill is used. This configuration is especially useful for maximized windows on an ultrawide monitor, providing a clean and centered workspace. This alignment will work with text files and also with programming language files. I also set it for vterm.
+#+BEGIN_SRC emacs-lisp :tangle config.el :results silent
+(setq-default fill-column 110)
+(global-display-fill-column-indicator-mode)
+(setq-default visual-fill-column-center-text t)
+(add-hook 'visual-line-mode-hook 'visual-fill-column-mode)
+
+(defun my-prog-mode-hook ()
+  "Set fill-column and visual-fill settings for programming modes. This function configures the fill-column to 140 for programming files, enables visual-fill-column-mode, and ensures text wrapping is enabled by toggling truncate-lines off."
+  (setq-local fill-column 140)
+  (toggle-truncate-lines 0)
+  (visual-fill-column-mode))
+
+(add-hook 'prog-mode-hook 'my-prog-mode-hook)
+
+(add-hook 'vterm-mode-hook
+          (lambda ()
+            (setq-local fill-column 110)
+            (visual-fill-column-mode)
+            (setq-local visual-fill-column-center-text t)))
+#+END_SRC
+
+Get a glimpse of the desktop background by setting a low transparency for Emacs.
+#+BEGIN_SRC emacs-lisp :tangle config.el :results silent
+;;(set-frame-parameter (selected-frame) 'alpha '(85 80))
+;;(add-to-list 'default-frame-alist '(alpha 85 80))
+#+END_SRC
+
+By setting the line numbers to relative it makes jumping in texts easier, allowing you to quickly find the line position to jump to from the current line.
+#+BEGIN_SRC emacs-lisp :tangle config.el :results silent
+(global-display-line-numbers-mode)
+(setq display-line-numbers-type 'relative)
+#+END_SRC
+
+To remember the current state (normal, insert or visual mode), we can customize the line number colors using Emacs Lisp. Here's the code that sets the line number color based on the Evil state. Also the line colors are changed when scratch.org is displayed to stand out from other buffers. I am giving the colors a name so that they can be used elsewhere.
+A side note: for some reason I sometimes trigger "emacs state" accidentally. This can be escaped by M-x =evil-exit-emacs-state= or C-z.
+#+BEGIN_SRC emacs-lisp :tangle config.el :results silent
+(defvar my-color-visual-state    "#765825") ;; dark yellow brown
+(defvar my-color-insert-state    "#3e6752") ;; pale grey green
+(defvar my-color-grey-green      "#505753") ;; grey green
+(defvar my-color-normal-state    "#453a39") ;; brown terra
+(defvar my-color-current-line    "#EF7168") ;; orange red
+
+(defun my-line-number-color-according-to-evil-state ()
+  "Change the color of line numbers according to the evil state: normal, insert and visual plus separate color for scratch.org"
+  (when (and evil-mode (not buffer-read-only))
+    (let ((font-weight (if (or (evil-insert-state-p) (evil-visual-state-p))
+                          'bold
+                        'normal))
+          (line-number-color (if (string= (buffer-name) "scratch.org")
+                                my-color-current-line
+                              (cond ((evil-insert-state-p) my-color-insert-state)
+                                    ((evil-visual-state-p) my-color-visual-state)
+                                    (t my-color-normal-state))))
+          (line-number-current-line-color (if (string= (buffer-name) "scratch.org")
+                                           my-color-insert-state
+                                           my-color-current-line)))
+      (set-face-foreground 'line-number line-number-color)
+      (set-face-foreground 'line-number-current-line line-number-current-line-color)
+      (set-face-attribute 'line-number nil :weight font-weight))))
+#+END_SRC
+
+Next, we add hooks to trigger the line number color customization when certain events occur. Here are the hooks we can use:
+#+BEGIN_SRC emacs-lisp :tangle config.el :results silent
+(dolist (hook '(doom-switch-buffer-hook
+                doom-first-buffer-hook
+                evil-insert-state-entry-hook
+                evil-normal-state-entry-hook
+                evil-visual-state-entry-hook))
+  (add-hook hook 'my-line-number-color-according-to-evil-state))
+#+END_SRC
+
+To make the line number of the cursor have a different color, we can customize it using =custom-set-faces=:
+#+BEGIN_SRC emacs-lisp :tangle config.el :results silent
+(custom-set-faces!
+  '(line-number-current-line :foreground "#EF7168"))
+#+END_SRC
+
+The scroll bar is not needed and removed here. NOTE: does not work when it's at the start of config.el.
+#+BEGIN_SRC emacs-lisp :tangle config.el :results silent
+(scroll-bar-mode -1)
+#+END_SRC
+
+An emergency switch to be used at very bright light conditions, for instance at a beach!
+#+BEGIN_SRC emacs-lisp :tangle config.el :results silent
+(defun my-beach-or-dark-theme-switch ()
+  "Switch between my-beach-theme and my-dark-theme."
+  (interactive)
+  (if (eq (car custom-enabled-themes) 'doom-tokyo-night)
+      (progn
+        (load-theme 'leuven t)
+        (set-frame-parameter (selected-frame) 'alpha '(100 100))
+        (message "Theme switched for beach settings; in bright light conditions."))
+    (progn
+      (load-theme 'doom-tokyo-night t)
+      (set-frame-parameter (selected-frame) 'alpha '(85 80))
+      (message "Theme switched to my dark theme."))))
+#+END_SRC
+
+** Distractions/distraction free
+For more focus the distractions on the screen can be toggled of all together or separately one by one.
+
+Switch the transparency on or off.
+#+BEGIN_SRC emacs-lisp :tangle config.el :results silent
+(defun my-transparency-toggle ()
+  "Switch transparency back and forth."
+  (interactive)
+
+  (if (equal (frame-parameter (selected-frame) 'alpha) '(100 100))
+      (progn
+        (set-frame-parameter (selected-frame) 'alpha '(85 80))
+        (add-to-list 'default-frame-alist '(alpha 85 80)))
+    (set-frame-parameter (selected-frame) 'alpha '(100 100))))
+#+end_src
+
+Modeline toggle.
+#+BEGIN_SRC emacs-lisp :tangle config.el :results silent
+(defvar modeline-hidden nil)
+
+(setq-default mode-line-format (default-value 'mode-line-format))
+
+(defun my-modeline-toggle ()
+  "Switch modeline on/off."
+  (interactive)
+
+  (if (equal mode-line-format nil)
+      (setq mode-line-format (default-value 'mode-line-format))
+    (setq mode-line-format nil)))
+#+end_src
+
+A toggle for the line numbers.
+#+BEGIN_SRC emacs-lisp :tangle config.el :results silent
+(defun my-line-numbers-toggle ()
+  "Switch line numbers on/off."
+  (interactive)
+
+  (if display-line-numbers-mode
+      (display-line-numbers-mode 0)
+    (display-line-numbers-mode 1)))
+#+end_src
+
+A combination of the previous three toggles that are applied all at once.
+#+BEGIN_SRC emacs-lisp :tangle config.el :results silent
+(defun my-distractionfree-toggle ()
+  "Switch from my normal environment to distraction free and back."
+  (interactive)
+
+  (my-line-numbers-toggle)
+  (my-modeline-toggle)
+  (my-transparency-toggle))
+#+end_src
+
+This toggle will increase/decrease the width of the text. Not really much to do with distractions, but I placed it here anyway.
+#+BEGIN_SRC emacs-lisp :tangle config.el :results silent
+(defun my-column-width-toggle ()
+  "Toggle the width of the characters."
+  (interactive)
+
+  (if (equal fill-column 110)
+      (setq fill-column 140)
+    (setq fill-column 110)))
+#+end_src
+
+** Evil mode configuration
+The default setting of Evil mode in Doom Emacs is to use Y in normal mode to yank the whole line from the cursor position. This is obviously the *incorrect* way and is reverted here to copy the whole line, regardless of cursor position.
+#+BEGIN_SRC emacs-lisp :tangle config.el :results silent
+(setq! evil-want-Y-yank-to-eol nil)
+#+END_SRC
+
+Another trick to make the cursor stand out more in Evil mode is to use the color tomato for the cursor in normal mode. It pops right out. A white bar is set for insert mode and a hollow orange cursor for visual mode. This helps to differentiate between normal/insert/visual mode.
+#+BEGIN_SRC emacs-lisp :tangle config.el :results silent
+(setq evil-normal-state-cursor '(box "tomato")
+      evil-insert-state-cursor '(bar "white")
+      evil-visual-state-cursor '(hollow "orange"))
+#+END_SRC
+
+Flashing of yanked text is already set out of the box in Doom Emacs. I'm kinda slow and like the flashing to take longer. The default is 0.2 second and set it here to a whole second.
+#+BEGIN_SRC emacs-lisp :tangle config.el :results silent
+(setq evil-goggles-duration 1.0)
+#+END_SRC
+
+** General settings
+I want to use an org file as a permanent scratch buffer. If it does not exist then it should be created. I changed the visualiszation of this particular file by changing the line colors, that is added in  =my-line-number-color-according-to-evil-state=.
+#+BEGIN_SRC emacs-lisp :tangle config.el  :results silent
+(unless (file-exists-p "~/.config/doom/scratch.org")
+  (with-temp-file "~/.config/doom/scratch.org"
+  (insert "* ❗ An _org-mode_ ~scratch buffer~ /for/ *hacking* ❗\n Just delete this text, this doesn't need to be sticky!")))
+
+(eval-after-load 'org
+  '(find-file "~/.config/doom/scratch.org"))
+#+END_SRC
+
+Arduino .ino files are a type of C++ code. Let's help Emacs remember this by setting it as a major mode.
+#+BEGIN_SRC emacs-lisp :tangle config.el :results silent
+(add-to-list 'auto-mode-alist '("\\.ino\\'" . c-mode))
+#+END_SRC
+
+No more conformation messages whilst closing emacs.
+#+BEGIN_SRC emacs-lisp :tangle config.el :results silent
+(setq confirm-kill-emacs nil)
+#+END_SRC
+
+** Vterm-toggle
+I like to use Vterm as a scratch terminal, this can be done by the vterm-toggle package.
+#+BEGIN_SRC emacs-lisp :tangle config.el :results silent
+(use-package! vterm-toggle
+  :after vterm
+  :config
+  (setq vterm-toggle-fullscreen-p nil)
+  (add-to-list 'display-buffer-alist
+               '((lambda (buffer-or-name _)
+                   (let ((buffer (get-buffer buffer-or-name)))
+                     (with-current-buffer buffer
+                       (or (equal major-mode 'vterm-mode)
+                           (string-prefix-p vterm-buffer-name (buffer-name buffer))))))
+           (display-buffer-reuse-window display-buffer-same-window))))
+#+END_SRC
+
+** LLMs in emacs
+In this elisp code, `with-temp-buffer` creates a temporary buffer for reading the contents of the file. `insert-file-contents` reads the contents of the file into the buffer. `string-trim` removes any whitespace characters at the beginning and end of the buffer's contents, and the resulting string is set to the variable `gptel-api-key`.
+A chatGPT key can be generated here: https://platform.openai.com/account/api-keys.
+#+BEGIN_SRC emacs-lisp :tangle config.el :results silent
+(use-package! gptel
+ :config
+(with-temp-buffer
+  (insert-file-contents "~/stack/Code/OpenAI/api_key")
+  (setq! gptel-api-key (string-trim (buffer-string)))))
+(setq gpt-openai-engine "gpt-4")
+#+END_SRC
+
+An helper for my LLM (gptel). I am usually working with code at the bottom of a buffer and want to select the text from the cursor below to the bottom and send that region to the chatbot.
+#+BEGIN_SRC emacs-lisp :tangle config.el :results silent
+(defun my-region-select-gptel-send ()
+  "Select text at point to the end of buffer and send this to the LLM (gptel-send). The output will be generated at the bottom of the buffer."
+  (interactive)
+  (beginning-of-line)      ; Save the current point position as the starting point of the selection
+  (let ((start (point)))
+    (goto-char (point-max)); Move the cursor to the end of the buffer
+    (setq my-end (point))  ; Remember the end of the selection
+    (goto-char start)      ; Set the mark at the starting point
+    (set-mark (point))
+    (goto-char my-end)     ; Move the cursor to the end of the buffer and execute 'gptel-send'
+    (call-interactively 'gptel-send)
+    (deactivate-mark)))    ; Deselect the region
+#+END_SRC
+
+** Jumping around
+Jump right forward to the last jump in the jump-list. FIXME: improve this function! Barely working...
+
+#+BEGIN_SRC emacs-lisp :tangle config.el :results silent
+(defun my-evil-jump-forward-to-end ()
+  "Jump right to the most forward evil-jump."
+  (interactive)
+  (with-temp-buffer
+            (+ivy/jump-list)))
+#+END_SRC
+
+** Org-mode configuration
+More eye candy by superstar bullets in org mode instead of the default ~*~. This requires (org +pretty) in ~init.el~.
+#+BEGIN_SRC emacs-lisp :tangle config.el :results silent
+(setq org-modern-star '( "◉" "○" "✿" "✸" "⁖" ))
+#+END_SRC
+
+Setting the size of the headers in org mode and the document titled, ordered by the level of course.
+#+BEGIN_SRC emacs-lisp :tangle config.el :results silent
+(custom-set-faces
+  '(org-level-1 ((t (:inherit outline-1 :height 1.5))))
+  '(org-level-2 ((t (:inherit outline-2 :height 1.4))))
+  '(org-level-3 ((t (:inherit outline-3 :height 1.3))))
+  '(org-level-4 ((t (:inherit outline-4 :height 1.2))))
+  '(org-level-5 ((t (:inherit outline-5 :height 1.1))))
+  '(org-document-title ((t (:inherit org-level-1 :height 1.6)))))
+#+END_SRC
+
+Some preferences that I like: hide the emphasis markup for: /italic/, *bold*, ~code~, _underscore_, =verbatim= and +strikethrough+. Show ▼ for folded sections in org. By default I want all of my org files to show images as default and hide the =#+TITLE= keyword.
+#+BEGIN_SRC emacs-lisp :tangle config.el :results silent
+(setq org-hide-emphasis-markers t)
+(with-eval-after-load 'org
+  (setq org-ellipsis " ▼ "))
+(setq org-startup-with-inline-images t)
+(setq org-hidden-keywords '(title))
+#+END_SRC
+
+Automatically tangling by the org-auto-tangle package.
+#+BEGIN_SRC emacs-lisp :tangle config.el :results silent
+(use-package org-auto-tangle
+  :load-path "site-lisp/org-auto-tangle/"
+  :defer t
+  :hook (org-mode . org-auto-tangle-mode))
+#+END_SRC
+
+A function to copy an org-table at point and make it in the right format (tab separated columns) to be pasted into excel. First the table is converted and saved as a csv file to a temporary RAM file, pasted into the clipboard in csv format and then converted to be tab separated.
+#+BEGIN_SRC emacs-lisp :tangle config.el :results silent
+(defun my-export-org-table-to-system-clipboard ()
+  "Export the org-mode table at point as a CSV file in system memory and copy to clipboard."
+  (interactive)
+  (let* ((temp-dir "/dev/shm/temp/")
+         (file (concat temp-dir "wismij.csv")))
+    (unless (file-directory-p temp-dir)
+      (make-directory temp-dir t))
+    (org-table-export file "orgtbl-to-csv")
+    (with-temp-buffer
+      (insert-file-contents file)
+      (clipboard-kill-region (point-min) (point-max))))
+    (my-convert-comma-to-tab-in-clipboard))
+#+END_SRC
+
+This function will convert the content of the clipboard from a tab separated format (excel data) to an org-table format (adding | characters). This is particular handy for copying data from excel to org-mode.
+#+BEGIN_SRC emacs-lisp :tangle config.el :results silent
+(defun my-convert-tabs-to-org-table-in-clipboard ()
+  "Convert tabs to org table format in clipboard contents."
+  (interactive)
+  (with-temp-buffer
+    (clipboard-yank)
+    (goto-char (point-min))
+    (while (search-forward "\t" nil t)
+      (replace-match " | "))
+    (goto-char (point-min))
+    (insert "| ")
+    (while (search-forward "\n" nil t)
+      (replace-match " |\n| "))
+    (goto-char (point-max))
+    (insert " |")
+    (clipboard-kill-region (point-min) (point-max))))
+#+END_SRC
+
+This function will convert the content of the clipboard. It will change the commas to tabs. This is particular usefull for converting comma separated data to tabs separated data and is used in the =my-export-org-table-to-system-clipboard= function.
+#+BEGIN_SRC emacs-lisp :tangle config.el :results silent
+(defun my-convert-comma-to-tab-in-clipboard ()
+  "Convert commas to tabs in clipboard contents."
+  (interactive)
+  (with-temp-buffer
+    (clipboard-yank)
+    (goto-char (point-min))
+    (while (search-forward "," nil t)
+      (replace-match "\t" nil nil))
+    (clipboard-kill-region (point-min) (point-max))))
+#+END_SRC
+
+** Org-roam configuration
+~Org-roam~ is a plain text knowledge management system that borrows principles from the Zettelkasten method, providing a solution for non-hierarchical note-taking. It should also work as a plug-and-play solution for anyone already using Org-mode for their personal wiki.
+
+For quick daily notes and a TODO list I am using roam-dailies and in the next code block two templates are created that are helping to write notes/TODOS. This is based on [[https://org-roam.discourse.group/t/daily-task-management-with-org-agenda-and-org-roam-dailies/989/16][a thread]]. My daily notes are written in the =/daily= directory in =RoamNotes=, as set in the code block below this one. The daily notes are placed in an org file with the name of the day, for example /2025-01-30.org/.
+#+BEGIN_SRC emacs-lisp :tangle config.el :results silent
+(setq org-roam-dailies-capture-templates
+    (let ((head
+           (concat "#+title: %<%Y-%m-%d (%A)>\n"
+                    "* TODO van vandaag [/]\n")))
+         `(("a" "Aantekeningen van vandaag" entry
+           "* %<%H:%M> %?"
+           :if-new (file+head+olp "%<%Y-%m-%d>.org" ,head (""))))))
+#+END_SRC
+
+In the code block below the directory is set where the atomic files will be stored and also the dailies directory is set here. This Emacs configuration is used on several systems. I am using system a specific directory at work and my other systems are using another directory.
+Also the daily sub directory is set and auto-completion of the note titles everywhere and autosyncing the roam files to a sql database for swift search results.
+#+BEGIN_SRC emacs-lisp :tangle config.el :results silent
+(use-package org-roam
+  :custom
+  (org-roam-directory (if (string-equal system-name "work")
+                         "~/Shared_directory/RoamNotes"
+                       "~/stack/Command_line/RoamNotes"))
+  (org-roam-dailies-directory "daily/")
+  (org-roam-completion-everywhere t)
+  :config
+  (org-roam-db-autosync-enable))
+#+END_SRC
+
+To perform a quick word search through all of my notes I use the rip-grep (rg) package called counsel-rg and I set it up to search through the RoamNotes directory.
+#+BEGIN_SRC emacs-lisp :tangle config.el :results silent
+(defun my-search-roam-files ()
+    "Search using `counsel-rg` in the set org-roam-directory."
+    (interactive)
+    (counsel-rg nil org-roam-directory))
+#+END_SRC
+
+The amount of hits of the function described above can be overwhelming sometimes and a simple search through filenames is better.
+#+BEGIN_SRC emacs-lisp :tangle config.el :results silent
+(defun my-search-roam-filename ()
+    "Search filenames using `counsel-find-file` in the set org-roam-directory."
+    (interactive)
+    (counsel-find-file org-roam-directory))
+#+END_SRC
+
+Show information about the org-roam files and list the amount of org files, the amount of lines and words in the org-roam directory and daily subdirectory as well.
+#+BEGIN_SRC emacs-lisp :tangle config.el :results silent
+(defun my-org-roam-info ()
+  "Show info of current org-roam dir and `daily` subdirectory."
+  (interactive)
+  (let* ((daily-dir (expand-file-name "daily" org-roam-directory))
+         (all-files-roam (directory-files org-roam-directory nil))
+         (org-files-roam (cl-remove-if-not #'(lambda (file) (string-match-p "\\.org$" file)) all-files-roam))
+         (non-org-files-roam (cl-remove-if #'(lambda (file) (string-match-p "\\.org$" file)) all-files-roam))
+         (all-files-daily (directory-files daily-dir nil))
+         (org-files-daily (cl-remove-if-not #'(lambda (file) (string-match-p "\\.org$" file)) all-files-daily))
+         (non-org-files-daily (cl-remove-if #'(lambda (file) (string-match-p "\\.org$" file)) all-files-daily))
+         (org-file-count-roam (length org-files-roam))
+         (org-file-count-daily (length org-files-daily))
+         (org-file-count-total (+ org-file-count-roam org-file-count-daily))
+         (total-lines-org 0)
+         (total-words-org 0)
+         (total-lines-daily 0)
+         (total-words-daily 0))
+
+    ;; Calculate lines and words for org files in the 'daily' directory
+    (dolist (file (directory-files daily-dir nil "\\.org$"))
+      (with-temp-buffer
+        (insert-file-contents (expand-file-name file daily-dir))
+        (setq total-lines-daily (+ total-lines-daily (count-lines (point-min) (point-max))))
+        (setq total-words-daily (+ total-words-daily (count-words (point-min) (point-max))))))
+
+    ;; Calculate lines and words for org files in the main directory
+    (dolist (file org-files-roam)
+      (with-temp-buffer
+        (insert-file-contents (expand-file-name file org-roam-directory))
+        (setq total-lines-org (+ total-lines-org (count-lines (point-min) (point-max))))
+        (setq total-words-org (+ total-words-org (count-words (point-min) (point-max))))))
+    (message "Statistics about my second brain 🤓.
+Brain shelve: %s.
+
++------------+--------+--------+-------+
+|            | Total  | Roam   | Daily |
++------------+--------+--------+-------+
+|org files   |  %5d |  %5d | %5d |
+|line numbers|  %5d |  %5d | %5d |
+|word count  | %5d | %5d | %5d |
++------------+--------+--------+-------+"
+             org-roam-directory
+             org-file-count-total org-file-count-roam org-file-count-daily
+             (+ total-lines-org total-lines-daily) total-lines-org total-lines-daily
+             (+ total-words-org total-words-daily) total-words-org total-words-daily)))
+#+END_SRC
+
+This function will open the last org roam daily file based on the filename (YYYY-MM-DD).
+#+BEGIN_SRC emacs-lisp :tangle config.el :results silent
+(defun my-open-latest-org-roam-daily ()
+  "Open the last org roam daily file based on date in roam filename"
+  (interactive)
+  (setq my-org-roam-dailies-dir (concat org-roam-directory org-roam-dailies-directory))
+  (let ((files (directory-files my-org-roam-dailies-dir nil "^[0-9]\\{4\\}-[0-9]\\{2\\}-[0-9]\\{2\\}\\.org$")))
+    (when files
+      (find-file (expand-file-name (car (last (sort files #'string<))) my-org-roam-dailies-dir)))))
+#+END_SRC
+
+I want to be able to open a new daily and place the content of the last daily in it. This is very handy since there is usually a lot of overlap with previous daily. No more need to do this manually every day :-).
+#+BEGIN_SRC emacs-lisp :tangle config.el :results silent
+(defun my-goto-today-paste-previous-daily ()
+  "Create a new daily containg previous daily note data"
+  (interactive)
+
+  ; Go to today's daily note
+  (org-roam-dailies-goto-today)
+
+  ; Set the dailies directory
+  (setq my-org-roam-dailies-dir (concat org-roam-directory "/" org-roam-dailies-directory))
+  ; Get the list of files in the org-roam-dailies directory named YYYY-MM-DD.org
+  (let* ((files (directory-files my-org-roam-dailies-dir nil "^[0-9]\\{4\\}-[0-9]\\{2\\}-[0-9]\\{2\\}\\.org$"))
+         ; Filter only the daily notes files
+         (last-file (car (last (sort files #'string<))))
+         ; Get the last daily note file
+         (file-path (expand-file-name last-file my-org-roam-dailies-dir)))
+
+    ; If we found a daily note file
+    (when last-file
+      ; Open the file in a hidden buffer
+      (with-current-buffer (find-file-noselect file-path)
+        ; Save the position to preserve point position
+        (save-excursion
+          ; Go to the beginning of the buffer
+          (goto-char (point-min))
+          ; Skip the first header lines
+          (forward-line 5)
+          ; Copy the content of the daily note from there
+          (copy-region-as-kill (point) (point-max)))))
+
+    ; Paste the copied content in the current buffer
+    (yank)))
+#+END_SRC
+
+** Org-roam-ui configuration
+~org-roam-ui~ is a graphical front end for org-roam. It will open a browser for exploring and interacting with your org-roam notes and therefore a websocket package is needed.
+#+BEGIN_SRC emacs-lisp :tangle config.el :results silent
+(use-package! websocket
+    :after org-roam)
+#+END_SRC
+
+Now that the websocket is setup the org-roam-ui can be set.
+#+BEGIN_SRC emacs-lisp :tangle config.el :results silent
+(use-package! org-roam-ui
+    :after org-roam
+    :config
+    (setq org-roam-ui-sync-theme t
+          org-roam-ui-follow t
+          org-roam-ui-update-on-save t
+          org-roam-ui-open-on-start t))
+#+END_SRC
+
+** Layout for hacking code (scratch buffer and emacs messages)
+This code defines a function to quickly toggle between a single buffer and a more complex hacking layout featuring the messages window on the left and a scratch buffer on the right. The function =my-toggle-hacking-layout= facilitates seamless transitions, enhancing your coding efficiency.
+#+BEGIN_SRC emacs-lisp :tangle config.el  :results silent
+(defun my-toggle-hacking-layout ()
+  "Toggle between a single buffer screen and layout with message window and scratch buffer."
+  (interactive)
+  (if (= (count-windows) 1)
+      (progn
+        ;; Setting up complex hacking layout
+        (split-window-right)
+        (switch-to-buffer "*Messages*")
+        (split-window-right)
+        (switch-to-buffer "scratch.org")
+        (+evil/window-move-right)
+        (+evil/window-move-right)
+        (windmove-left)
+        (balance-windows)
+        (windmove-left)
+        (enlarge-window -30 t)
+        (windmove-right)
+        (message "Changed to complex hacking layout"))
+    (progn
+      ;; Restore to a simple single buffer layout
+        (doom/window-maximize-buffer))))
+#+END_SRC
+
+** Download Emacs configuration
+The =my-emacs-config-download-overwrite= function in the code snippet below is an interactive Emacs Lisp function that downloads my README.org file from Github and overwrites the local README.org Emacs config file and creates a backup with a timestamp in the filename.
+#+BEGIN_SRC emacs-lisp :tangle config.el :results silent
+(defun my-emacs-config-download-overwrite ()
+  "Use Github version of my Doom Emacs config, the README.org, and make backup."
+  (interactive)
+  (let ((current-readme-org "~/.config/doom/README.org")
+        (backup-readme-org (concat "~/.config/doom/README_" (format-time-string "%Y-%m-%d") ".org"))
+        (online-readme-org "https://raw.githubusercontent.com/Prutserdt/dotfiles/refs/heads/master/.config/doom/README.org"))
+    (if (yes-or-no-p "Are you sure you want to overwrite README.org? ")
+        (progn
+          (copy-file current-readme-org backup-readme-org t)
+          (url-copy-file online-readme-org current-readme-org t)
+          (message "README.org updated and backup saved as %s" backup-readme-org))
+      (message "Operation aborted"))))
+#+END_SRC
+
+** NSXIV: create org link to open pictures via a shell script
+This Emacs Lisp function, =my-generate-org-links-to-pictures-subdir=, creates links in an Org document to display images of subdirectories specified by the user. It will only include subdirectories containing image files (JPEG, JPG, PNG, GIF). The function goes through each subdirectory, checks for image files, and generates org links that will run a shell script that runs nsxiv to view the images.
+#+BEGIN_SRC emacs-lisp :tangle config.el :results silent
+(defun my-generate-org-links-to-pictures-subdir (dir)
+  "Create Org-mode links for displaying images in `nsxiv` of subdirectories."
+  (interactive "DDirectory: ")
+  (dolist (subdir (seq-filter 'file-directory-p (directory-files dir t "^[^.].*\\.?$")))
+    (when (seq-find (lambda (f) (member (file-name-extension f) '("jpeg" "jpg" "png" "gif")))
+                    (directory-files subdir t "^[^.].*\\(jpeg\\|jpg\\|png\\|gif\\)$"))
+      ;; Extract the last directory name from the full path, used for the hyperlink
+      (let ((last-dir (file-name-nondirectory (directory-file-name subdir))))
+        ;; Insert an Org-mode link with a shell command to display images using `nsxiv`
+        (insert (concat "[[shell: cd " subdir "; find . -maxdepth 1 -type f -iname '*.jpeg' -o -iname '*.jpg' -o -iname '*.png' -o -iname '*.gif' | sort | nsxiv -ftio][" last-dir "]]\n"))))))
+#+END_SRC
+
+** Run Python py
+This will run the current buffer as Python code in an asynchronous way. NOTE: the file should be saved prior to running!
+#+BEGIN_SRC emacs-lisp :tangle config.el :results silent:
+(defun my-run-python-buffer ()
+  "Run the current buffer as a Python script and display output in a new buffer."
+  (interactive)
+  (let ((python-script (buffer-file-name))
+        (output-buffer "*Python Output*"))
+    (if python-script
+        (progn
+          (with-current-buffer (get-buffer-create output-buffer)
+            (read-only-mode -1)
+            (erase-buffer)
+            (insert (format "Running %s...\n\n" python-script))
+            (display-buffer (current-buffer)))
+          (start-process "python-process" output-buffer "python" python-script))
+      (message "Buffer is not visiting a file."))))
+#+end_src
+
+This function prompts the user to select a Python file, opens a new frame, runs the Python script in a vterm buffer in the new frame, and displays the output in a separate buffer named "/test_code output/".
+#+BEGIN_SRC emacs-lisp :tangle config.el :results silent
+(defun my-run-python-code-in-new-frame-select-manually ()
+  "Run a Python script in a new frame after selecting it manually."
+  (interactive)
+  (let ((file-path (read-file-name "Select a Python file: "))
+        (new-frame (make-frame))
+        (new-frame-name "my-python-frame"))
+    (select-frame-set-input-focus new-frame)
+    (if (equal (selected-frame) new-frame)
+        (progn
+          (vterm)
+          (async-shell-command (format "python3 %s" file-path) "*test_code output*")
+          (pop-to-buffer "*test_code output*"))
+      (message "Failed to select the new frame")
+      (delete-frame new-frame))))
+#+END_SRC
+
+The next one is selecting the test_code.py file directly.
+#+BEGIN_SRC emacs-lisp :tangle config.el :results silent
+(defun my-run-python-code-in-new-frame ()
+  "Run a test python script in a name frame (window)."
+  (interactive)
+  (let ((new-frame (make-frame)))
+    (with-selected-frame new-frame
+      (vterm)
+      (async-shell-command "python3 ~/Downloads/test_code.py" "*test_code output*"))))
+#+END_SRC
+
+This function will first ask to select a python file and then run it and save it to clipboard
+#+BEGIN_SRC emacs-lisp :tangle config.el :results silent
+(defun my-run-python-code-results-to-clipboard-test ()
+  "Run a selected Python script in the current directory and copy the output to clipboard."
+  (interactive)
+  (let* ((directory default-directory)
+         (file-path (read-file-name "Select a Python file: " directory nil t "\.py"))
+         (output (shell-command-to-string (concat "python " file-path))))
+    (kill-new output)
+    (message "Output copied to Emacs kill-ring and can be pasted now.")))
+#+END_SRC
+
+** Show asset allocation
+Show a map of my asset allocation in time by running a Python script.
+#+BEGIN_SRC emacs-lisp :tangle config.el  :results silent
+(defun my-asset-allocation-in-time ()
+  "Show my asset allocation vs time in a chart. Done by running a Python script."
+  (interactive)
+  (let ((script-path "~/stack/Documenten/Aandelen/Plotten_AA_in_de_tijd.py"))
+    (setq default-directory (file-name-directory script-path))
+    (shell-command (concat "notify-send -t 1000 'Displaying my AA plot: " script-path "'"))
+    (shell-command (concat "python3 " script-path)
+                   "*Python Output*")
+    (message (concat "Python script executed: " script-path))))
+#+END_SRC
+
+** Keyboard functions
+Remap my keyboard with xmodmap. Right now I'm running two shell aliases plus the alias q to exit.
+#+BEGIN_SRC emacs-lisp :tangle config.el  :results silent
+(defun my-keyboard-reset ()
+  "Right meta/super/control for my Sweep keyboard. Plus quick key repeats."
+  (interactive)
+  (comint-send-string (get-buffer-process (shell)) "e\nk\nq\n")
+  (kill-buffer (current-buffer)))
+#+END_SRC
+
+** PDF helpers
+Fetch the text of a pdf file and puts it in an org buffer.
+#+BEGIN_SRC emacs-lisp :tangle config.el :results silent
+(defun my-open-pdf-as-org-text (pdf-file)
+  "Insert text from a PDF file into a new Org mode buffer using pdftotext."
+  (interactive "fSelect PDF file: ")
+  (let ((buf (generate-new-buffer "*PDF Text*")))
+    (with-current-buffer buf
+      (org-mode)
+      (start-process
+       "pdftotext" buf "pdftotext" pdf-file "-"))
+    (switch-to-buffer buf)))
+#+END_SRC
+
+Fetch the text of a pdf file via ocr and put it in an org buffer.
+#+BEGIN_SRC emacs-lisp :tangle config.el :results silent
+(defun my-open-pdf-to-org-as-text-with-ocr ()
+  "Convert a PDF with OCR and open the text in a new Org mode buffer."
+  (interactive)
+  (let ((pdf-file (read-file-name "Select PDF file: "))
+        (ocr-output (make-temp-file "ocr-output" nil ".pdf"))
+        (text-output (make-temp-file "ocr-text" nil ".txt")))
+    (shell-command (format "ocrmypdf -l eng %s %s" pdf-file ocr-output))
+    (shell-command (format "pdftotext %s %s" ocr-output text-output))
+    (with-temp-buffer
+      (insert-file-contents text-output)
+      (org-mode)
+      (switch-to-buffer (current-buffer))
+      (rename-buffer "*OCR Output*" t))
+    (delete-file ocr-output)
+    (delete-file text-output)
+    (message "Text extracted from %s" pdf-file)))
+#+END_SRC
+
+Sometimes pdf files are password protected and it should be removed. The following will help to find the pdf and will save it as *_password_removed.pdf.
+#+BEGIN_SRC emacs-lisp :tangle config.el :results silent
+(defun my-pdf-password-removal ()
+  "Remove password of pdf and save under another name."
+  (interactive)
+  (let* ((pdf-file (read-file-name "PDF file: "))
+         (dir (file-name-directory pdf-file))
+         (base-name (file-name-base pdf-file))
+         (pass-ps (concat dir base-name ".ps"))
+         (password-removed-pdf (concat dir base-name "_password_removed.pdf")))
+    (shell-command (format "pdftops %s %s" (shell-quote-argument pdf-file) (shell-quote-argument pass-ps)))
+    (shell-command (format "ps2pdf %s %s" (shell-quote-argument pass-ps) (shell-quote-argument password-removed-pdf)))
+    (delete-file pass-ps)
+    (message "PDF file converted to unlocked PDF: %s" password-removed-pdf)))
+#+END_SRC
+
+Convert images to pdfs.
+#+begin_src emacs-lisp
+(defun my-image-to-pdf ()
+  "Convert an image file to a PDF and save as pdf, then open the PDF."
+  (interactive)
+  (let* ((image-file (read-file-name "Image file: "))
+         (dir (file-name-directory image-file))
+         (base-name (file-name-base image-file))
+         (pdf-file (concat dir base-name ".pdf")))
+    (shell-command (format "convert %s %s" (shell-quote-argument image-file) (shell-quote-argument pdf-file)))
+    (message "Image converted to PDF: %s" pdf-file)
+    (find-file pdf-file)
+    (pdf-view-mode)))  ;; Open the PDF file in pdf-view-mode
+#+end_src
+
+** Inserting characters, words and strings
+Set multilingual text input to ~latin-prefix~ as the default input method in .org files. This will modify ~Ol'e~ input to ~Olé~, ~//~ to ~°~ and =~e= to ~€~. Sometimes this is not the desired behaviour and this can easily be switched off by running ~toggle-input-method~ with the emacs hotkeys ~C-\~. I uncommented the 'toggle-input-method and now it is not switched on by default.
+#+BEGIN_SRC emacs-lisp :tangle config.el :results silent
+(setq default-input-method "latin-prefix")
+;;(add-hook 'org-mode-hook 'toggle-input-method)
+#+END_SRC
+
+Inserting often used characters and words can be done by this simple function. After inserting it will end in insert state of evil mode to continue the editing.
+#+BEGIN_SRC emacs-lisp :tangle config.el :results silent
+(defun my-insert-characters-and-text ()
+  "Inserts a character at point and switches to insert state in Evil mode when in normal state."
+  (interactive)
+  (let* ((characters '(
+                       ("K€ KEuro"          . "K€")
+                       ("€ Euro"            . "€")
+                       ("° Graad"           . "°")
+                       ("µ micro"           . "µ")
+                       ("¹ Tot de macht 1"  . "¹")
+                       ("² Tot de macht 2"  . "²")
+                       ("³ Tot de macht 3"  . "³")
+                       ("Ä A met trema"     . "Ä")
+                       ("Correct title"     . "The Äkta overlords")
+                       ("Note: Ctrl \\ to toggle-input-method" . "")))
+         (chosen-character (cdr (assoc (completing-read "Select a character: " characters)
+                                      characters))))
+    (when chosen-character
+      (evil-change-state 'insert)
+      (insert chosen-character))))
+#+END_SRC
+
+** Handling the SMILES in chemistry
+The Simplified Molecular Input Line Entry System (SMILES) can be comfortably used inside emacs with the help of the shell package =openbabel=.
+
+The following function will render an image from point by open-babel. Go to a line containing only of a SMILES line and run this function to display a picture of the molecular structure with nsxiv inside of Emacs from the shell. The image is temporarily stored in the systems RAM.
+#+BEGIN_SRC emacs-lisp :tangle config.el :results silent
+(defun my-obabel-smiles-show-image ()
+  "Show molecular structure from SMILES at point. This requires the command line program 'obable'  and 'nsxiv'. The image is shown in a terminal in emacs"
+  (interactive)
+  (let ((temp-dir "/dev/shm/temp")
+        (smiles (thing-at-point 'line)))
+    ;; Create the temp directory if it doesn't exist
+    (unless (file-exists-p temp-dir)
+      (make-directory temp-dir t))
+    (let ((output-file (expand-file-name "output_file.png" temp-dir)))
+      (shell-command (concat "obabel -xb -:" (shell-quote-argument smiles) " -O " (shell-quote-argument output-file) " -xp 400 &"))
+      (sleep-for 0.5)
+      (shell-command (concat "nsxiv " (shell-quote-argument output-file)))))
+    (sleep-for 1)
+    (doom/window-maximize-buffer))
+#+END_SRC
+
+A function that will convert a SMILES string in a line (at point) to an image and paste it below that line. This uses the package =open babel= and the save location should be entered. It is in dark mode and at a fixed size of 400 pixels wide.
+#+BEGIN_SRC emacs-lisp :tangle config.el :results silent
+(defun my-obabel-smiles-insert-image (output-file)
+  "Insert image of molecular structure from a text line consisting of SMILES code at point, and paste the image the line below that. This requires the command line package 'obabel' and the image needs to be saved somewhere."
+  (interactive "FOutput file location:")
+  (let ((smiles (thing-at-point 'line)))
+    ;; Generate image from SMILES using Open Babel
+    (shell-command
+     (concat "obabel -xb -:" (shell-quote-argument smiles)
+             " -O " (shell-quote-argument output-file)
+             " -xp 400 &"))
+    (doom/window-maximize-buffer) ; Maximize buffer window
+    (forward-line) ; Move to the next line
+    (insert (format "[[file:%s]]" output-file))
+    (newline)
+    (previous-line)
+    (sleep-for 0.5)
+    (execute-kbd-macro (kbd "RET"))))
+#+END_SRC
+
+** Splash screen
+A useless but pretty Emacs welcome screen is created including an image and some text based on the default Doom emacs welcome screen.
+#+BEGIN_SRC emacs-lisp :tangle config.el :results silent
+(setq fancy-splash-image (if (zerop (random 2))
+                           "~/.config/doom/doom-emacs.png"
+                           "~/.config/doom/doom-emacs-stallman.png"))
+(remove-hook '+doom-dashboard-functions #'doom-dashboard-widget-shortmenu)
+
+(add-hook! '+doom-dashboard-functions :append
+    (insert "\n" (+doom-dashboard--center +doom-dashboard--width "An Emacs framework for the stubborn martian hacker, modified.\n\n")
+    (+doom-dashboard--center +doom-dashboard--width "It is a story as old as time.\n")
+    (+doom-dashboard--center +doom-dashboard--width "A stubborn, shell-dwelling and melodramatic\n")
+    (+doom-dashboard--center +doom-dashboard--width "vimmer spirals into despair\n")
+    (+doom-dashboard--center +doom-dashboard--width "before he succumbs to the dark side. \n\n")
+    (+doom-dashboard--center +doom-dashboard--width "To get into the rabbit hole press 'e'")))
+#+END_SRC
+
+A function is created to make a special keymap for the splash screen.
+For reference: the default doom-dashboard can be found here: =~/.config/emacs/modules/ui/doom-dashboard/config.el=.
+#+BEGIN_SRC emacs-lisp :tangle config.el :results silent
+(defun +doom-dashboard-setup-modified-keymap ()
+  (setq +doom-dashboard-mode-map (make-sparse-keymap))
+  (map! :map +doom-dashboard-mode-map
+        :desc "Open my Emacs config; README.org" :ng "e" (cmd! (find-file (expand-file-name "README.org" doom-user-dir)))
+        :desc "Exiting via Evil-mode" :ng "ZZ" #'save-buffers-kill-terminal))
+(add-transient-hook! #'+doom-dashboard-mode (+doom-dashboard-setup-modified-keymap))
+(add-transient-hook! #'+doom-dashboard-mode :append (+doom-dashboard-setup-modified-keymap))
+(add-hook! 'doom-init-ui-hook :append (+doom-dashboard-setup-modified-keymap))
+#+END_SRC
+
+* Code snippets
+A code snippet is a piece of reusable code that can be inserted into a buffer using a predefined trigger or command.
+
+The next one is inserting the start of a Python code block, ~#+BEGIN_SRC~, and is triggered by ~<ps~.
+#+BEGIN_SRC snippet #:tangle snippets/org-mode/python-block-start
+# -*- mode: snippet -*-
+# name: python-block-start
+# key: <ps
+# --
+#+BEGIN_SRC python
+#+END_SRC
+
+Another snippet, this time to end a code block. This one requires a hack since adding ~#END_SRC~ to this code block will end the code block in org-mode and there will be no text inserted. With this case the ~#+END_SR~ will be added and after that the ~C~ is overwritten over the ~$~ sign, et viola, fixed.
+#+BEGIN_SRC emacs-lisp #:tangle snippets/org-mode/end-src
+# -*- mode: snippet -*-
+# name: end-src
+# key: <end
+# --
+$0
+#+END_SR${1:C}
+#+END_SRC
+
+The next one is inserting the start of a Python code block, ~#+BEGIN_SRC~, and is triggered by ~<ps~. The ~END_SRC~ is added by the same trick as describe above.
+#+BEGIN_SRC snippet :tangle snippets/org-mode/python-block
+# -*- mode: snippet -*-
+# name: python-block
+# key: <p
+# --
+#+BEGIN_SRC python
+`%`$0
+#+END_SR${1:C}
+#+END_SRC
+#+BEGIN_SRC python
+
+Another snippet, this time to insert a python code block with tangle and result options plus the tab will jump to the filename ~wismij~ and another tab to jump to the inside of the code block ~$0~.
+#+BEGIN_SRC snippet #:tangle snippets/org-mode/python-block-tangling-name
+# -*- mode: snippet -*-
+# name: python-block-tangling-name
+# key: <pt
+# --
+#+BEGIN_SRC python :tangle ${2:wismij}.py :results output
+# NOTE, this file is generated from the org file:
+# `(file-name-nondirectory (buffer-file-name))`
+# Only modify the org file and not this Python file.
+
+$0
+#+END_SR${1:C}
+#+END_SRC
+
+Remark: Github cannot handle the visualization of a code block inside a codeblock. The line ~#+BEGIN_SRC python :tangle ${2:wismij}.py :results output~ under the line ~# --~ is actually in this README.org file but not showing on the Github page. Also the bottom line ~#+end_sr${1:c}~ is not showing on the github page. Check the [[https://raw.githubusercontent.com/Prutserdt/dotfiles/master/.config/doom/README.org][raw README.org]] file for that.
+
+* Credits
+My configuration of Doom Emacs is partially based on these:
+- 🔗 https://github.com/doomemacs/doomemacs
+- 🔗 https://tecosaur.github.io/emacs-config/config.html
+- 🔗 https://gitlab.com/zzamboni/dot-doom
+- 🔗 https://systemcrafters.net/
+- 🔗 https://gitlab.com/dwt1/dotfiles/-/blob/master/.config/doom/config.org
