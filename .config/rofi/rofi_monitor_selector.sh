@@ -19,10 +19,13 @@ if [ -n "$selected_monitor" ]; then
   # Disable all monitors except the selected one
   for monitor in $monitors; do
     if [ "$monitor" != "$selected_monitor" ]; then
+        echo "1111 test $monitor is: $monitor"
       hyprctl monitor off "$monitor"
     fi
+        echo "22222 test $monitor is: $monitor"
   done
   
   # Optionally enable the selected monitor if needed
   hyprctl monitor on "$selected_monitor"
+  echo "33333 test $monitor is: $monitor"
 fi
