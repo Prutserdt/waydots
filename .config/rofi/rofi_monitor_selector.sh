@@ -1,5 +1,5 @@
 # Get the list of connected monitors
-monitors=$(hyprctl monitors | awk '/Monitor/ {print $2}' | tr -d '()')
+monitors=$(hyprctl monitors all| awk '/Monitor/ {print $2}' | tr -d '()')
 
 # Check if there are any monitors available
 if [ -z "$monitors" ]; then
