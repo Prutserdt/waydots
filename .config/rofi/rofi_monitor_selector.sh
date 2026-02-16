@@ -1,4 +1,6 @@
 #!/usr/bin/env bash
+# FIXME: does NOT WORK!!!!
+
 
 # Get the list of connected monitors
 monitors=$(hyprctl monitors all | awk '/Monitor/ {print $2}' | tr -d '()')
