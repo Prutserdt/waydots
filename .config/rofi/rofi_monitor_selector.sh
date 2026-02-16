@@ -1,4 +1,5 @@
 #!/usr/bin/env bash
+# FIXME: this script does NOT WORK!
 
 # Get the list of connected monitors
 monitors=$(hyprctl monitors all| awk '/Monitor/ {print $2}' | tr -d '()')
@@ -20,7 +21,6 @@ if [ -n "$selected_monitor" ]; then
   for monitor in $monitors; do
     if [ "$monitor" != "$selected_monitor" ]; then
       hyprctl keyword monitor "$monitor.disable"
-      sleep 2
       echo "11111Disabled monitor: $monitor"
     fi
   done
@@ -29,14 +29,3 @@ if [ -n "$selected_monitor" ]; then
   # hyprctl keyword monitor "$selected_monitor.enable"
   echo "Enabled monitor: $selected_monitor"
 fi
-
-
-how to place a pause of 1 second in a shell script?
-
-You can place a pause of 1 second in a shell script using the `sleep` command. Here’s how to do it:
-
-```bash
-sleep 1
-```
-
-Just insert this line at the point in your script where you want the pause to occur.
