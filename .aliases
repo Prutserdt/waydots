@@ -80,6 +80,7 @@ alias dotfiles="/usr/bin/git --git-dir=$HOME/.dotfiles.git/ --work-tree=$HOME"
 alias dot="~/.config/dotfiles_script.sh"
 #alias dot='dotfiles add -u :/ -v ;dotfiles commit -m "Updated"; dotfiles push --set-upstream origin master'
 
+
 # Jump to directories
 alias dh="cd $HOME/"
 alias dc="cd $HOME/.config"
