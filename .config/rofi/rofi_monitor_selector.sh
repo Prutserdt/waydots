@@ -1,30 +1,12 @@
-#!/bin/env bash
+#!/usr/bin/env bash
 
-# Get the list of connected monitors
-monitors=$(hyprctl monitors | awk '/Monitor/ {print $2}' | tr -d '()')
+# Get the list of monitors
+monitors=$(hyprctl monitors all | awk '{print $1}')
 
-# Check if there are any monitors available
-if [ -z "$monitors" ]; then
-  echo "No monitors connected."
-  exit 1
-fi
+# Use Rofi to display the list
+selected_monitor=$(echo "$monitors" | rofi -dmenu -p "Select Monitor:")
 
-# Display the list of monitors using Rofi
-selected_monitor=$(echo "$monitors" | rofi -dmenu -p "Select a monitor:")
-
-# Check if the user made a selection
+# Switch to the selected monitor
 if [ -n "$selected_monitor" ]; then
-  echo "You selected: $selected_monitor"
-  
-  # Disable all monitors except the selected one
-  for monitor in $monitors; do
-    if [ "$monitor" != "$selected_monitor" ]; then
-      hyprctl keyword monitor "$monitor.disable"
-      echo "Disabled monitor: $monitor"
-    fi
-  done
-  
-  # Optionally enable the selected monitor if needed
-  # hyprctl keyword monitor "$selected_monitor.enable"
-  echo "Enabled monitor: $selected_monitor"
+    hyprctl dispatch focusmonitor "$selected_monitor"
 fi
