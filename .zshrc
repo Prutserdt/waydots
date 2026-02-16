@@ -49,4 +49,3 @@ source /usr/share/fzf/completion.zsh
 #export PATH=”$HOME/.config/emacs/bin:$PATH”  # Run Doom Emacs from the shell
 #export PATH=”$HOME/.emacs.d/bin:$PATH”  # Run Doom Emacs from the shell
 bindkey "^[[3~" delete-char
-alias dotfiles="/usr/bin/git --git-dir=$HOME/.dotfiles.git/ --work-tree=$HOME"

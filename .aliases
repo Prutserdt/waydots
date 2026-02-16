@@ -76,7 +76,10 @@ alias doombuild="~/.config/emacs/bin/doom build"
 alias doompurge="~/.config/emacs/bin/doom purge"
 alias doomhelp="~/.config/emacs/bin/doom help"
 
-alias dot='dotfiles add -u :/ -v ;dotfiles commit -m "Updated"; dotfiles push --set-upstream origin master'
+alias dotfiles="/usr/bin/git --git-dir=$HOME/.dotfiles.git/ --work-tree=$HOME"
+#alias dot='dotfiles add -u :/ -v ;dotfiles commit -m "Updated"; dotfiles push --set-upstream origin master'
+alias dot="~/.config/dotfiles_script.sh"
+#'dotfiles add -u :/ -v ;dotfiles commit -m "Updated"; dotfiles push --set-upstream origin master'
 
 # Jump to directories
 alias dh="cd $HOME/"
@@ -95,3 +98,5 @@ alias ze="vim $HOME/.zshrc"                         # edit the .zshrc file
 alias zs="source $HOME/.zshrc"                      # source the .zshrc 
 
 #alias eric6_browser="/usr/bin/eric7_browser"        # one of my appimages needs eric6_browser, hacky solution...
+
+
