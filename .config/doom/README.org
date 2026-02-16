@@ -93,7 +93,7 @@ The list of available modules can be checked in Doom Emacs by ~M-x~ ~Doom/help-m
        lookup              ; navigate your code and its documentation
        pdf                 ; pdf enhancements
        lsp                 ; M-x vscode
-       ;;evil-magit        ; An evil porcelain for Emacs
+       evil-magit         ; An evil porcelain for Emacs
 
        :lang
        emacs-lisp          ; drown in parentheses
