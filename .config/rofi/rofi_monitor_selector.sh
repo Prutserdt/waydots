@@ -1,12 +1,11 @@
 #!/bin/env bash
 
-
 # Get the list of connected monitors
 monitors=$(hyprctl monitors | awk '/Monitor/ {print $2}' | tr -d '()')
 
 # Check if there are any monitors available
 if [ -z "$monitors" ]; then
-  echo "No monitors connected. There must be an error, since you can read this text. "
+  echo "No monitors connected."
   exit 1
 fi
 
@@ -20,10 +19,10 @@ if [ -n "$selected_monitor" ]; then
   # Disable all monitors except the selected one
   for monitor in $monitors; do
     if [ "$monitor" != "$selected_monitor" ]; then
-      hyprctl monitor state "$monitor" off
+      hyprctl monitor off "$monitor"
     fi
   done
   
   # Optionally enable the selected monitor if needed
-  hyprctl monitor state "$selected_monitor" on
+  hyprctl monitor on "$selected_monitor"
 fi
