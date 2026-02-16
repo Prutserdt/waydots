@@ -77,9 +77,8 @@ alias doompurge="~/.config/emacs/bin/doom purge"
 alias doomhelp="~/.config/emacs/bin/doom help"
 
 alias dotfiles="/usr/bin/git --git-dir=$HOME/.dotfiles.git/ --work-tree=$HOME"
-#alias dot='dotfiles add -u :/ -v ;dotfiles commit -m "Updated"; dotfiles push --set-upstream origin master'
 alias dot="~/.config/dotfiles_script.sh"
-#'dotfiles add -u :/ -v ;dotfiles commit -m "Updated"; dotfiles push --set-upstream origin master'
+#alias dot='dotfiles add -u :/ -v ;dotfiles commit -m "Updated"; dotfiles push --set-upstream origin master'
 
 # Jump to directories
 alias dh="cd $HOME/"

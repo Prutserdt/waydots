@@ -7,24 +7,18 @@ echo "3) Exit"
 
 read -p "Enter your choice (1/2/3): " choice
 
-#alias dotfiles="/usr/bin/git --git-dir=$HOME/.dotfiles.git/ --work-tree=$HOME"
-#alias dotfiles="
 case $choice in
     1)
         echo "Pushing Dotfiles..."
         /usr/bin/git --git-dir=$HOME/.dotfiles.git/ --work-tree=$HOME add -u :/ -v
         /usr/bin/git --git-dir=$HOME/.dotfiles.git/ --work-tree=$HOME commit -m "Updated"
         /usr/bin/git --git-dir=$HOME/.dotfiles.git/ --work-tree=$HOME push --set-upstream origin master
-        
-        #dotfiles add -u :/ -v
-        #dotfiles commit -m "Updated"
-        #dotfiles push --set-upstream origin master
         ;;
     2)
         echo "Pulling Dotfiles..."
-        dotfiles fetch origin
-        dotfiles reset --hard
-        dotfiles pull
+        /usr/bin/git --git-dir=$HOME/.dotfiles.git/ --work-tree=$HOME fetch origin
+        /usr/bin/git --git-dir=$HOME/.dotfiles.git/ --work-tree=$HOME reset --hard
+        /usr/bin/git --git-dir=$HOME/.dotfiles.git/ --work-tree=$HOME pull
         ;;
     3)
         echo "Exiting..."
