@@ -1,3 +1,5 @@
+#!/usr/bin/env bash
+
 # Get the list of connected monitors
 monitors=$(hyprctl monitors all| awk '/Monitor/ {print $2}' | tr -d '()')
 
