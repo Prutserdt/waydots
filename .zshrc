@@ -1,9 +1,4 @@
-# ~/.zshrc  _
-#   _______| |__  _ __ ___
-#  |_  / __| '_ \| '__/ __|
-# _ / /\__ \ | | | | | (__
-#(_)___|___/_| |_|_|  \___|
-#     modified by Prutserdt
+# ~/.zshrc 
 
 # Enable persistent history
 HISTFILE=~/.zsh_history

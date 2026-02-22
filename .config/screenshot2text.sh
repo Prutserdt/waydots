@@ -1,6 +1,4 @@
 #!/bin/sh
-# NOTE: This file is generated from ~/.config/README.org
-#       Please only edit that file and org-babel-tangle (emacs)
 ramdir="/dev/shm/temp"
 mkdir $ramdir 
 screenshot_pic="$ramdir/wismij.jpg"
