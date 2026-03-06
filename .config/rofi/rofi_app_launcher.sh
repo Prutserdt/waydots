@@ -1,6 +1,6 @@
 #!/bin/env bash
 
-chosen=$(cat $HOME/.config/rofi/app_list.txt | rofi -dmenu -c -bw 2 -l 40 -i -p 'Run: ')
+chosen=$(cat $HOME/.config/rofi/app_list.txt | rofi -dmenu -c -bw 2 -l 40 -i -p 'Run')
 
 # Check if a choice was made
 if [ -n "$chosen" ]; then
