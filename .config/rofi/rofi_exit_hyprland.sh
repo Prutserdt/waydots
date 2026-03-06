@@ -4,7 +4,7 @@
 options="Logout\nShutdown\nReboot"
 
 # Show the menu with Rofi
-chosen=$(echo -e $options | rofi -dmenu -p "Quitting?")
+chosen=$(echo -e $options | rofi -dmenu -p "Exit options")
 
 # Execute the command based on the user's choice
 case "$chosen" in

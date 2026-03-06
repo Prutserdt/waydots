@@ -67,12 +67,13 @@ alias dot="~/.config/dotfiles_script.sh"
 #alias dot='dotfiles add -u :/ -v ;dotfiles commit -m "Updated"; dotfiles push --set-upstream origin master'
 
 # Jump to directories
-alias dh="cd $HOME/"
-alias dc="cd $HOME/.config"
-alias dq="cd $HOME/.config/qtile"
-alias dd="cd $HOME/Downloads"
-alias ds="cd $HOME/stack"
 alias da="cd $HOME/stack/Afbeeldingen"
+alias dc="cd $HOME/.config"
+alias dd="cd $HOME/Downloads"
+alias dh="cd $HOME/"
+alias dH="cd $HOME/projects/Hyprland"
+alias dq="cd $HOME/.config/qtile"
+alias ds="cd $HOME/stack"
 alias dv="cd $HOME/stack/Afbeeldingen/Vakantie"
 alias dw="cd $HOME/stack/Afbeeldingen/Wallpapers"
 
