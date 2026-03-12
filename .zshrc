@@ -1,4 +1,7 @@
-# ~/.zshrc 
+# ~/.zshrc
+
+# Just for emacs and using tramp, 
+[[ $TERM == "tramp" ]] && unsetopt zle && PS1='$ ' && return
 
 # Enable persistent history
 HISTFILE=~/.zsh_history

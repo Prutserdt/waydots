@@ -12,7 +12,8 @@ emacs_window_id=$(echo "$output" | grep -i "Doom Emacs" | awk '{print $2}')
 
 # Check if the Emacs window ID is non-empty
 if [[ -z "$emacs_window_id" ]]; then
-    #echo "No Emacs workspace found. Starting emacsclient..."
+    #echo "No Emacs workspace found. Starting emacsclient...
+    #emacs --daemon
     emacsclient -c -a "emacs"
 else
     #echo "Switching to Emacs workspace $emacs_workspace and focusing on window $emacs_window_id..."
