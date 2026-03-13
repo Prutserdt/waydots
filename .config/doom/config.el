@@ -45,7 +45,6 @@
         :desc "Update emacs README.org!!!"       "u" #'my-emacs-config-download-overwrite
         :desc "Visualized undo: vundo"           "v" #'vundo
         :desc "Write this buffer to file"        "w" #'write-file
-        :desc "Run python async"                 "z" #'my-run-python-code-in-new-frame-select-manually
         :desc "Escape evil mode"                 "Z" #'evil-escape)
 
     (:prefix ("b") ;; Default Doom keybinding
@@ -540,53 +539,6 @@ Brain shelve: %s.
         ;; Insert an Org-mode link with a shell command to display images using `nsxiv`
         (insert (concat "[[shell: cd " subdir "; find . -maxdepth 1 -type f -iname '*.jpeg' -o -iname '*.jpg' -o -iname '*.png' -o -iname '*.gif' | sort | nsxiv -ftio][" last-dir "]]\n"))))))
 
-(defun my-run-python-buffer ()
-  "Run the current buffer as a Python script and display output in a new buffer."
-  (interactive)
-  (let ((python-script (buffer-file-name))
-        (output-buffer "*Python Output*"))
-    (if python-script
-        (progn
-          (with-current-buffer (get-buffer-create output-buffer)
-            (read-only-mode -1)
-            (erase-buffer)
-            (insert (format "Running %s...\n\n" python-script))
-            (display-buffer (current-buffer)))
-          (start-process "python-process" output-buffer "python" python-script))
-      (message "Buffer is not visiting a file."))))
-
-(defun my-run-python-code-in-new-frame-select-manually ()
-  "Run a Python script in a new frame after selecting it manually."
-  (interactive)
-  (let ((file-path (read-file-name "Select a Python file: "))
-        (new-frame (make-frame))
-        (new-frame-name "my-python-frame"))
-    (select-frame-set-input-focus new-frame)
-    (if (equal (selected-frame) new-frame)
-        (progn
-          (vterm)
-          (async-shell-command (format "python3 %s" file-path) "*test_code output*")
-          (pop-to-buffer "*test_code output*"))
-      (message "Failed to select the new frame")
-      (delete-frame new-frame))))
-
-(defun my-run-python-code-in-new-frame ()
-  "Run a test python script in a name frame (window)."
-  (interactive)
-  (let ((new-frame (make-frame)))
-    (with-selected-frame new-frame
-      (vterm)
-      (async-shell-command "python3 ~/Downloads/test_code.py" "*test_code output*"))))
-
-(defun my-run-python-code-results-to-clipboard-test ()
-  "Run a selected Python script in the current directory and copy the output to clipboard."
-  (interactive)
-  (let* ((directory default-directory)
-         (file-path (read-file-name "Select a Python file: " directory nil t "\.py"))
-         (output (shell-command-to-string (concat "python " file-path))))
-    (kill-new output)
-    (message "Output copied to Emacs kill-ring and can be pasted now.")))
-
 (defun my-asset-allocation-in-time ()
   "Show my asset allocation vs time in a chart. Done by running a Python script."
   (interactive)
@@ -708,14 +660,4 @@ Brain shelve: %s.
     (+doom-dashboard--center +doom-dashboard--width "It is a story as old as time.\n")
     (+doom-dashboard--center +doom-dashboard--width "A stubborn, shell-dwelling and melodramatic\n")
     (+doom-dashboard--center +doom-dashboard--width "vimmer spirals into despair\n")
-    (+doom-dashboard--center +doom-dashboard--width "before he succumbs to the dark side. \n\n")
-    (+doom-dashboard--center +doom-dashboard--width "To get into the rabbit hole press 'e'")))
-
-(defun +doom-dashboard-setup-modified-keymap ()
-  (setq +doom-dashboard-mode-map (make-sparse-keymap))
-  (map! :map +doom-dashboard-mode-map
-        :desc "Open my Emacs config; README.org" :ng "e" (cmd! (find-file (expand-file-name "README.org" doom-user-dir)))
-        :desc "Exiting via Evil-mode" :ng "ZZ" #'save-buffers-kill-terminal))
-(add-transient-hook! #'+doom-dashboard-mode (+doom-dashboard-setup-modified-keymap))
-(add-transient-hook! #'+doom-dashboard-mode :append (+doom-dashboard-setup-modified-keymap))
-(add-hook! 'doom-init-ui-hook :append (+doom-dashboard-setup-modified-keymap))
+    (+doom-dashboard--center +doom-dashboard--width "before he succumbs to the dark side. \n\n")))

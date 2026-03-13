@@ -9,7 +9,7 @@
 
        :ui
        doom                ; what makes DOOM look the way it does
-       doom-dashboard      ; a nifty splash screen for Emacs
+       ;doom-dashboard      ; a nifty splash screen for Emacs
        (emoji +unicode)    ; ð
        hl-todo             ; highlight TODO/FIXME/NOTE/DEPRECATED/HACK/REVIEW
        modeline            ; snazzy, Atom-inspired modeline, plus API
