@@ -47,6 +47,7 @@
        evil-magit         ; An evil porcelain for Emacs
 
        :lang
+       rust                ; rust roest
        emacs-lisp          ; drown in parentheses
        (org                ; organize your plain life in plain text
         +pretty            ; pretty is better than ugly

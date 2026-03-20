@@ -19,7 +19,7 @@ alias ZQ="exit"                 # Exiting quickly, the Vim way
 alias c='printf "\e[H\e[2J"'    # Clear screen, CTL-L for scrollback
 alias cls="c;ls"                # Clear screen, scrollback and 'ls --color=auto'
 alias cl="c;l"                  # Clear screen, scrollback  and 'ls -alh'
-alias rm='rm -i'                # Ask for permission, for safety
+#alias rm='rm -i'                # Ask for permission, for safety
 alias cp='cp -i'                # Ask for permission, for safety
 alias mv='mv -i'                # Ask for permission, for safety
 
@@ -54,6 +54,7 @@ alias emacsvanilla="emacs --init-directory ~/emacs"             # vanilla
 alias doom='pgrep -u "$USER" -f "emacs --daemon" > /dev/null || emacs --daemon; emacsclient -c -n' # doom
 #alias doom="emacs --init-directory ~/.config/emacs"             # doom
 alias em="emacs --init-directory ~/.config/emacs -nw"           # doom, terminal
+alias e="emacsclient -nw"                                       # open file in current terminal
 alias spacemacs="emacs --init-directory ~/.config/spacemacs"    # spacemacs
 alias doomsync="~/.config/emacs/bin/doom sync"
 alias doomdoctor="~/.config/emacs/bin/doom doctor"
@@ -76,6 +77,7 @@ alias dq="cd $HOME/.config/qtile"
 alias ds="cd $HOME/stack"
 alias dv="cd $HOME/stack/Afbeeldingen/Vakantie"
 alias dw="cd $HOME/stack/Afbeeldingen/Wallpapers"
+alias dr="cd $HOME/stack/Code/rust/Rust_by_example"
 
 # zsh
 alias ze="vim $HOME/.zshrc"                         # edit the .zshrc file
