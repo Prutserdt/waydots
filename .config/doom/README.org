@@ -99,7 +99,8 @@ The list of available modules can be checked in Doom Emacs by ~M-x~ ~Doom/help-m
        emacs-lisp          ; drown in parentheses
        (org                ; organize your plain life in plain text
         +pretty            ; pretty is better than ugly
-        +roam2             ; wander around notes
+        ;;+roam2           ; wander around notes
+        +roam              ; wander around notes
         +dragndrop)        ; drop files/images into org
       (python +lsp +pyenv) ; beautiful is better than ugly
                            ; +pyright. Tried pyright, could not get it to work on all of my machines
@@ -168,6 +169,21 @@ Let's remind the reader of ~config.el~ to not edit this file directly.
 ;;      Please only edit that file and org-babel-tangle (emacs)
 #+END_SRC
 
+#+BEGIN_SRC emacs-lisp :tangle config.el :results silent
+(require 'recentf)
+
+(recentf-mode 1)
+
+(setq initial-buffer-choice
+      (lambda ()
+        (when recentf-list
+          (find-file (car recentf-list)))))
+
+(add-hook 'emacs-startup-hook
+          (lambda ()
+            (when-let ((f (car recentf-list)))
+              (find-file f))))
+#+END_SRC
 ** Custom keybindings
 Emacs uses a lot of keybindings and Doom Emacs adds even more on top of it, much of them are Evil mode which is VIM emulation. Now let's add some extra!
 
@@ -1043,7 +1059,7 @@ A function that will convert a SMILES string in a line (at point) to an image an
 #+END_SRC
 
 ** Splash screen
-A useless but pretty Emacs welcome screen is created including an image and some text based on the default Doom emacs welcome screen.
+A useless but pretty Emacs welcome screen is created including an image and some text based on the default Doom emacs welcome screen. It is so useless that I'm not using it anymore 🙂.
 #+BEGIN_SRC emacs-lisp :tangle config.el :results silent
 (setq fancy-splash-image (if (zerop (random 2))
                            "~/.config/doom/doom-emacs.png"
@@ -1057,6 +1073,7 @@ A useless but pretty Emacs welcome screen is created including an image and some
     (+doom-dashboard--center +doom-dashboard--width "vimmer spirals into despair\n")
     (+doom-dashboard--center +doom-dashboard--width "before he succumbs to the dark side. \n\n")))
 #+END_SRC
+
 
 * Credits
 My configuration of Doom Emacs is partially based on these:

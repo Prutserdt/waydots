@@ -1,6 +1,20 @@
 ;; NOTE: This file is generated from ~/.config/doom/README.org
 ;;      Please only edit that file and org-babel-tangle (emacs)
 
+(require 'recentf)
+
+(recentf-mode 1)
+
+(setq initial-buffer-choice
+      (lambda ()
+        (when recentf-list
+          (find-file (car recentf-list)))))
+
+(add-hook 'emacs-startup-hook
+          (lambda ()
+            (when-let ((f (car recentf-list)))
+              (find-file f))))
+
 (after! evil
   (define-key evil-normal-state-map "U" 'undo-redo))
 

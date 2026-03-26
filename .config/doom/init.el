@@ -51,7 +51,8 @@
        emacs-lisp          ; drown in parentheses
        (org                ; organize your plain life in plain text
         +pretty            ; pretty is better than ugly
-        +roam2             ; wander around notes
+        ;;+roam2           ; wander around notes
+        +roam              ; wander around notes
         +dragndrop)        ; drop files/images into org
       (python +lsp +pyenv) ; beautiful is better than ugly
                            ; +pyright. Tried pyright, could not get it to work on all of my machines
