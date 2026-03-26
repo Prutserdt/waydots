@@ -46,4 +46,23 @@ source /usr/share/fzf/completion.zsh
 ###########################
 #export PATH=”$HOME/.config/emacs/bin:$PATH”  # Run Doom Emacs from the shell
 #export PATH=”$HOME/.emacs.d/bin:$PATH”  # Run Doom Emacs from the shell
+
+###########################
+#     Custom keybinds     #
+###########################
+# NOTE: if new keys should be added,the keystroke can be recorded by ~cat -v~
+
+# Move cursor to beginning of line ( Home)
+bindkey '^[[H' beginning-of-line
+
+# Move cursor to end of line ( End)
+bindkey  '^[[F' end-of-line
+
+# Use the delete key!
 bindkey "^[[3~" delete-char
+
+# Delete a word to the left (Control + Backspace)
+bindkey '^H' backward-kill-word
+
+# Delete a word to the right (Control + Delete)
+bindkey '^[[3;5~' kill-word

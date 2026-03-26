@@ -1,5 +1,8 @@
 #!/bin/env bash
 
+# FIXME: I want to get rid of the sudo line and give specific access to directoryies to mount to.
+#        In Wayland the graphical window with sudo rights are not permitted 
+
 # Show main menu options
 show_main_menu() {
     action=$(printf "Mount\nUnmount\nShow Drives" | rofi -dmenu -p "Choose action")
