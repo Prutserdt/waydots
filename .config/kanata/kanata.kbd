@@ -1,4 +1,4 @@
-m;; This keymap is inspired on my custom keymap that I use on my 34 key Aurora sweep keyboards.
+;; This keymap is inspired on my custom keymap that I use on my 34 key Aurora sweep keyboards.
 ;; Now I can use normy keyboards and laptop default keyboards again.
 ;;
 ;; 
@@ -83,7 +83,6 @@ m;; This keymap is inspired on my custom keymap that I use on my 34 key Aurora s
   j (tap-hold 10 400 j ralt)
 
   ;; k. Tap: k. Hold >= 400ms: right super/windows
-  ierr```*-`**
   k (tap-hold 10 400 k rmet)
 
   ;; l. Tap: l. Hold >= 400ms: right control
