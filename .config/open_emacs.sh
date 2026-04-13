@@ -15,9 +15,15 @@ fi
 
 # Get the workspace number of the Emacs client
 output=$(hyprctl clients)
-emacs_workspace=$(echo "$output" | grep -A 7 -i "Doom Emacs" | grep "workspace:" | awk '{print $2}')
+
+# Get the workspace of the open Doom Emacs
+# First searches for "Doom Emacs"
+# Only take the line that contains Window and then print the second field that is the workspace number
+emacs_workspace=$(echo "$output" | grep -i "Doom Emacs"| grep -i "Window" | awk '{print $2}')
 
 # Get the window ID of the Emacs client
+# This assumes the window title contains `Doom Emacs`.
+# The second field of the first line should be the window ID.
 emacs_window_id=$(echo "$output" | grep -i "Doom Emacs" | awk '{print $2}')
 
 # Check if the Emacs window ID is non-empty

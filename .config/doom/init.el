@@ -9,7 +9,6 @@
 
        :ui
        doom                ; what makes DOOM look the way it does
-       ;doom-dashboard      ; a nifty splash screen for Emacs
        (emoji +unicode)    ; ð
        hl-todo             ; highlight TODO/FIXME/NOTE/DEPRECATED/HACK/REVIEW
        modeline            ; snazzy, Atom-inspired modeline, plus API
@@ -51,7 +50,6 @@
        emacs-lisp          ; drown in parentheses
        (org                ; organize your plain life in plain text
         +pretty            ; pretty is better than ugly
-        ;;+roam2           ; wander around notes
         +roam              ; wander around notes
         +dragndrop)        ; drop files/images into org
       (python +lsp +pyenv) ; beautiful is better than ugly
@@ -59,7 +57,7 @@
        sh                  ; she sells {ba,z,fi}sh shells on the C xor
 
        :os
-       tty                 ; zou terminal experience moeten verbeteren...
+       tty                 ; Should improve terminal experience???
 
        :config
        (default +bindings +smartparens)
