@@ -66,3 +66,7 @@ bindkey '^H' backward-kill-word
 
 # Delete a word to the right (Control + Delete)
 bindkey '^[[3;5~' kill-word
+
+# Enable history search with up/down arrow keys
+bindkey "^[[A" history-search-backward
+bindkey "^[[B" history-search-forward
