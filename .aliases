@@ -43,9 +43,10 @@ alias sm='~/.config/open_image_viewer_move_pics.sh'
 
 
 # Show gps location of pic in maps. Select a picture by marking (m) and then it will be removed to the direcory 'Minder_en_dubbelop', and echo some info
+alias sg='~/.config/open_image_viewer_to_open_googlemaps.sh'
 #alias sg='image_files=$(find . -maxdepth 1 -type f -iname "*.jpeg" -o -iname "*.jpg" -o -iname "*.png" -o -iname "*.gif" | sort) && selected_image=$(echo "$image_files" | nsxiv -ftio) && [ -n "$selected_image" ] && exif_info=$(exiftool "$selected_image" | grep "GPS Position") && [ -n "$exif_info" ] && gps_position=$(echo "$exif_info" | awk -F ": " "{print $2}" | tr -d " " | sed "s/deg/°/g") && maps_url="https://www.google.com/maps/place/$gps_position" && xdg-open "$maps_url" && notify-send -t 60000 "Google maps opened with GPS location: $gps_position"'
 # onderstaande voegt een error message toe, maar lijkt niet meer te werken:
-alias sg='image_files=$(find . -maxdepth 1 -type f -iname "*.jpeg" -o -iname "*.jpg" -o -iname "*.png" -o -iname "*.gif" | sort) && selected_image=$(echo "$image_files" | nsxiv -ftio) && [ -n "$selected_image" ] && exif_info=$(exiftool "$selected_image" | grep "GPS Position") && [ -n "$exif_info" ] && gps_position=$(echo "$exif_info" | awk -F ": " "{print $2}" | tr -d " " | sed "s/deg/°/g") && maps_url="https://www.google.com/maps/place/$gps_position" && xdg-open "$maps_url" && notify-send -t 60000 "Google maps opened with GPS location: $gps_position" || echo "Sorry, there is no exif data in the picture"'
+#alias sg='image_files=$(find . -maxdepth 1 -type f -iname "*.jpeg" -o -iname "*.jpg" -o -iname "*.png" -o -iname "*.gif" | sort) && selected_image=$(echo "$image_files" | nsxiv -ftio) && [ -n "$selected_image" ] && exif_info=$(exiftool "$selected_image" | grep "GPS Position") && [ -n "$exif_info" ] && gps_position=$(echo "$exif_info" | awk -F ": " "{print $2}" | tr -d " " | sed "s/deg/°/g") && maps_url="https://www.google.com/maps/place/$gps_position" && xdg-open "$maps_url" && notify-send -t 60000 "Google maps opened with GPS location: $gps_position" || echo "Sorry, there is no exif data in the picture"'
 
 # emacs commandline
 #alias emacs="/usr/bin/emacs"
