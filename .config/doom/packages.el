@@ -16,5 +16,5 @@
 (package! gptel)
 (package! python-mode)
 
-(unpin! org-roam) ; unpinning is necessary for Roam emacs according to de developer of org-roam-ui
+(unpin! org-roam)
 (package! org-roam-ui)
