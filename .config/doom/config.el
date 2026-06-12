@@ -141,9 +141,20 @@
 
 (set-face-attribute 'default nil :height 130 :font "Hack 13")
 
-(define-globalized-minor-mode my-global-hl-todo-mode hl-todo-mode
-    (lambda () (hl-todo-mode 1)))
-(my-global-hl-todo-mode 1)
+
+
+
+
+(after! hl-todo
+  (setq hl-todo-keyword-faces
+        '(("TODO" . "#ff6c6b")
+          ("HACK" . "#da8548")
+          ("FIXME" . "#ff6c6b")
+          ("NOTE" . "#51afef")
+          ("DEPRECATED" . "#c678dd")
+          ("REVIEW" . "#fabd2f")))
+  (global-hl-todo-mode 1))
+
 
 (setq-default fill-column 110)
 (global-display-fill-column-indicator-mode)
