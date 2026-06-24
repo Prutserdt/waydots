@@ -71,9 +71,9 @@
   s (tap-hold 10 400 s lalt)
   d (tap-hold 10 400 d lmet)
   f (tap-hold 10 400 f lctrl)
-  g (tap-hold 10 400 a lshft)
+  g (tap-hold 10 400 g lshft)
 
-  h (tap-hold 10 400 a rshft)
+  h (tap-hold 10 400 h rshft)
   j (tap-hold 10 400 j rctrl)
   k (tap-hold 10 400 k rmet)
   l (tap-hold 10 400 l ralt)
