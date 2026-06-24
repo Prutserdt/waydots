@@ -1,11 +1,13 @@
 #!/bin/bash
 
-# Get the class of the currently focused window
-focused_class=$(hyprctl clients | grep -A 7 -i "focused" | grep "class:" | awk '{print $2}')
+focused_class=$(hyprctl clients -j | jq -r '.[] | select(.focused == true) | .class')
 
-# If emacs is there it should not be brutely terminated
 if [[ "$focused_class" == "Emacs" ]]; then
-    emacsclient -e "(kill-terminal)"
+    emacsclient -e '(if (get-buffer "*terminal*") (kill-buffer "*terminal*"))'
 else
-    hyprctl dispatch killactive
+    #hyprctl dispatch closewindow
+    hyprctl dispatch 'hl.dsp.window.close()'   
 fi
+
+
+

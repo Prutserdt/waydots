@@ -20,6 +20,7 @@ output=$(hyprctl clients)
 # First searches for "Doom Emacs"
 # Only take the line that contains Window and then print the second field that is the workspace number
 emacs_workspace=$(echo "$output" | grep -i "Doom Emacs"| grep -i "Window" | awk '{print $2}')
+echo $emacs_workspace
 
 # Get the window ID of the Emacs client
 # This assumes the window title contains `Doom Emacs`.
@@ -30,6 +31,22 @@ emacs_window_id=$(echo "$output" | grep -i "Doom Emacs" | awk '{print $2}')
 if [[ -z "$emacs_window_id" ]]; then
     emacsclient -c -a "emacs"
 else
-    hyprctl dispatch workspace "$emacs_workspace"
-    hyprctl dispatch focuswindow class:Emacs
+    #hyprctl dispatch workspace "$emacs_workspace"
+    #hyprctl dispatch focuswindow class:Emacs
+
+    #hyprctl dispatch "hl.dsp.workspace.change(\"$emacs_workspace\")"
+    #hyprctl dispatch "hl.dsp.workspace.change($emacs_workspace)"
+    #hyprctl dispatch 'hl.dsp.window.focus("class:Emacs")'
+
+    #hyprctl dispatch "hl.dsp.workspace.change(\"$emacs_workspace\")"
+    #hyprctl dispatch 'hl.dsp.window.focus("class:Emacs")'
+    
+    #hyprctl dispatch 'hl.dsp.workspace.change("55d04ba80b40")'
+    #hyprctl dispatch 'hl.dsp.window.focus("class:Emacs")'
+
+    #hyprctl dispatch "hl.dsp.workspace($emacs_workspace)"
+    # FIXME, volgende werkt niet om te springen naar emacs
+    hyprctl dispatch "hl.dsp.workspace('$emacs_workspace')"
+    hyprctl dispatch 'hl.dsp.focuswindow("class:Emacs")'
+          
 fi

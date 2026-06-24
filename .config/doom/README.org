@@ -256,7 +256,8 @@ The following are keybindings that are bound to my leader key, which is =space=,
             :desc "jump backward one step"       "j" #'evil-jump-backward
             :desc "jump forward one step"        "k" #'evil-jump-forward
             :desc "jump forward completely"      "K" #'my-evil-jump-forward-to-end
-            :desc "jump list"                    "l" #'+ivy/jump-list)
+            ;;:desc "jump list"                    "l" #'+ivy/jump-list)
+            :desc "jump list"                    "l" #'evil-show-jumps)
 
     (:prefix ("r" . "org-roam") ;; Similar to the Doom default, SPC n r, but shorter
         :desc "Open random node"                 "a" #'org-roam-node-random
@@ -998,21 +999,23 @@ Set multilingual text input to ~latin-prefix~ as the default input method in .or
 Inserting often used characters and words can be done by this simple function. After inserting it will end in insert state of evil mode to continue the editing.
 #+BEGIN_SRC emacs-lisp :tangle config.el :results silent
 (defun my-insert-characters-and-text ()
-  "Inserts a character at point and switches to insert state in Evil mode when in normal state."
+  "Insert a chosen character/text and switch to insert state in Evil."
   (interactive)
-  (let* ((characters '(
-                       ("K€ KEuro"          . "K€")
-                       ("€ Euro"            . "€")
-                       ("° Graad"           . "°")
-                       ("µ micro"           . "µ")
-                       ("¹ Tot de macht 1"  . "¹")
-                       ("² Tot de macht 2"  . "²")
-                       ("³ Tot de macht 3"  . "³")
-                       ("Ä A met trema"     . "Ä")
-                       ("Correct title"     . "The Äkta overlords")
-                       ("Note: Ctrl \\ to toggle-input-method" . "")))
-         (chosen-character (cdr (assoc (completing-read "Select a character: " characters)
-                                      characters))))
+  (let* ((characters
+          '(("K€ KEuro" . "K€")
+            ("€ Euro" . "€")
+            ("° Graad" . "°")
+            ("µ micro" . "µ")
+            ("¹ Tot de macht 1" . "¹")
+            ("² Tot de macht 2" . "²")
+            ("³ Tot de macht 3" . "³")
+            ("Ä A met trema" . "Ä")
+            ("Correct title" . "The Äkta overlords")
+            ("Note: Ctrl \\ to toggle-input-method" . "")))
+         (choice (completing-read "Select a character: "
+                                  (mapcar #'car characters)
+                                  nil t))
+         (chosen-character (cdr (assoc choice characters))))
     (when chosen-character
       (evil-change-state 'insert)
       (insert chosen-character))))

@@ -79,7 +79,8 @@
             :desc "jump backward one step"       "j" #'evil-jump-backward
             :desc "jump forward one step"        "k" #'evil-jump-forward
             :desc "jump forward completely"      "K" #'my-evil-jump-forward-to-end
-            :desc "jump list"                    "l" #'+ivy/jump-list)
+            ;;:desc "jump list"                    "l" #'+ivy/jump-list)
+            :desc "jump list"                    "l" #'evil-show-jumps)
 
     (:prefix ("r" . "org-roam") ;; Similar to the Doom default, SPC n r, but shorter
         :desc "Open random node"                 "a" #'org-roam-node-random
@@ -141,20 +142,9 @@
 
 (set-face-attribute 'default nil :height 130 :font "Hack 13")
 
-
-
-
-
-(after! hl-todo
-  (setq hl-todo-keyword-faces
-        '(("TODO" . "#ff6c6b")
-          ("HACK" . "#da8548")
-          ("FIXME" . "#ff6c6b")
-          ("NOTE" . "#51afef")
-          ("DEPRECATED" . "#c678dd")
-          ("REVIEW" . "#fabd2f")))
-  (global-hl-todo-mode 1))
-
+(define-globalized-minor-mode my-global-hl-todo-mode hl-todo-mode
+    (lambda () (hl-todo-mode 1)))
+(my-global-hl-todo-mode 1)
 
 (setq-default fill-column 110)
 (global-display-fill-column-indicator-mode)
@@ -624,21 +614,23 @@ Brain shelve: %s.
 ;;(add-hook 'org-mode-hook 'toggle-input-method)
 
 (defun my-insert-characters-and-text ()
-  "Inserts a character at point and switches to insert state in Evil mode when in normal state."
+  "Insert a chosen character/text and switch to insert state in Evil."
   (interactive)
-  (let* ((characters '(
-                       ("K€ KEuro"          . "K€")
-                       ("€ Euro"            . "€")
-                       ("° Graad"           . "°")
-                       ("µ micro"           . "µ")
-                       ("¹ Tot de macht 1"  . "¹")
-                       ("² Tot de macht 2"  . "²")
-                       ("³ Tot de macht 3"  . "³")
-                       ("Ä A met trema"     . "Ä")
-                       ("Correct title"     . "The Äkta overlords")
-                       ("Note: Ctrl \\ to toggle-input-method" . "")))
-         (chosen-character (cdr (assoc (completing-read "Select a character: " characters)
-                                      characters))))
+  (let* ((characters
+          '(("K€ KEuro" . "K€")
+            ("€ Euro" . "€")
+            ("° Graad" . "°")
+            ("µ micro" . "µ")
+            ("¹ Tot de macht 1" . "¹")
+            ("² Tot de macht 2" . "²")
+            ("³ Tot de macht 3" . "³")
+            ("Ä A met trema" . "Ä")
+            ("Correct title" . "The Äkta overlords")
+            ("Note: Ctrl \\ to toggle-input-method" . "")))
+         (choice (completing-read "Select a character: "
+                                  (mapcar #'car characters)
+                                  nil t))
+         (chosen-character (cdr (assoc choice characters))))
     (when chosen-character
       (evil-change-state 'insert)
       (insert chosen-character))))
