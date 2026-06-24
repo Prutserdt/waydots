@@ -65,31 +65,18 @@
 
   num (tap-hold 200 200 ralt (layer-toggle numbers))
   arr (tap-hold 200 200 lalt (layer-toggle arrows))
-  ;;qwr (layer-switch qwerty)
 
-  ;; a. Tap: a. Hold >= 400ms: left control
-  a(tap-hold 10 400 a lshft)
-
-  ;; s. Tap: s. Hold >= 400ms: left control
-  s (tap-hold 10 400 s lctl)
-
-  ;; d. Tap: d. Hold >= 400ms: left meta/super/windows 
+  ;; Example for s (same for alt/meta/ctrl/shft)
+  ;; Tap: s. Hold >= 400ms: left alt
+  s (tap-hold 10 400 s lalt)
   d (tap-hold 10 400 d lmet)
+  f (tap-hold 10 400 f lctrl)
+  g (tap-hold 10 400 a lshft)
 
-  ;; f. Tap: f. Hold >= 400ms: left alt (in emacs it is met) 
-  f (tap-hold 10 400 f lalt)
-
-  ;; j. Tap: j. Hold >= 400ms: right meta/alt
-  j (tap-hold 10 400 j ralt)
-
-  ;; k. Tap: k. Hold >= 400ms: right super/windows
+  h (tap-hold 10 400 a rshft)
+  j (tap-hold 10 400 j rctrl)
   k (tap-hold 10 400 k rmet)
-
-  ;; l. Tap: l. Hold >= 400ms: right control
-  l (tap-hold 10 400 l rctrl)
-
-  ;; ;  Tap: ;. Hold >= 400ms: right shift
-  ; (tap-hold 10 400 ; rshft)
+  l (tap-hold 10 400 l ralt)
 
 )
 
