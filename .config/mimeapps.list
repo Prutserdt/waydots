@@ -7,3 +7,4 @@ x-scheme-handler/unknown=brave-browser.desktop
 
 [Added Associations]
 inode/x-corrupted=nvim.desktop;
+application/octet-stream=org.gnumeric.gnumeric.desktop;

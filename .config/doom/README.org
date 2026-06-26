@@ -8,6 +8,7 @@
 - [[#initel][init.el]]
 - [[#packagesel][packages.el]]
 - [[#configel][config.el]]
+  - [[#save-to-the-system-clipboard][Save to the system clipboard]]
   - [[#custom-keybindings][Custom keybindings]]
   - [[#smart-parens][Smart parens]]
   - [[#theming-and-graphical-settings][Theming and graphical settings]]
@@ -183,7 +184,17 @@ Let's remind the reader of ~config.el~ to not edit this file directly.
           (lambda ()
             (when-let ((f (car recentf-list)))
               (find-file f))))
+
 #+END_SRC
+
+** Save to the system clipboard
+
+Everything should be placed in the system clipboard.
+#+BEGIN_SRC emacs-lisp :tangle config.el :results silent
+(setq select-enable-clipboard t)
+(setq select-enable-primary t)
+#+END_SRC
+
 ** Custom keybindings
 Emacs uses a lot of keybindings and Doom Emacs adds even more on top of it, much of them are Evil mode which is VIM emulation. Now let's add some extra!
 

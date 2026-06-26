@@ -15,6 +15,9 @@
             (when-let ((f (car recentf-list)))
               (find-file f))))
 
+(setq select-enable-clipboard t)
+(setq select-enable-primary t)
+
 (after! evil
   (define-key evil-normal-state-map "U" 'undo-redo))
 

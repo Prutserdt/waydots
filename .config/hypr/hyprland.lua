@@ -30,15 +30,15 @@ hl.monitor({
 hl.on("hyprland.start", function () 
   hl.exec_cmd("xrdb ~/.Xresources")
   hl.exec_cmd("nm-applet")
-  hl.exec_cmd("waybar")
   hl.exec_cmd("hyprpaper")
+  hl.exec_cmd("hyprsunset")
+  hl.exec_cmd("hypridle")
+  hl.exec_cmd("waybar")
   hl.exec_cmd("syncthing")
   hl.exec_cmd("emacs --daemon")
-  hl.exec_cmd("wl-paste --type text --watch cliphist store")
-  hl.exec_cmd("wl-paste --type image --watch cliphist store")
-  hl.exec_cmd("hyprsunset")
-  hl.exec_cmd("kanata")
-  hl.exec_cmd("hypridle")
+  hl.exec_cmd("sh -c 'wl-paste --type text --watch cliphist store &'")  --  hl.exec_cmd("wl-paste --type text --watch cliphist store")
+  hl.exec_cmd("sh -c 'wl-paste --type image --watch cliphist store &'") --  hl.exec_cmd("wl-paste --type image --watch cliphist store")
+--  hl.exec_cmd("kanata")
 end)
 
 -------------------------------
@@ -70,7 +70,7 @@ hl.config({
         border_size = 2,
 
         col = {
-            active_border   = { colors = {"rgba(D25708ee)", "rgba(595959aa)"}, angle = 45 },
+            active_border   = { colors = {"rgba(D25708ee)"} },
             inactive_border = "rgba(595959aa)",
         },
 
@@ -83,6 +83,7 @@ hl.config({
         layout = "master",
         --layout = "dwindle",
         --layout = "scrolling",
+        --layout = "monocle",
     },
  
     decoration = {
@@ -184,10 +185,8 @@ hl.gesture({
 ---------------------
 
 local mainMod = "SUPER"
-
-local appMod  = "SUPER + CTRL + ALT"
-
 local rofiMod = "SUPER + CTRL"
+local appsMod= "SUPER + CTRL + ALT"
 
 -- Make selected window the master
 
@@ -213,36 +212,29 @@ hl.bind(mainMod .. " + B", hl.dsp.exec_cmd("pkill waybar || waybar"))
 -- Lock screen, NOTE: ik denk dat ik super L toch anders ga kiezen zie ook focus directions....
 --hl.bind(mainMod .. " + L", hl.dsp.exec_cmd("hyprlock"))
 
--- Cycle windows
---hl.bind(mainMod .. " + J", hl.dsp.layoutmsg("cyclenext"))
---hl.bind(mainMod .. " + K", hl.dsp.layoutmsg("cycleprev"))
-
 -- Move focus with mainMod + vim keys
-
 hl.bind(mainMod .. " + H",  hl.dsp.focus({ direction = "left" }))
 hl.bind(mainMod .. " + L", hl.dsp.focus({ direction = "right" }))
 hl.bind(mainMod .. " + J",  hl.dsp.focus({ direction = "down" }))
 hl.bind(mainMod .. " + K",    hl.dsp.focus({ direction = "up" }))
 
--- Cycle in scrolling layout
---hl.bind(mainMod .. " + COMMA",  hl.dsp.layoutmsg("move -col"))
---hl.bind(mainMod .. " + PERIOD", hl.dsp.layoutmsg("move +col"))
-
 -- Move windows through the stack
---hl.bind(mainMod .. " + SHIFT + H", hl.dsp.window.move({ direction = "left" }))
---hl.bind(mainMod .. " + SHIFT + L", hl.dsp.window.move({ direction = "right" }))
---hl.bind(mainMod .. " + SHIFT + K", hl.dsp.window.move({ direction = "up" }))
---hl.bind(mainMod .. " + SHIFT + J", hl.dsp.window.move({ direction = "down" }))
+hl.bind(mainMod .. " + CTRL + H", hl.dsp.window.move({ direction = "left" }))
+hl.bind(mainMod .. " + CTRL + L", hl.dsp.window.move({ direction = "right" }))
+hl.bind(mainMod .. " + CTRL + K", hl.dsp.window.move({ direction = "up" }))
+hl.bind(mainMod .. " + CTRL + J", hl.dsp.window.move({ direction = "down" }))
 
 -- Switch layouts
 
 hl.bind("SUPER + P", hl.dsp.window.pseudo())
 -- FIXME, does not work
+hl.bind(mainMod .. " + U", hl.dsp.exec_cmd('hyprctl keyword general:layout master'))
+hl.bind(mainMod .. " + Y", hl.dsp.exec_cmd('hyprctl keyword general:layout dwindle'))
 --hl.bind(mainMod .. " + Y", hl.dsp.exec_cmd('hyprctl keyword general:layout "dwindle"'))
 --hl.bind(mainMod .. " + U", hl.dsp.exec_cmd('hyprctl keyword general:layout "master"'))
 --hl.bind(mainMod .. " + I", hl.dsp.exec_cmd('hyprctl keyword general:layout "monocle"'))
 --hl.bind(mainMod .. " + O", hl.dsp.exec_cmd('hyprctl keyword general:layout "scrolling"'))
-
+ 
 -- Fullscreen
 
 hl.bind(mainMod .. " + F", hl.dsp.window.fullscreen({ state = 0 }))
@@ -262,10 +254,12 @@ end
 -- Resize active window
 
 -- FIXME: does not work
---hl.bind(mainMod .. " + CTRL + H", hl.dsp.window.resize({ dx = -20, dy = 0 }))
---hl.bind(mainMod .. " + CTRL + L", hl.dsp.window.resize({ dx = 20,  dy = 0 }))
---hl.bind(mainMod .. " + CTRL + K", hl.dsp.window.resize({ dx = 0,   dy = -20 }))
---hl.bind(mainMod .. " + CTRL + J", hl.dsp.window.resize({ dx = 0,   dy = 20 }))
+-- error: x and y are required ddispatcher must be a dispatcher or a lua function
+--hl.bind(mainMod .. " + SHIFT + H", hl.dsp.window.resize({ dx = -20, dy = 0 }))
+--hl.bind(mainMod .. " + SHIFT + H", hl.dsp.window.resize({ x = -20, y = 0 }))
+--hl.bind(mainMod .. " + SHIFT  + L", hl.dsp.window.resize({ x = 20,  y = 0 }))
+--hl.bind(mainMod .. " + SHIFT  + K", hl.dsp.window.resize({ x = 0,   y = -20 }))
+--hl.bind(mainMod .. " + SHIFT  + J", hl.dsp.window.resize({ x = 0,   y = 20 }))
 
 -- Move/resize windows with mainMod + LMB/RMB and dragging
 
@@ -276,11 +270,11 @@ hl.bind(mainMod .. " + mouse:273", hl.dsp.window.resize(), { mouse = true })
 ---- APPLICATION BINDINGS ------
 --------------------------------
 
-hl.bind(appMod .. " + E", hl.dsp.exec_cmd("~/.config/open_emacs.sh"))
-hl.bind(appMod .. " + G", hl.dsp.exec_cmd("gimp"))
-hl.bind(appMod .. " + M", hl.dsp.exec_cmd("mousepad"))
-hl.bind(appMod .. " + P", hl.dsp.exec_cmd("keepass ~/stack/WoordenInDeWacht/wachtwoorden.kdbx"))
-hl.bind(appMod .. " + T", hl.dsp.exec_cmd("pcmanfm"))
+hl.bind(appsMod .. " + E", hl.dsp.exec_cmd("~/.config/open_emacs.sh"))
+hl.bind(appsMod .. " + G", hl.dsp.exec_cmd("gimp"))
+hl.bind(appsMod .. " + M", hl.dsp.exec_cmd("mousepad"))
+hl.bind(appsMod .. " + P", hl.dsp.exec_cmd("keepass ~/stack/WoordenInDeWacht/wachtwoorden.kdbx"))
+hl.bind(appsMod .. " + T", hl.dsp.exec_cmd("pcmanfm"))
 
 ------------------------
 ---- ROFI BINDINGS -----
@@ -308,11 +302,6 @@ hl.bind("XF86AudioMute",        hl.dsp.exec_cmd("wpctl set-mute @DEFAULT_AUDIO_S
 hl.bind("XF86MonBrightnessUp",  hl.dsp.exec_cmd("brightnessctl -e4 -n2 set 5%+"),                  { locked = true, repeating = true })
 hl.bind("XF86MonBrightnessDown",hl.dsp.exec_cmd("brightnessctl -e4 -n2 set 5%-"),                  { locked = true, repeating = true })
 hl.bind("XF86Calculator",         hl.dsp.exec_cmd("[float] qalculate-gtk"))
-
---hl.bind("XF86AudioNext",          hl.dsp.exec_cmd("playerctl next"),       { locked = true })
---hl.bind("XF86AudioPause",         hl.dsp.exec_cmd("playerctl play-pause"), { locked = true })
---hl.bind("XF86AudioPlay",          hl.dsp.exec_cmd("playerctl play-pause"), { locked = true })
---hl.bind("XF86AudioPrev",          hl.dsp.exec_cmd("playerctl previous"),   { locked = true })
 
 hl.bind("XF86MonBrightnessDown",  hl.dsp.exec_cmd("hyprctl hyprsunset gamma -10"), { locked = true, repeating = true })
 hl.bind("XF86MonBrightnessUp",    hl.dsp.exec_cmd("hyprctl hyprsunset gamma +10"), { locked = true, repeating = true })
