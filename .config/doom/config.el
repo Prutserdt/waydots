@@ -143,6 +143,10 @@
 
 (setq doom-theme 'doom-tokyo-night)
 
+
+(load-theme doom-theme t)
+(set-face-attribute 'default nil :background "#121212")
+
 (set-face-attribute 'default nil :height 130 :font "Hack 13")
 
 (define-globalized-minor-mode my-global-hl-todo-mode hl-todo-mode

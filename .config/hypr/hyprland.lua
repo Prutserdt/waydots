@@ -60,6 +60,42 @@ hl.env("HYPRCURSOR_SIZE", "24")
 ---- LOOK AND FEEL ----
 -----------------------
 
+-- My theme
+
+local tokyo_night = {
+  bg = "rgb(1a1b26)",
+  bg_dark = "rgb(24283b)",
+  bg_highlight = "rgb(414868)",
+  subtle = "rgb(565f89)",
+  fg = "rgb(c0caf5)",
+  fg_secondary = "rgb(a9b1d6)",
+  red = "rgb(f7768e)",
+  orange = "rgb(ff9e64)",
+  yellow = "rgb(e0af68)",
+  green = "rgb(9ece6a)",
+  teal = "rgb(73daca)",
+  cyan = "rgb(b4f9f8)",
+  blue = "rgb(7aa2f7)",
+  purple = "rgb(bb9af7)",
+  pink = "rgb(f7768e)",
+}
+
+hl.config({
+    input = {
+        kb_layout  = "us",
+        kb_variant = "",
+        kb_model   = "",
+        kb_options = "",
+        kb_rules   = "",
+        follow_mouse = 1,
+        sensitivity = 0, -- -1.0 - 1.0, 0 means no modification.
+        repeat_rate = 50,
+        repeat_delay = 180,
+        touchpad = {
+            natural_scroll = false,
+        },
+    },
+})
 -- Refer to https://wiki.hypr.land/Configuring/Basics/Variables/
 
 hl.config({
@@ -70,8 +106,8 @@ hl.config({
         border_size = 2,
 
         col = {
-            active_border   = { colors = {"rgba(D25708ee)"} },
-            inactive_border = "rgba(595959aa)",
+            active_border   = { colors = { tokyo_night.orange } },
+            inactive_border = tokyo_night.bg_highlight,
         },
 
         -- Set to true to enable resizing windows by clicking and dragging on borders and gaps
@@ -80,27 +116,26 @@ hl.config({
         -- Please see https://wiki.hypr.land/Configuring/Advanced-and-Cool/Tearing/ before you turn this on
         allow_tearing = false,
 
+        layout = "dwindle",
         layout = "master",
-        --layout = "dwindle",
         --layout = "scrolling",
         --layout = "monocle",
     },
- 
+    
     decoration = {
-        rounding       = 1,
-        rounding_power = 2,
+        --rounding       = 1,
+        --rounding_power = 2,
+        rounding       = 10,
+        rounding_power = 10,
 
         -- Change transparency of focused and unfocused windows
         active_opacity   = 1.0,
         inactive_opacity = 1.0,
-
+        
         shadow = {
-            enabled      = true,
-            range        = 4,
-            render_power = 3,
-            color        = 0xee1a1a1a,
+            enabled      = false,
         },
-
+        
         blur = {
             enabled   =  false,
         },
@@ -157,22 +192,6 @@ hl.config({
 ---- INPUT ----
 ---------------
 
-hl.config({
-    input = {
-        kb_layout  = "us",
-        kb_variant = "",
-        kb_model   = "",
-        kb_options = "",
-        kb_rules   = "",
-        follow_mouse = 1,
-        sensitivity = 0, -- -1.0 - 1.0, 0 means no modification.
-        repeat_rate = 50,
-        repeat_delay = 180,
-        touchpad = {
-            natural_scroll = false,
-        },
-    },
-})
 
 hl.gesture({
     fingers = 3,
@@ -193,8 +212,8 @@ local appsMod= "SUPER + CTRL + ALT"
 hl.bind(mainMod .. " + SPACE", hl.dsp.layout("swapwithmaster master"))
 
 -- Open the terminal
-
-hl.bind(mainMod .. " + RETURN", hl.dsp.exec_cmd("alacritty"))
+hl.bind(mainMod .. " + SHIFT + RETURN", hl.dsp.exec_cmd("alacritty"))
+hl.bind(mainMod .. " + RETURN", hl.dsp.exec_cmd("ghostty"))
 
 -- Kill the active window, with  custom emacs handling
 --hl.bind(mainMod .. " + Q", hl.dsp.window.close())
@@ -227,14 +246,14 @@ hl.bind(mainMod .. " + CTRL + J", hl.dsp.window.move({ direction = "down" }))
 -- Switch layouts
 
 hl.bind("SUPER + P", hl.dsp.window.pseudo())
--- FIXME, does not work
-hl.bind(mainMod .. " + U", hl.dsp.exec_cmd('hyprctl keyword general:layout master'))
-hl.bind(mainMod .. " + Y", hl.dsp.exec_cmd('hyprctl keyword general:layout dwindle'))
+-- FIXME, switching to different layouts does not work!
+--hl.bind(mainMod .. " + U", hl.dsp.exec_cmd('hyprctl keyword general:layout master'))
+--hl.bind(mainMod .. " + Y", hl.dsp.exec_cmd('hyprctl keyword general:layout dwindle'))
 --hl.bind(mainMod .. " + Y", hl.dsp.exec_cmd('hyprctl keyword general:layout "dwindle"'))
 --hl.bind(mainMod .. " + U", hl.dsp.exec_cmd('hyprctl keyword general:layout "master"'))
 --hl.bind(mainMod .. " + I", hl.dsp.exec_cmd('hyprctl keyword general:layout "monocle"'))
---hl.bind(mainMod .. " + O", hl.dsp.exec_cmd('hyprctl keyword general:layout "scrolling"'))
- 
+--hl.bind(mainMod .. " + O", hl.dsp.exec_cmd("hyprctl keyword general:layout 'scrolling'"))
+
 -- Fullscreen
 
 hl.bind(mainMod .. " + F", hl.dsp.window.fullscreen({ state = 0 }))
@@ -262,9 +281,35 @@ end
 --hl.bind(mainMod .. " + SHIFT  + J", hl.dsp.window.resize({ x = 0,   y = 20 }))
 
 -- Move/resize windows with mainMod + LMB/RMB and dragging
-
 hl.bind(mainMod .. " + mouse:272", hl.dsp.window.drag(),   { mouse = true })
 hl.bind(mainMod .. " + mouse:273", hl.dsp.window.resize(), { mouse = true })
+
+
+--hl.bind(mainMod .. " + SHIFT, H", "resizeactive -20 0")
+--hl.bind(mainMod .. " + SHIFT + H", hl.dsp.resizeactive, -20, 0)
+--hl.bind(mainMod .. " + SHIFT + H", "resizeactive -20 0")
+--hl.bind(mainMod .. " + SHIFT + H", hl.dsp.exec, "hyprctl dispatch resizeactive -20 0")
+
+-- hl.bind(mainMod .. " + SHIFT + H", function()
+--   os.execute("hyprctl dispatch resizeactive -20 0")
+-- end)
+--hl.bind(mainMod .. " + SHIFT + H", hl.dsp.resizeactive("-20 0"))
+
+-- hl.bind(mainMod .. " + SHIFT + H", function()
+--   os.execute("hyprctl dispatch resizeactive -20 0")
+-- end)
+
+--hl.bind("H", function()
+--  os.execute("notify-send test")
+--end)
+
+-- hl.bind("SUPER + SHIFT + H", function()
+--   os.execute("notify-send test")
+-- end)
+
+--hl.bind("SUPER + SHIFT + H", function()
+--  os.execute("hyprctl dispatch resizeactive -20 0")
+--end)
 
 --------------------------------
 ---- APPLICATION BINDINGS ------
@@ -274,7 +319,9 @@ hl.bind(appsMod .. " + E", hl.dsp.exec_cmd("~/.config/open_emacs.sh"))
 hl.bind(appsMod .. " + G", hl.dsp.exec_cmd("gimp"))
 hl.bind(appsMod .. " + M", hl.dsp.exec_cmd("mousepad"))
 hl.bind(appsMod .. " + P", hl.dsp.exec_cmd("keepass ~/stack/WoordenInDeWacht/wachtwoorden.kdbx"))
-hl.bind(appsMod .. " + T", hl.dsp.exec_cmd("pcmanfm"))
+hl.bind(appsMod .. " + SHIFT + T", hl.dsp.exec_cmd("pcmanfm"))
+--hl.bind(appsMod .. " + T", hl.dsp.exec_cmd("ghostty -e yazi"))
+hl.bind(appsMod .. " + T", hl.dsp.exec_cmd("ghostty -e zsh -lc yazi"))
 
 ------------------------
 ---- ROFI BINDINGS -----
@@ -335,6 +382,8 @@ hl.window_rule({
 --        swallow_regex = "^(Alacritty)$",
 --    }
 --})
+
+hl.window_rule({ match = { class = "Emacs" }, border_color = tokyo_night.teal }) -- Tokyo Night green
 
 --------------------------------
 ---- WINDOWS AND WORKSPACES ----

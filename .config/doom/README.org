@@ -340,8 +340,13 @@ The =smartparens= package in Emacs is designed to enhance editing parentheses an
 
 ** Theming and graphical settings
 Setting the *superior* tokyo-night theme.😎
+I changed the background to be inline with my overall theme.... FIXME: needs bettter implimentation
 #+BEGIN_SRC emacs-lisp :tangle config.el :results silent
 (setq doom-theme 'doom-tokyo-night)
+
+
+(load-theme doom-theme t)
+(set-face-attribute 'default nil :background "#121212")
 #+END_SRC
 
 A *superior* font is set here for all the text.

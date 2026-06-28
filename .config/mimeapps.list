@@ -5,6 +5,13 @@ x-scheme-handler/https=brave-browser.desktop
 x-scheme-handler/about=brave-browser.desktop
 x-scheme-handler/unknown=brave-browser.desktop
 
+text/plain=emacs.desktop
+text/x-python=emacs.desktop
+text/x-shellscript=emacs.desktop
+application/json=emacs.desktop
+application/xml=emacs.desktop
+
+
 [Added Associations]
 inode/x-corrupted=nvim.desktop;
 application/octet-stream=org.gnumeric.gnumeric.desktop;
