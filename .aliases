@@ -64,6 +64,19 @@ alias dotfiles="/usr/bin/git --git-dir=$HOME/.dotfiles.git/ --work-tree=$HOME"
 alias d="~/.config/dotfiles_script.sh"
 
 # Jump to directories
+alias ga="cd $HOME/stack/Afbeeldingen"
+alias gc="cd $HOME/.config"
+alias gd="cd $HOME/Downloads"
+alias gh="cd $HOME/"
+alias gH="cd $HOME/projects/Hyprland"
+alias gq="cd $HOME/.config/qtile"
+alias gs="cd $HOME/stack"
+alias gv="cd $HOME/stack/Afbeeldingen/Vakantie"
+alias gw="cd $HOME/stack/Afbeeldingen/Wallpapers"
+alias gr="cd $HOME/stack/Code/rust/Rust_by_example"
+
+# Jump to directories
+# Note, these are my old aliases, will change to the gh, ga to be inline with yazi filemanaged
 alias da="cd $HOME/stack/Afbeeldingen"
 alias dc="cd $HOME/.config"
 alias dd="cd $HOME/Downloads"

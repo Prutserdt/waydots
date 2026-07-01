@@ -3,13 +3,11 @@
 ----------------------------------------------------------
 
 -- Refer to the wiki for more information.
--- https://wiki.hypr.land/Configuring/Start/
+-- https://wiki.hypr.land/Configuring/
 
 ------------------
 ---- MONITORS ----
 ------------------
-
--- See https://wiki.hypr.land/Configuring/Basics/Monitors
 
 hl.monitor({
     output   = "",
@@ -18,16 +16,23 @@ hl.monitor({
     scale    = "auto",
 })
 
+-----------------------------------
+---- SYSTEM SPECIFICA SETTINGS ----
+-----------------------------------
+
+-- Switch to dwindle for my thinkpads, otherwise use master
+local f = io.open("/etc/hostname", "r")
+local hostname = f and f:read("*l") or "unknown"
+if f then f:close() end
+
+-- Only start kanata application on my thinkpads
+local use_kanata = hostname == "thinkpad"
+
 -------------------
 ---- AUTOSTART ----
 -------------------
 
--- See https://wiki.hypr.land/Configuring/Basics/Autostart/
-
--- Autostart necessary processes (like notifications daemons, status bars, etc.)
--- Or execute your favorite apps at launch like this:
-
-hl.on("hyprland.start", function () 
+hl.on("hyprland.start", function ()
   hl.exec_cmd("xrdb ~/.Xresources")
   hl.exec_cmd("nm-applet")
   hl.exec_cmd("hyprpaper")
@@ -38,23 +43,20 @@ hl.on("hyprland.start", function ()
   hl.exec_cmd("emacs --daemon")
   hl.exec_cmd("sh -c 'wl-paste --type text --watch cliphist store &'")  --  hl.exec_cmd("wl-paste --type text --watch cliphist store")
   hl.exec_cmd("sh -c 'wl-paste --type image --watch cliphist store &'") --  hl.exec_cmd("wl-paste --type image --watch cliphist store")
---  hl.exec_cmd("kanata")
+
+  if hostname == thinkpad then
+    hl.exec_cmd("kanata")
+    --"notify-send 'Hyprland Debug' 'hostname=%s'"
+  end
+  
 end)
 
 -------------------------------
 ---- ENVIRONMENT VARIABLES ----
 -------------------------------
 
--- See https://wiki.hypr.land/Configuring/Advanced-and-Cool/Environment-variables/
-
 hl.env("XCURSOR_SIZE", "24")
 hl.env("HYPRCURSOR_SIZE", "24")
-
------------------------
------ PERMISSIONS -----
------------------------
-
--- Not used, see https://wiki.hypr.land/Configuring/Advanced-and-Cool/Permissions/
 
 -----------------------
 ---- LOOK AND FEEL ----
@@ -96,7 +98,11 @@ hl.config({
         },
     },
 })
--- Refer to https://wiki.hypr.land/Configuring/Basics/Variables/
+
+local layout = "master"
+if hostname == "thinkpad" then
+    layout = "dwindle"
+end
 
 hl.config({
     general = {
@@ -116,12 +122,9 @@ hl.config({
         -- Please see https://wiki.hypr.land/Configuring/Advanced-and-Cool/Tearing/ before you turn this on
         allow_tearing = false,
 
-        layout = "dwindle",
-        layout = "master",
-        --layout = "scrolling",
-        --layout = "monocle",
+        -- Dependent on the hostname layout is changed
+        layout = layout,
     },
-    
     decoration = {
         --rounding       = 1,
         --rounding_power = 2,
@@ -131,13 +134,13 @@ hl.config({
         -- Change transparency of focused and unfocused windows
         active_opacity   = 1.0,
         inactive_opacity = 1.0,
-        
+
         shadow = {
-            enabled      = false,
+            enabled = false,
         },
-        
+
         blur = {
-            enabled   =  false,
+            enabled = false,
         },
     },
 
@@ -146,17 +149,13 @@ hl.config({
     },
 })
 
--- Curves and animations not used, see https://wiki.hypr.land/Configuring/Advanced-and-Cool/Animations/
-
--- See https://wiki.hypr.land/Configuring/Layouts/Dwindle-Layout/ for more
+-- Animations not used in my config, see https://wiki.hypr.land/Configuring/Advanced-and-Cool/Animations/
 
 hl.config({
     dwindle = {
         preserve_split = true, -- You probably want this
     },
 })
-
--- See https://wiki.hypr.land/Configuring/Layouts/Master-Layout/ for more
 
 hl.config({
     master = {
@@ -167,8 +166,6 @@ hl.config({
         always_keep_position = true,
     },
 })
-
--- See https://wiki.hypr.land/Configuring/Layouts/Scrolling-Layout/ for more
 
 hl.config({
     scrolling = {
@@ -187,11 +184,9 @@ hl.config({
     },
 })
 
-
 ---------------
 ---- INPUT ----
 ---------------
-
 
 hl.gesture({
     fingers = 3,
@@ -389,11 +384,6 @@ hl.window_rule({ match = { class = "Emacs" }, border_color = tokyo_night.teal })
 ---- WINDOWS AND WORKSPACES ----
 --------------------------------
 
--- See https://wiki.hypr.land/Configuring/Basics/Window-Rules/
--- Workspace rules not used, see  https://wiki.hypr.land/Configuring/Basics/Workspace-Rules/
-
--- Example window rules that are useful
-
 local suppressMaximizeRule = hl.window_rule({
     -- Ignore maximize requests from all apps. You'll probably like this.
     name  = "suppress-maximize-events",
@@ -419,7 +409,6 @@ hl.window_rule({
     no_focus = true,
 })
 
-
 -- Hyprland-run windowrule
 
 hl.window_rule({
@@ -429,3 +418,4 @@ hl.window_rule({
     move  = "20 monitor_h-120",
     float = true,
 })
+

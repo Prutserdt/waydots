@@ -116,6 +116,9 @@
 
 (global-set-key (kbd "M-T") (lambda () (interactive) (transpose-words -1)))
 
+(map! :map global-map
+      "<mouse-3>" #'context-menu-open)
+
 (require 'smartparens)
 
 ;; Enable smartparens only in org mode

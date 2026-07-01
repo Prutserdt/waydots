@@ -10,6 +10,7 @@
 - [[#configel][config.el]]
   - [[#save-to-the-system-clipboard][Save to the system clipboard]]
   - [[#custom-keybindings][Custom keybindings]]
+  - [[#right-mouse-click][Right mouse click]]
   - [[#smart-parens][Smart parens]]
   - [[#theming-and-graphical-settings][Theming and graphical settings]]
   - [[#distractionsdistraction-free][Distractions/distraction free]]
@@ -307,6 +308,13 @@ I want to use the escape key to exit keychords, similar to C-g. Why is this not 
 In Doom Emacs the =transpose-words= is using the keybinding Meta-t. For the oposite transposition I will use the keybinding Meta-T.
 #+BEGIN_SRC emacs-lisp :tangle config.el :results silent
 (global-set-key (kbd "M-T") (lambda () (interactive) (transpose-words -1)))
+#+END_SRC
+
+** Right mouse click
+The top menu is removed but this does give interesting information. I bound it to rightmouse click to give the menu.
+#+BEGIN_SRC emacs-lisp :tangle config.el :results silent
+(map! :map global-map
+      "<mouse-3>" #'context-menu-open)
 #+END_SRC
 
 ** Smart parens
