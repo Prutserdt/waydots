@@ -16,17 +16,21 @@ hl.monitor({
     scale    = "auto",
 })
 
------------------------------------
----- SYSTEM SPECIFICA SETTINGS ----
------------------------------------
+----------------------------------
+---- SYSTEM SPECIFIC SETTINGS ----
+----------------------------------
 
--- Switch to dwindle for my thinkpads, otherwise use master
-local f = io.open("/etc/hostname", "r")
-local hostname = f and f:read("*l") or "unknown"
-if f then f:close() end
+-- Obtain hostname
+local hostname = io.popen("uname -n"):read("*l") or "unknown"
+-- os.execute("notify-send 'Hostname' '" .. hostname .. "'")
 
--- Only start kanata application on my thinkpads
-local use_kanata = hostname == "thinkpad"
+local layout = "master"
+
+if hostname == "thinkpad" then
+--if hostname == "friet-fabriek" then
+  layout = "dwindle"
+  hl.exec_cmd("kanata")
+end
 
 -------------------
 ---- AUTOSTART ----
@@ -43,12 +47,6 @@ hl.on("hyprland.start", function ()
   hl.exec_cmd("emacs --daemon")
   hl.exec_cmd("sh -c 'wl-paste --type text --watch cliphist store &'")  --  hl.exec_cmd("wl-paste --type text --watch cliphist store")
   hl.exec_cmd("sh -c 'wl-paste --type image --watch cliphist store &'") --  hl.exec_cmd("wl-paste --type image --watch cliphist store")
-
-  if hostname == thinkpad then
-    hl.exec_cmd("kanata")
-    --"notify-send 'Hyprland Debug' 'hostname=%s'"
-  end
-  
 end)
 
 -------------------------------
@@ -99,11 +97,6 @@ hl.config({
     },
 })
 
-local layout = "master"
-if hostname == "thinkpad" then
-    layout = "dwindle"
-end
-
 hl.config({
     general = {
         gaps_in  = 0,
@@ -122,7 +115,7 @@ hl.config({
         -- Please see https://wiki.hypr.land/Configuring/Advanced-and-Cool/Tearing/ before you turn this on
         allow_tearing = false,
 
-        -- Dependent on the hostname layout is changed
+        -- Dependent on the hostname layout is changed, see system the   SYSTEM SPECIFIC SETTINGS section above
         layout = layout,
     },
     decoration = {
@@ -239,15 +232,27 @@ hl.bind(mainMod .. " + CTRL + K", hl.dsp.window.move({ direction = "up" }))
 hl.bind(mainMod .. " + CTRL + J", hl.dsp.window.move({ direction = "down" }))
 
 -- Switch layouts
+hl.bind(mainMod .. " + Y", function()
+    hl.config({general = { layout = "master", }, })
+end)
+
+
+hl.bind(mainMod .. " + U", function()
+    hl.config({general = { layout = "dwindle", }, })
+end)
+
+
+hl.bind(mainMod .. " + I", function()
+    hl.config({general = { layout = "monocle", }, })
+end)
+
+
+hl.bind(mainMod .. " + O", function()
+    hl.config({general = { layout = "scrolling", }, })
+end)
 
 hl.bind("SUPER + P", hl.dsp.window.pseudo())
--- FIXME, switching to different layouts does not work!
---hl.bind(mainMod .. " + U", hl.dsp.exec_cmd('hyprctl keyword general:layout master'))
---hl.bind(mainMod .. " + Y", hl.dsp.exec_cmd('hyprctl keyword general:layout dwindle'))
---hl.bind(mainMod .. " + Y", hl.dsp.exec_cmd('hyprctl keyword general:layout "dwindle"'))
---hl.bind(mainMod .. " + U", hl.dsp.exec_cmd('hyprctl keyword general:layout "master"'))
---hl.bind(mainMod .. " + I", hl.dsp.exec_cmd('hyprctl keyword general:layout "monocle"'))
---hl.bind(mainMod .. " + O", hl.dsp.exec_cmd("hyprctl keyword general:layout 'scrolling'"))
+
 
 -- Fullscreen
 
@@ -278,7 +283,6 @@ end
 -- Move/resize windows with mainMod + LMB/RMB and dragging
 hl.bind(mainMod .. " + mouse:272", hl.dsp.window.drag(),   { mouse = true })
 hl.bind(mainMod .. " + mouse:273", hl.dsp.window.resize(), { mouse = true })
-
 
 --hl.bind(mainMod .. " + SHIFT, H", "resizeactive -20 0")
 --hl.bind(mainMod .. " + SHIFT + H", hl.dsp.resizeactive, -20, 0)
