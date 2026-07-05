@@ -100,11 +100,13 @@ hl.config({
     gaps_in  = 0,
     gaps_out = 0,
 
-    border_size = 2,
+    --border_size = 2,
+    border_size = 1,
 
     col = {
-      active_border   = { colors = { tokyo_night.orange } },
+      active_border   = { colors = { tokyo_night.red } },
       inactive_border = tokyo_night.bg_highlight,
+      --inactive_border = tokyo_night.bg,
     },
 
     -- Set to true to enable resizing windows by clicking and dragging on borders and gaps
@@ -384,7 +386,24 @@ hl.window_rule({
 })
 
 
-hl.window_rule({ match = { class = "Emacs" }, border_color = tokyo_night.teal }) -- Tokyo Night green
+--hl.window_rule({ match = { class = "Emacs" }, border_color = tokyo_night.teal }) -- Tokyo Night green
+hl.window_rule({ match = { class = "Emacs" }, border_color = tokyo_night.orange }) -- Tokyo Night green
+
+  -- bg = "rgb(1a
+  -- bg_dark = "r)",
+  -- bg_highlight14868)",
+  -- subtle = "rg",
+  -- fg = "rgb(c0
+  -- fg_secondary9b1d6)",
+  -- red = "rgb(f
+  -- orange = "rg",
+  -- yellow = "rg",
+  -- green = "rgb,
+  -- teal = "rgb(
+  -- cyan = "rgb(
+  -- blue = "rgb(
+  -- purple = "rg",
+  -- pink = "rgb(
 
 --------------------------------
 ---- WINDOWS AND WORKSPACES ----
