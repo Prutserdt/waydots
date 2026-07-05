@@ -1,6 +1,6 @@
-----------------------------------------------------------
----- Hyprland configuration file, created by Prutserd ----
-----------------------------------------------------------
+-----------------------------------------------------------
+---- Hyprland configuration file, created by Prutserdt ----
+-----------------------------------------------------------
 
 -- Refer to the wiki for more information.
 -- https://wiki.hypr.land/Configuring/
@@ -10,10 +10,10 @@
 ------------------
 
 hl.monitor({
-    output   = "",
-    mode     = "preferred",
-    position = "auto",
-    scale    = "auto",
+  output   = "",
+  mode     = "preferred",
+  position = "auto",
+  scale    = "auto",
 })
 
 ----------------------------------
@@ -27,7 +27,6 @@ local hostname = io.popen("uname -n"):read("*l") or "unknown"
 local layout = "master"
 
 if hostname == "thinkpad" then
---if hostname == "friet-fabriek" then
   layout = "dwindle"
   hl.exec_cmd("kanata")
 end
@@ -61,7 +60,6 @@ hl.env("HYPRCURSOR_SIZE", "24")
 -----------------------
 
 -- My theme
-
 local tokyo_night = {
   bg = "rgb(1a1b26)",
   bg_dark = "rgb(24283b)",
@@ -81,89 +79,85 @@ local tokyo_night = {
 }
 
 hl.config({
-    input = {
-        kb_layout  = "us",
-        kb_variant = "",
-        kb_model   = "",
-        kb_options = "",
-        kb_rules   = "",
-        follow_mouse = 1,
-        sensitivity = 0, -- -1.0 - 1.0, 0 means no modification.
-        repeat_rate = 50,
-        repeat_delay = 180,
-        touchpad = {
-            natural_scroll = false,
-        },
-    },
+  input = {
+  kb_layout  = "us",
+  kb_variant = "",
+  kb_model   = "",
+  kb_options = "",
+  kb_rules   = "",
+  follow_mouse = 1,
+  sensitivity = 0, -- -1.0 - 1.0, 0 means no modification.
+  repeat_rate = 50,
+  repeat_delay = 180,
+  touchpad = {
+    natural_scroll = false,
+  },
+  },
 })
 
 hl.config({
-    general = {
-        gaps_in  = 0,
-        gaps_out = 0,
+  general = {
+    gaps_in  = 0,
+    gaps_out = 0,
 
-        border_size = 2,
+    border_size = 2,
 
-        col = {
-            active_border   = { colors = { tokyo_night.orange } },
-            inactive_border = tokyo_night.bg_highlight,
-        },
-
-        -- Set to true to enable resizing windows by clicking and dragging on borders and gaps
-        resize_on_border = false,
-
-        -- Please see https://wiki.hypr.land/Configuring/Advanced-and-Cool/Tearing/ before you turn this on
-        allow_tearing = false,
-
-        -- Dependent on the hostname layout is changed, see system the   SYSTEM SPECIFIC SETTINGS section above
-        layout = layout,
-    },
-    decoration = {
-        --rounding       = 1,
-        --rounding_power = 2,
-        rounding       = 10,
-        rounding_power = 10,
-
-        -- Change transparency of focused and unfocused windows
-        active_opacity   = 1.0,
-        inactive_opacity = 1.0,
-
-        shadow = {
-            enabled = false,
-        },
-
-        blur = {
-            enabled = false,
-        },
+    col = {
+      active_border   = { colors = { tokyo_night.orange } },
+      inactive_border = tokyo_night.bg_highlight,
     },
 
-    animations = {
-        enabled = false,
+    -- Set to true to enable resizing windows by clicking and dragging on borders and gaps
+    resize_on_border = false,
+
+    -- Please see https://wiki.hypr.land/Configuring/Advanced-and-Cool/Tearing/ before you turn this on
+    allow_tearing = false,
+
+    -- Dependent on the hostname layout is changed, see the SYSTEM SPECIFIC SETTINGS section above
+    layout = layout,
+  },
+  decoration = {
+    rounding       = 10,
+    rounding_power = 10,
+
+    -- Change transparency of focused and unfocused windows
+    active_opacity   = 1.0,
+    inactive_opacity = 1.0,
+
+    shadow = {
+      enabled = false,
     },
+
+    blur = {
+      enabled = false,
+    },
+  },
+
+  animations = {
+    enabled = false,
+  },
 })
 
 -- Animations not used in my config, see https://wiki.hypr.land/Configuring/Advanced-and-Cool/Animations/
-
 hl.config({
-    dwindle = {
-        preserve_split = true, -- You probably want this
-    },
+  dwindle = {
+      preserve_split = true, -- You probably want this
+  },
 })
 
 hl.config({
-    master = {
-        new_status = "master",
-        orientation = "center",
-        slave_count_for_center_master = false,
-        new_status = "slave",
-        always_keep_position = true,
-    },
+  master = {
+    orientation = "center",
+    slave_count_for_center_master = false,
+    new_status = "slave",
+    always_keep_position = true,
+  },
 })
 
 hl.config({
-    scrolling = {
-        fullscreen_on_one_column = true,
-    },
+  scrolling = {
+    fullscreen_on_one_column = true,
+  },
 })
 
 ----------------
@@ -171,10 +165,18 @@ hl.config({
 ----------------
 
 hl.config({
-    misc = {
-        force_default_wallpaper = -1,    -- Set to 0 or 1 to disable the anime mascot wallpapers
-        disable_hyprland_logo   = false, -- If true disables the random hyprland logo / anime girl background. :(
+  misc = {
+    force_default_wallpaper = -1,    -- Set to 0 or 1 to disable the anime mascot wallpapers
+    disable_hyprland_logo   = false, -- If true disables the random hyprland logo / anime girl background. :(
     },
+})
+
+-- Window swallowing for my terminal
+hl.config({
+  misc = {
+    enable_swallow = true,
+    swallow_regex = "com.mitchellh.ghostty", -- The classname of ghostty is very weird!
+  },
 })
 
 ---------------
@@ -182,9 +184,9 @@ hl.config({
 ---------------
 
 hl.gesture({
-    fingers = 3,
-    direction = "horizontal",
-    action = "workspace"
+  fingers = 3,
+  direction = "horizontal",
+  action = "workspace"
 })
 
 ---------------------
@@ -196,7 +198,6 @@ local rofiMod = "SUPER + CTRL"
 local appsMod= "SUPER + CTRL + ALT"
 
 -- Make selected window the master
-
 hl.bind(mainMod .. " + SPACE", hl.dsp.layout("swapwithmaster master"))
 
 -- Open the terminal
@@ -204,16 +205,12 @@ hl.bind(mainMod .. " + SHIFT + RETURN", hl.dsp.exec_cmd("alacritty"))
 hl.bind(mainMod .. " + RETURN", hl.dsp.exec_cmd("ghostty"))
 
 -- Kill the active window, with  custom emacs handling
---hl.bind(mainMod .. " + Q", hl.dsp.window.close())
-
 hl.bind(mainMod .. " + Q", hl.dsp.exec_cmd("~/.config/close_window.sh"))
 
 -- Toggle floating
-
 hl.bind(mainMod .. " + T", hl.dsp.window.float({ action = "toggle" }))
 
 -- Waybar toggle
-
 hl.bind(mainMod .. " + B", hl.dsp.exec_cmd("pkill waybar || waybar"))
 
 -- Lock screen, NOTE: ik denk dat ik super L toch anders ga kiezen zie ook focus directions....
@@ -233,45 +230,62 @@ hl.bind(mainMod .. " + CTRL + J", hl.dsp.window.move({ direction = "down" }))
 
 -- Switch layouts
 hl.bind(mainMod .. " + Y", function()
-    hl.config({general = { layout = "master", }, })
+  hl.config({ general = { layout = "master" } })
+  os.execute('notify-send "Hyprland" "Layout: master"')
 end)
-
 
 hl.bind(mainMod .. " + U", function()
-    hl.config({general = { layout = "dwindle", }, })
+  hl.config({ general = { layout = "dwindle" } })
+  os.execute('notify-send "Hyprland" "Layout: dwindle"')
 end)
-
 
 hl.bind(mainMod .. " + I", function()
-    hl.config({general = { layout = "monocle", }, })
+  hl.config({ general = { layout = "monocle" } })
+  os.execute('notify-send "Hyprland" "Layout: monocle"')
 end)
-
 
 hl.bind(mainMod .. " + O", function()
-    hl.config({general = { layout = "scrolling", }, })
+  hl.config({ general = { layout = "scrolling" } })
+  os.execute('notify-send "Hyprland" "Layout: scrolling"')
 end)
 
-hl.bind("SUPER + P", hl.dsp.window.pseudo())
+-- -- Switch layouts
+-- hl.bind(mainMod .. " + Y", function()
+--   hl.config({general = { layout = "master", }, })
+-- end)
+
+
+-- hl.bind(mainMod .. " + U", function()
+--   hl.config({general = { layout = "dwindle", }, })
+-- end)
+
+
+-- hl.bind(mainMod .. " + I", function()
+--   hl.config({general = { layout = "monocle", }, })
+-- end)
+
+
+-- hl.bind(mainMod .. " + O", function()
+--   hl.config({general = { layout = "scrolling", }, })
+-- end)
+
+-- hl.bind("SUPER + P", hl.dsp.window.pseudo())
 
 
 -- Fullscreen
-
 hl.bind(mainMod .. " + F", hl.dsp.window.fullscreen({ state = 0 }))
 
 -- Workspaces
-
 for i = 1, 5 do
-    hl.bind(mainMod .. " + " .. i, hl.dsp.focus({ workspace = i }))
+  hl.bind(mainMod .. " + " .. i, hl.dsp.focus({ workspace = i }))
 end
 
 -- Move active window to workspace
-
 for i = 1, 5 do
-    hl.bind(mainMod .. " + SHIFT + " .. i, hl.dsp.window.move({ workspace = i }))
+  hl.bind(mainMod .. " + SHIFT + " .. i, hl.dsp.window.move({ workspace = i }))
 end
 
 -- Resize active window
-
 -- FIXME: does not work
 -- error: x and y are required ddispatcher must be a dispatcher or a lua function
 --hl.bind(mainMod .. " + SHIFT + H", hl.dsp.window.resize({ dx = -20, dy = 0 }))
@@ -340,13 +354,9 @@ hl.bind(rofiMod .. " + Q",      hl.dsp.exec_cmd("~/.config/rofi/rofi_exit_hyprla
 --------------------------------
 
 -- Laptop multimedia keys for volume and LCD brightness
-
 hl.bind("XF86AudioRaiseVolume", hl.dsp.exec_cmd("wpctl set-volume -l 1 @DEFAULT_AUDIO_SINK@ 5%+"), { locked = true, repeating = true })
 hl.bind("XF86AudioLowerVolume", hl.dsp.exec_cmd("wpctl set-volume @DEFAULT_AUDIO_SINK@ 5%-"),      { locked = true, repeating = true })
 hl.bind("XF86AudioMute",        hl.dsp.exec_cmd("wpctl set-mute @DEFAULT_AUDIO_SINK@ toggle"),     { locked = true, repeating = true })
---hl.bind("XF86AudioMicMute",     hl.dsp.exec_cmd("wpctl set-mute @DEFAULT_AUDIO_SOURCE@ toggle"),   { locked = true, repeating = true })
-hl.bind("XF86MonBrightnessUp",  hl.dsp.exec_cmd("brightnessctl -e4 -n2 set 5%+"),                  { locked = true, repeating = true })
-hl.bind("XF86MonBrightnessDown",hl.dsp.exec_cmd("brightnessctl -e4 -n2 set 5%-"),                  { locked = true, repeating = true })
 hl.bind("XF86Calculator",         hl.dsp.exec_cmd("[float] qalculate-gtk"))
 
 hl.bind("XF86MonBrightnessDown",  hl.dsp.exec_cmd("hyprctl hyprsunset gamma -10"), { locked = true, repeating = true })
@@ -368,19 +378,11 @@ hl.bind(mainMod .. " + SHIFT + D", hl.dsp.exec_cmd("~/stack/rofi/rofi_app_list_u
 --------------------------------
 
 hl.window_rule({
-    name  = "opacity-emacs",
-    match = { class = "^Emacs$" },
-    opacity = 0.9,
+  name  = "opacity-emacs",
+  match = { class = "^Emacs$" },
+  opacity = 0.9,
 })
 
--- FIXME: swallowing does not work
-
---hl.dsp.set({
---    misc = {
---        enable_swallow = true,
---        swallow_regex = "^(Alacritty)$",
---    }
---})
 
 hl.window_rule({ match = { class = "Emacs" }, border_color = tokyo_night.teal }) -- Tokyo Night green
 
@@ -389,37 +391,34 @@ hl.window_rule({ match = { class = "Emacs" }, border_color = tokyo_night.teal })
 --------------------------------
 
 local suppressMaximizeRule = hl.window_rule({
-    -- Ignore maximize requests from all apps. You'll probably like this.
-    name  = "suppress-maximize-events",
-    match = { class = ".*" },
+  -- Ignore maximize requests from all apps. You'll probably like this.
+  name  = "suppress-maximize-events",
+  match = { class = ".*" },
 
-    suppress_event = "maximize",
+  suppress_event = "maximize",
 })
 
 -- suppressMaximizeRule:set_enabled(false)
-
 hl.window_rule({
-    -- Fix some dragging issues with XWayland
-    name  = "fix-xwayland-drags",
-    match = {
-        class      = "^$",
-        title      = "^$",
-        xwayland   = true,
-        float      = true,
-        fullscreen = false,
-        pin        = false,
-    },
+  -- Fix some dragging issues with XWayland
+  name  = "fix-xwayland-drags",
+  match = {
+    class      = "^$",
+    title      = "^$",
+    xwayland   = true,
+    float      = true,
+    fullscreen = false,
+    pin        = false,
+  },
 
-    no_focus = true,
+  no_focus = true,
 })
 
 -- Hyprland-run windowrule
-
 hl.window_rule({
-    name  = "move-hyprland-run",
-    match = { class = "hyprland-run" },
+  name  = "move-hyprland-run",
+  match = { class = "hyprland-run" },
 
-    move  = "20 monitor_h-120",
-    float = true,
+  move  = "20 monitor_h-120",
+  float = true,
 })
-
