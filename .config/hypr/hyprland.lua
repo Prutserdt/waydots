@@ -100,11 +100,10 @@ hl.config({
     gaps_in  = 0,
     gaps_out = 0,
 
-    --border_size = 2,
     border_size = 1,
 
     col = {
-      active_border   = { colors = { tokyo_night.red } },
+      active_border   = { colors = { tokyo_night.fg } },
       inactive_border = tokyo_night.bg_highlight,
       --inactive_border = tokyo_night.bg,
     },
@@ -215,8 +214,6 @@ hl.bind(mainMod .. " + T", hl.dsp.window.float({ action = "toggle" }))
 -- Waybar toggle
 hl.bind(mainMod .. " + B", hl.dsp.exec_cmd("pkill waybar || waybar"))
 
--- Lock screen, NOTE: ik denk dat ik super L toch anders ga kiezen zie ook focus directions....
---hl.bind(mainMod .. " + L", hl.dsp.exec_cmd("hyprlock"))
 
 -- Move focus with mainMod + vim keys
 hl.bind(mainMod .. " + H",  hl.dsp.focus({ direction = "left" }))
@@ -225,10 +222,11 @@ hl.bind(mainMod .. " + J",  hl.dsp.focus({ direction = "down" }))
 hl.bind(mainMod .. " + K",    hl.dsp.focus({ direction = "up" }))
 
 -- Move windows through the stack
-hl.bind(mainMod .. " + CTRL + H", hl.dsp.window.move({ direction = "left" }))
-hl.bind(mainMod .. " + CTRL + L", hl.dsp.window.move({ direction = "right" }))
-hl.bind(mainMod .. " + CTRL + K", hl.dsp.window.move({ direction = "up" }))
-hl.bind(mainMod .. " + CTRL + J", hl.dsp.window.move({ direction = "down" }))
+hl.bind(mainMod .. " + SHIFT + H", hl.dsp.window.move({ direction = "left" }))
+hl.bind(mainMod .. " + SHIFT + L", hl.dsp.window.move({ direction = "right" }))
+hl.bind(mainMod .. " + SHIFT + K", hl.dsp.window.move({ direction = "up" }))
+hl.bind(mainMod .. " + SHIFT + J", hl.dsp.window.move({ direction = "down" }))
+
 
 -- Switch layouts
 hl.bind(mainMod .. " + Y", function()
@@ -251,28 +249,6 @@ hl.bind(mainMod .. " + O", function()
   os.execute('notify-send "Hyprland" "Layout: scrolling"')
 end)
 
--- -- Switch layouts
--- hl.bind(mainMod .. " + Y", function()
---   hl.config({general = { layout = "master", }, })
--- end)
-
-
--- hl.bind(mainMod .. " + U", function()
---   hl.config({general = { layout = "dwindle", }, })
--- end)
-
-
--- hl.bind(mainMod .. " + I", function()
---   hl.config({general = { layout = "monocle", }, })
--- end)
-
-
--- hl.bind(mainMod .. " + O", function()
---   hl.config({general = { layout = "scrolling", }, })
--- end)
-
--- hl.bind("SUPER + P", hl.dsp.window.pseudo())
-
 
 -- Fullscreen
 hl.bind(mainMod .. " + F", hl.dsp.window.fullscreen({ state = 0 }))
@@ -288,43 +264,16 @@ for i = 1, 5 do
 end
 
 -- Resize active window
--- FIXME: does not work
--- error: x and y are required ddispatcher must be a dispatcher or a lua function
---hl.bind(mainMod .. " + SHIFT + H", hl.dsp.window.resize({ dx = -20, dy = 0 }))
---hl.bind(mainMod .. " + SHIFT + H", hl.dsp.window.resize({ x = -20, y = 0 }))
---hl.bind(mainMod .. " + SHIFT  + L", hl.dsp.window.resize({ x = 20,  y = 0 }))
---hl.bind(mainMod .. " + SHIFT  + K", hl.dsp.window.resize({ x = 0,   y = -20 }))
---hl.bind(mainMod .. " + SHIFT  + J", hl.dsp.window.resize({ x = 0,   y = 20 }))
+hl.bind(mainMod .. " + CTRL + H",  hl.dsp.window.resize({ x = -50, y = 0, relative = true }), { repeating = true, desc = "Shrink window left" })
+-- FIXME: grow down does not work in Master (does work in dwindle.  )
+hl.bind(mainMod .. " + CTRL + J",  hl.dsp.window.resize({ x = 0,  y = 50, relative = true }), { repeating = true, desc = "Grow window down" })
+-- FIXME:  shrink up does not work in Master (does work in dwindle.  )
+hl.bind(mainMod .. " + CTRL + K",    hl.dsp.window.resize({ x = 0, y = -50, relative = true }), { repeating = true, desc = "Shrink window up" })
+hl.bind(mainMod .. " + CTRL + L", hl.dsp.window.resize({ x = 50,  y = 0, relative = true }), { repeating = true, desc = "Grow window right" })
 
 -- Move/resize windows with mainMod + LMB/RMB and dragging
 hl.bind(mainMod .. " + mouse:272", hl.dsp.window.drag(),   { mouse = true })
 hl.bind(mainMod .. " + mouse:273", hl.dsp.window.resize(), { mouse = true })
-
---hl.bind(mainMod .. " + SHIFT, H", "resizeactive -20 0")
---hl.bind(mainMod .. " + SHIFT + H", hl.dsp.resizeactive, -20, 0)
---hl.bind(mainMod .. " + SHIFT + H", "resizeactive -20 0")
---hl.bind(mainMod .. " + SHIFT + H", hl.dsp.exec, "hyprctl dispatch resizeactive -20 0")
-
--- hl.bind(mainMod .. " + SHIFT + H", function()
---   os.execute("hyprctl dispatch resizeactive -20 0")
--- end)
---hl.bind(mainMod .. " + SHIFT + H", hl.dsp.resizeactive("-20 0"))
-
--- hl.bind(mainMod .. " + SHIFT + H", function()
---   os.execute("hyprctl dispatch resizeactive -20 0")
--- end)
-
---hl.bind("H", function()
---  os.execute("notify-send test")
---end)
-
--- hl.bind("SUPER + SHIFT + H", function()
---   os.execute("notify-send test")
--- end)
-
---hl.bind("SUPER + SHIFT + H", function()
---  os.execute("hyprctl dispatch resizeactive -20 0")
---end)
 
 --------------------------------
 ---- APPLICATION BINDINGS ------
@@ -337,6 +286,7 @@ hl.bind(appsMod .. " + P", hl.dsp.exec_cmd("keepass ~/stack/WoordenInDeWacht/wac
 hl.bind(appsMod .. " + SHIFT + T", hl.dsp.exec_cmd("pcmanfm"))
 --hl.bind(appsMod .. " + T", hl.dsp.exec_cmd("ghostty -e yazi"))
 hl.bind(appsMod .. " + T", hl.dsp.exec_cmd("ghostty -e zsh -lc yazi"))
+hl.bind(appsMod .. " + L", hl.dsp.exec_cmd("hyprlock"))
 
 ------------------------
 ---- ROFI BINDINGS -----
@@ -350,6 +300,9 @@ hl.bind(rofiMod .. " + S",      hl.dsp.exec_cmd("~/.config/rofi/rofi_monitor_sel
 hl.bind(rofiMod .. " + V",      hl.dsp.exec_cmd("~/.config/rofi/rofi_clipboard_manager.sh"))
 hl.bind(rofiMod .. " + W",      hl.dsp.exec_cmd("~/.config/rofi/rofi_wallpaper_selector.sh"))
 hl.bind(rofiMod .. " + Q",      hl.dsp.exec_cmd("~/.config/rofi/rofi_exit_hyprland.sh"))
+
+-- Not a rofi binding, but related to the app launcher: update the application list
+hl.bind(mainMod .. " + SHIFT + D", hl.dsp.exec_cmd("~/stack/rofi/rofi_app_list_update.sh"))
 
 --------------------------------
 ---- MULTIMEDIA BINDINGS -------
@@ -373,7 +326,6 @@ hl.bind("SHIFT + PRINT",          hl.dsp.exec_cmd("~/.config/screenshot2text.sh"
 --------------------------------
 
 hl.bind(mainMod .. " + SHIFT + B", hl.dsp.exec_cmd("emacsclient -c -a \"emacs\" ~/stack/Command_line/urls"))
-hl.bind(mainMod .. " + SHIFT + D", hl.dsp.exec_cmd("~/stack/rofi/rofi_app_list_update.sh"))
 
 --------------------------------
 ---- WINDOW RULES --------------
@@ -385,29 +337,20 @@ hl.window_rule({
   opacity = 0.9,
 })
 
-
 --hl.window_rule({ match = { class = "Emacs" }, border_color = tokyo_night.teal }) -- Tokyo Night green
 hl.window_rule({ match = { class = "Emacs" }, border_color = tokyo_night.orange }) -- Tokyo Night green
-
-  -- bg = "rgb(1a
-  -- bg_dark = "r)",
-  -- bg_highlight14868)",
-  -- subtle = "rg",
-  -- fg = "rgb(c0
-  -- fg_secondary9b1d6)",
-  -- red = "rgb(f
-  -- orange = "rg",
-  -- yellow = "rg",
-  -- green = "rgb,
-  -- teal = "rgb(
-  -- cyan = "rgb(
-  -- blue = "rgb(
-  -- purple = "rg",
-  -- pink = "rgb(
+hl.window_rule({ match = { class = "com.mitchellh.ghostty" }, border_color = tokyo_night.green }) -- Tokyo Night green
+hl.window_rule({ match = { class = "brave-browser" }, border_color = tokyo_night.purple }) -- Tokyo Night green
 
 --------------------------------
 ---- WINDOWS AND WORKSPACES ----
 --------------------------------
+
+-- FIXME I want maximization to be done inside the window. For instance when a youtube clip is clicked onto for fullscreen, it should maximize inside the window.
+--hl.bind(mainMod .. " + SHIFT + F", hl.dsp.window.fullscreen(),                            { desc = "Toggle fullscreen" })
+hl.bind(mainMod .. " + CTRL + F",  hl.dsp.window.fullscreen({ mode = 1 }),                { desc = "Toggle fake fullscreen" })
+--https://github.com/hyprwm/Hyprland/issues/871
+
 
 local suppressMaximizeRule = hl.window_rule({
   -- Ignore maximize requests from all apps. You'll probably like this.
@@ -417,7 +360,6 @@ local suppressMaximizeRule = hl.window_rule({
   suppress_event = "maximize",
 })
 
--- suppressMaximizeRule:set_enabled(false)
 hl.window_rule({
   -- Fix some dragging issues with XWayland
   name  = "fix-xwayland-drags",

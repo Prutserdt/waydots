@@ -17,6 +17,7 @@
   - [[#evil-mode-configuration][Evil mode configuration]]
   - [[#general-settings][General settings]]
   - [[#vterm-toggle][Vterm-toggle]]
+  - [[#ghostel-ghostty-in-emacs][Ghostel, ghostty in emacs]]
   - [[#llms-in-emacs][LLMs in emacs]]
   - [[#jumping-around][Jumping around]]
   - [[#org-mode-configuration][Org-mode configuration]]
@@ -145,9 +146,15 @@ To automate tangling of code blocks in org-mode, the following package is instal
 (package! org-auto-tangle)
 #+END_SRC
 
-The vterm-toggle package.
+The vterm-toggle package. I keep it for a while during testing of ghostel.
 #+BEGIN_SRC emacs-lisp :tangle packages.el :results silent
 (package! vterm-toggle)
+#+END_SRC
+
+Ghostel is a emacs package for the ghostty terminal.
+#+BEGIN_SRC emacs-lisp :tangle packages.el :results silent
+(package! ghostel)
+(package! evil-ghostel)
 #+END_SRC
 
 A chatgpt package gptel.
@@ -212,7 +219,8 @@ The following are keybindings that are bound to my leader key, which is =space=,
       :desc "Scratch buffer" "[" (lambda () (interactive) (switch-to-buffer "scratch.org"))
 
       (:prefix ("SPC" . "Personal Bindings")
-        :desc "Vterm toggle"                   "SPC" #'vterm-toggle
+        ;;:desc "Vterm toggle"                   "SPC" #'vterm-toggle
+        :desc "Ghostel, ghosttty for emacs"      "SPC" #'ghostel
         :desc "Run aandelen elisp script"        "a" (lambda () (interactive) (load-file "~/stack/Documenten/Aandelen/aandelen.el"))
         :desc "Beach mode/dark mode toggle"      "b" #'my-beach-or-dark-theme-switch
         (:prefix ("d" . "Distraction free")
@@ -386,6 +394,13 @@ To align the Emacs window with text in the middle of the screen  visual-fill is 
 (add-hook 'prog-mode-hook 'my-prog-mode-hook)
 
 (add-hook 'vterm-mode-hook
+          (lambda ()
+            (setq-local fill-column 110)
+            (visual-fill-column-mode)
+            (setq-local visual-fill-column-center-text t)))
+
+
+(add-hook 'ghostel-mode-hook
           (lambda ()
             (setq-local fill-column 110)
             (visual-fill-column-mode)
@@ -586,6 +601,14 @@ I like to use Vterm as a scratch terminal, this can be done by the vterm-toggle 
                        (or (equal major-mode 'vterm-mode)
                            (string-prefix-p vterm-buffer-name (buffer-name buffer))))))
            (display-buffer-reuse-window display-buffer-same-window))))
+#+END_SRC
+
+** Ghostel, ghostty in emacs
+A terminal emulator for Emacs powered by libghostty-vt.
+#+BEGIN_SRC emacs-lisp :tangle config.el :results silent
+(use-package! evil-ghostel
+  :after (ghostel evil)
+  :hook (ghostel-mode . evil-ghostel-mode))
 #+END_SRC
 
 ** LLMs in emacs

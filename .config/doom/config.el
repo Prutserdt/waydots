@@ -26,7 +26,8 @@
       :desc "Scratch buffer" "[" (lambda () (interactive) (switch-to-buffer "scratch.org"))
 
       (:prefix ("SPC" . "Personal Bindings")
-        :desc "Vterm toggle"                   "SPC" #'vterm-toggle
+        ;;:desc "Vterm toggle"                   "SPC" #'vterm-toggle
+        :desc "Ghostel, ghosttty for emacs"      "SPC" #'ghostel
         :desc "Run aandelen elisp script"        "a" (lambda () (interactive) (load-file "~/stack/Documenten/Aandelen/aandelen.el"))
         :desc "Beach mode/dark mode toggle"      "b" #'my-beach-or-dark-theme-switch
         (:prefix ("d" . "Distraction free")
@@ -175,6 +176,13 @@
             (visual-fill-column-mode)
             (setq-local visual-fill-column-center-text t)))
 
+
+(add-hook 'ghostel-mode-hook
+          (lambda ()
+            (setq-local fill-column 110)
+            (visual-fill-column-mode)
+            (setq-local visual-fill-column-center-text t)))
+
 ;;(set-frame-parameter (selected-frame) 'alpha '(85 80))
 ;;(add-to-list 'default-frame-alist '(alpha 85 80))
 
@@ -306,6 +314,10 @@
                        (or (equal major-mode 'vterm-mode)
                            (string-prefix-p vterm-buffer-name (buffer-name buffer))))))
            (display-buffer-reuse-window display-buffer-same-window))))
+
+(use-package! evil-ghostel
+  :after (ghostel evil)
+  :hook (ghostel-mode . evil-ghostel-mode))
 
 (use-package! gptel
  :config

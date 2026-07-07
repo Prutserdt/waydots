@@ -13,6 +13,9 @@
 
 (package! vterm-toggle)
 
+(package! ghostel)
+(package! evil-ghostel)
+
 (package! gptel)
 (package! python-mode)
 
