@@ -26,7 +26,6 @@
       :desc "Scratch buffer" "[" (lambda () (interactive) (switch-to-buffer "scratch.org"))
 
       (:prefix ("SPC" . "Personal Bindings")
-        ;;:desc "Vterm toggle"                   "SPC" #'vterm-toggle
         :desc "Ghostel, ghosttty for emacs"      "SPC" #'ghostel
         :desc "Run aandelen elisp script"        "a" (lambda () (interactive) (load-file "~/stack/Documenten/Aandelen/aandelen.el"))
         :desc "Beach mode/dark mode toggle"      "b" #'my-beach-or-dark-theme-switch

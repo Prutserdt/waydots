@@ -11,8 +11,6 @@
 
 (package! org-auto-tangle)
 
-(package! vterm-toggle)
-
 (package! ghostel)
 (package! evil-ghostel)
 

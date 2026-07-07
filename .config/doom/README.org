@@ -146,11 +146,6 @@ To automate tangling of code blocks in org-mode, the following package is instal
 (package! org-auto-tangle)
 #+END_SRC
 
-The vterm-toggle package. I keep it for a while during testing of ghostel.
-#+BEGIN_SRC emacs-lisp :tangle packages.el :results silent
-(package! vterm-toggle)
-#+END_SRC
-
 Ghostel is a emacs package for the ghostty terminal.
 #+BEGIN_SRC emacs-lisp :tangle packages.el :results silent
 (package! ghostel)
@@ -219,7 +214,6 @@ The following are keybindings that are bound to my leader key, which is =space=,
       :desc "Scratch buffer" "[" (lambda () (interactive) (switch-to-buffer "scratch.org"))
 
       (:prefix ("SPC" . "Personal Bindings")
-        ;;:desc "Vterm toggle"                   "SPC" #'vterm-toggle
         :desc "Ghostel, ghosttty for emacs"      "SPC" #'ghostel
         :desc "Run aandelen elisp script"        "a" (lambda () (interactive) (load-file "~/stack/Documenten/Aandelen/aandelen.el"))
         :desc "Beach mode/dark mode toggle"      "b" #'my-beach-or-dark-theme-switch
@@ -378,7 +372,7 @@ FIXME: hl-todo-mode is not functioning properly right now. TODO and 'TODO' is no
 (my-global-hl-todo-mode 1)
 #+END_SRC
 
-To align the Emacs window with text in the middle of the screen  visual-fill is used. This configuration is especially useful for maximized windows on an ultrawide monitor, providing a clean and centered workspace. This alignment will work with text files and also with programming language files. I also set it for vterm.
+To align the Emacs window with text in the middle of the screen  visual-fill is used. This configuration is especially useful for maximized windows on an ultrawide monitor, providing a clean and centered workspace. This alignment will work with text files and also with programming language files. I also set it for my terminal ghostel (and vterm).
 #+BEGIN_SRC emacs-lisp :tangle config.el :results silent
 (setq-default fill-column 110)
 (global-display-fill-column-indicator-mode)
