@@ -249,7 +249,6 @@ hl.bind(mainMod .. " + O", function()
   os.execute('notify-send "Hyprland" "Layout: scrolling"')
 end)
 
-
 -- Fullscreen
 hl.bind(mainMod .. " + F", hl.dsp.window.fullscreen({ state = 0 }))
 
@@ -264,12 +263,12 @@ for i = 1, 5 do
 end
 
 -- Resize active window
-hl.bind(mainMod .. " + CTRL + H",  hl.dsp.window.resize({ x = -50, y = 0, relative = true }), { repeating = true, desc = "Shrink window left" })
+hl.bind(mainMod .. " + CTRL + H",  hl.dsp.window.resize({ x = -50, y = 0, relative = true }), { repeating = true })
 -- FIXME: grow down does not work in Master (does work in dwindle.  )
-hl.bind(mainMod .. " + CTRL + J",  hl.dsp.window.resize({ x = 0,  y = 50, relative = true }), { repeating = true, desc = "Grow window down" })
+hl.bind(mainMod .. " + CTRL + J",  hl.dsp.window.resize({ x = 0,  y = 50, relative = true }), { repeating = true })
 -- FIXME:  shrink up does not work in Master (does work in dwindle.  )
-hl.bind(mainMod .. " + CTRL + K",    hl.dsp.window.resize({ x = 0, y = -50, relative = true }), { repeating = true, desc = "Shrink window up" })
-hl.bind(mainMod .. " + CTRL + L", hl.dsp.window.resize({ x = 50,  y = 0, relative = true }), { repeating = true, desc = "Grow window right" })
+hl.bind(mainMod .. " + CTRL + K",    hl.dsp.window.resize({ x = 0, y = -50, relative = true }), { repeating = true })
+hl.bind(mainMod .. " + CTRL + L", hl.dsp.window.resize({ x = 50,  y = 0, relative = true }), { repeating = true })
 
 -- Move/resize windows with mainMod + LMB/RMB and dragging
 hl.bind(mainMod .. " + mouse:272", hl.dsp.window.drag(),   { mouse = true })
@@ -346,17 +345,20 @@ hl.window_rule({ match = { class = "brave-browser" }, border_color = tokyo_night
 ---- WINDOWS AND WORKSPACES ----
 --------------------------------
 
--- FIXME I want maximization to be done inside the window. For instance when a youtube clip is clicked onto for fullscreen, it should maximize inside the window.
---hl.bind(mainMod .. " + SHIFT + F", hl.dsp.window.fullscreen(),                            { desc = "Toggle fullscreen" })
-hl.bind(mainMod .. " + CTRL + F",  hl.dsp.window.fullscreen({ mode = 1 }),                { desc = "Toggle fake fullscreen" })
---https://github.com/hyprwm/Hyprland/issues/871
+-- FIXME I want maximization to be done inside the window. For instance when a youtube clip is clicked onto for fullscreen, it should maximize inside the window, I want this to be the default in the browser, how to set it?? The next line can .
 
+-- Fake fullscreen: YouTube fills the window/tile, bar stays
+hl.bind(mainMod .. " + CTRL + F", hl.dsp.window.fullscreen_state({
+  internal = 0,
+  client = 2,
+  action = "toggle",
+  })
+)
 
 local suppressMaximizeRule = hl.window_rule({
   -- Ignore maximize requests from all apps. You'll probably like this.
   name  = "suppress-maximize-events",
   match = { class = ".*" },
-
   suppress_event = "maximize",
 })
 
