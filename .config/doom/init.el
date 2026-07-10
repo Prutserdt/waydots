@@ -44,7 +44,7 @@
        lookup              ; navigate your code and its documentation
        pdf                 ; pdf enhancements
        lsp                 ; M-x vscode
-       evil-magit         ; An evil porcelain for Emacs
+       ;;evil-magit         ; An evil porcelain for Emacs
 
        :lang
        rust                ; rust roest
@@ -62,5 +62,5 @@
        tty                 ; zou terminal experience moeten verbeteren...
 
        :config
-       (default +bindings +smartparens)
+/       (default +bindings +smartparens)
 )

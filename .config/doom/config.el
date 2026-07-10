@@ -2,6 +2,8 @@
 ;;      Please only edit that file and org-babel-tangle (emacs)
 
 (require 'recentf)
+(require 'subr-x)
+(require 'cl-lib)
 
 (recentf-mode 1)
 
@@ -23,8 +25,9 @@
 
 (map! :leader
       :desc "Unbind SPC SPC" "SPC" nil
-      :desc "Scratch buffer" "[" (lambda () (interactive) (switch-to-buffer "scratch.org"))
-
+;;    :desc "Scratch buffer" "[" (lambda () (interactive) (switch-to-buffer "scratch.org"))
+      :desc "Scratch buffer" "[" (cmd! (find-file "~/.config/doom/scratch.org"))
+      
       (:prefix ("SPC" . "Personal Bindings")
         :desc "Ghostel, ghosttty for emacs"      "SPC" #'ghostel
         :desc "Run aandelen elisp script"        "a" (lambda () (interactive) (load-file "~/stack/Documenten/Aandelen/aandelen.el"))
@@ -73,10 +76,10 @@
             :desc "ChatGPT of selected region"   "A" #'gptel-send
             :desc "Open ChatGPT in new buffer"   "c" #'gptel
             :desc "gptel-menu"                   "m" #'gptel-menu
-            :desc "API for LLM interaction"      "R" #'gptel-request
-            :desc "gptel-rewrite-menu"           "r" #'gptel-rewrite-menu))
+            :desc "gptel-rewrite"                "r" #'gptel-rewrite))
 
-    (:desc "Open files in emacs" "e" #'recentf-open-files)
+    :desc "Open files in emacs" "e" #'recentf-open-files
+    ;;(:desc "Open files in emacs" "e" #'recentf-open-files)
 
     (:prefix ("j" . "Jump around");; An addition to the default Doom keybinding (j is not present!)
             :desc "jump backward one step"       "j" #'evil-jump-backward
@@ -146,15 +149,24 @@
 
 (setq doom-theme 'doom-tokyo-night)
 
-
 (load-theme doom-theme t)
 (set-face-attribute 'default nil :background "#121212")
 
 (set-face-attribute 'default nil :height 130 :font "Hack 13")
 
-(define-globalized-minor-mode my-global-hl-todo-mode hl-todo-mode
-    (lambda () (hl-todo-mode 1)))
-(my-global-hl-todo-mode 1)
+(after! hl-todo
+  ;; Tokyo Night palette
+  (setq hl-todo-keyword-faces
+        '(("TODO"       . "#7aa2f7") ; blue
+          ("FIXME"      . "#f7768e") ; red
+          ("BUG"        . "#f7768e") ; red
+          ("HACK"       . "#bb9af7") ; purple
+          ("NOTE"       . "#7dcfff") ; cyan
+          ("REVIEW"     . "#9ece6a") ; green
+          ("DEPRECATED" . "#e0af68") ; yellow
+          ("WARN"       . "#ff9e64"))) ; orange
+  ;; hl-todo already provides this global mode.
+  (global-hl-todo-mode +1))
 
 (setq-default fill-column 110)
 (global-display-fill-column-indicator-mode)
@@ -318,12 +330,19 @@
   :after (ghostel evil)
   :hook (ghostel-mode . evil-ghostel-mode))
 
-(use-package! gptel
- :config
-(with-temp-buffer
-  (insert-file-contents "~/stack/Code/OpenAI/api_key")
-  (setq! gptel-api-key (string-trim (buffer-string)))))
-(setq gpt-openai-engine "gpt-4")
+(after! gptel
+  (setq gptel-api-key
+        (string-trim
+         (with-temp-buffer
+           (insert-file-contents "~/stack/Code/OpenAI/api_key")
+           (buffer-string))))
+  (setq gptel-backend
+        (gptel-make-openai "OpenAI"
+          :key gptel-api-key
+          :stream t
+          :models '("gpt-5.5" "gpt-5.4-mini")))
+  ;;(setq gptel-model "gpt-5.4-mini"))
+  (setq gptel-model "gpt-5.5"))
 
 (defun my-region-select-gptel-send ()
   "Select text at point to the end of buffer and send this to the LLM (gptel-send). The output will be generated at the bottom of the buffer."
@@ -339,10 +358,11 @@
     (deactivate-mark)))    ; Deselect the region
 
 (defun my-evil-jump-forward-to-end ()
-  "Jump right to the most forward evil-jump."
+  "Jump forward through the Evil jump list until the end."
   (interactive)
-  (with-temp-buffer
-            (+ivy/jump-list)))
+  (while (ignore-errors
+           (evil-jump-forward)
+           t)))
 
 (setq org-modern-star '( "◉" "○" "✿" "✸" "⁖" ))
 
@@ -360,8 +380,7 @@
 (setq org-startup-with-inline-images t)
 (setq org-hidden-keywords '(title))
 
-(use-package org-auto-tangle
-  :load-path "site-lisp/org-auto-tangle/"
+(use-package! org-auto-tangle
   :defer t
   :hook (org-mode . org-auto-tangle-mode))
 
@@ -630,6 +649,18 @@ Brain shelve: %s.
     (shell-command (format "ps2pdf %s %s" (shell-quote-argument pass-ps) (shell-quote-argument password-removed-pdf)))
     (delete-file pass-ps)
     (message "PDF file converted to unlocked PDF: %s" password-removed-pdf)))
+
+(defun my-image-to-pdf ()
+  "Convert an image file to a PDF and save as pdf, then open the PDF."
+  (interactive)
+  (let* ((image-file (read-file-name "Image file: "))
+         (dir (file-name-directory image-file))
+         (base-name (file-name-base image-file))
+         (pdf-file (concat dir base-name ".pdf")))
+    (shell-command (format "convert %s %s" (shell-quote-argument image-file) (shell-quote-argument pdf-file)))
+    (message "Image converted to PDF: %s" pdf-file)
+    (find-file pdf-file)
+    (pdf-view-mode)))  ;; Open the PDF file in pdf-view-mode
 
 (setq default-input-method "latin-prefix")
 ;;(add-hook 'org-mode-hook 'toggle-input-method)

@@ -333,7 +333,7 @@ hl.bind(mainMod .. " + SHIFT + B", hl.dsp.exec_cmd("emacsclient -c -a \"emacs\" 
 hl.window_rule({
   name  = "opacity-emacs",
   match = { class = "^Emacs$" },
-  opacity = 0.9,
+  opacity = 0.8,
 })
 
 --hl.window_rule({ match = { class = "Emacs" }, border_color = tokyo_night.teal }) -- Tokyo Night green

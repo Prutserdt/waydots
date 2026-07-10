@@ -13,6 +13,9 @@
 
 (package! ghostel)
 (package! evil-ghostel)
+ 
+(package! vterm-toggle)
+(package! vundo)
 
 (package! gptel)
 (package! python-mode)

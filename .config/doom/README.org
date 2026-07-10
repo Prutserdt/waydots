@@ -95,7 +95,7 @@ The list of available modules can be checked in Doom Emacs by ~M-x~ ~Doom/help-m
        lookup              ; navigate your code and its documentation
        pdf                 ; pdf enhancements
        lsp                 ; M-x vscode
-       evil-magit         ; An evil porcelain for Emacs
+       ;;evil-magit         ; An evil porcelain for Emacs
 
        :lang
        rust                ; rust roest
@@ -113,7 +113,7 @@ The list of available modules can be checked in Doom Emacs by ~M-x~ ~Doom/help-m
        tty                 ; zou terminal experience moeten verbeteren...
 
        :config
-       (default +bindings +smartparens)
+/       (default +bindings +smartparens)
 )
 #+END_SRC
 
@@ -146,13 +146,16 @@ To automate tangling of code blocks in org-mode, the following package is instal
 (package! org-auto-tangle)
 #+END_SRC
 
-Ghostel is a emacs package for the ghostty terminal.
+Ghostel is a emacs package for the ghostty terminal. For now I also keep the vterm-toggle package.
 #+BEGIN_SRC emacs-lisp :tangle packages.el :results silent
 (package! ghostel)
 (package! evil-ghostel)
+ 
+(package! vterm-toggle)
+(package! vundo)
 #+END_SRC
 
-A chatgpt package gptel.
+The large language model package gptel.
 #+BEGIN_SRC emacs-lisp :tangle packages.el :results silent
 (package! gptel)
 (package! python-mode)
@@ -175,6 +178,8 @@ Let's remind the reader of ~config.el~ to not edit this file directly.
 
 #+BEGIN_SRC emacs-lisp :tangle config.el :results silent
 (require 'recentf)
+(require 'subr-x)
+(require 'cl-lib)
 
 (recentf-mode 1)
 
@@ -191,7 +196,6 @@ Let's remind the reader of ~config.el~ to not edit this file directly.
 #+END_SRC
 
 ** Save to the system clipboard
-
 Everything should be placed in the system clipboard.
 #+BEGIN_SRC emacs-lisp :tangle config.el :results silent
 (setq select-enable-clipboard t)
@@ -211,8 +215,9 @@ The following are keybindings that are bound to my leader key, which is =space=,
 #+BEGIN_SRC emacs-lisp :tangle config.el :results silent
 (map! :leader
       :desc "Unbind SPC SPC" "SPC" nil
-      :desc "Scratch buffer" "[" (lambda () (interactive) (switch-to-buffer "scratch.org"))
-
+;;    :desc "Scratch buffer" "[" (lambda () (interactive) (switch-to-buffer "scratch.org"))
+      :desc "Scratch buffer" "[" (cmd! (find-file "~/.config/doom/scratch.org"))
+      
       (:prefix ("SPC" . "Personal Bindings")
         :desc "Ghostel, ghosttty for emacs"      "SPC" #'ghostel
         :desc "Run aandelen elisp script"        "a" (lambda () (interactive) (load-file "~/stack/Documenten/Aandelen/aandelen.el"))
@@ -261,10 +266,10 @@ The following are keybindings that are bound to my leader key, which is =space=,
             :desc "ChatGPT of selected region"   "A" #'gptel-send
             :desc "Open ChatGPT in new buffer"   "c" #'gptel
             :desc "gptel-menu"                   "m" #'gptel-menu
-            :desc "API for LLM interaction"      "R" #'gptel-request
-            :desc "gptel-rewrite-menu"           "r" #'gptel-rewrite-menu))
+            :desc "gptel-rewrite"                "r" #'gptel-rewrite))
 
-    (:desc "Open files in emacs" "e" #'recentf-open-files)
+    :desc "Open files in emacs" "e" #'recentf-open-files
+    ;;(:desc "Open files in emacs" "e" #'recentf-open-files)
 
     (:prefix ("j" . "Jump around");; An addition to the default Doom keybinding (j is not present!)
             :desc "jump backward one step"       "j" #'evil-jump-backward
@@ -350,10 +355,9 @@ The =smartparens= package in Emacs is designed to enhance editing parentheses an
 
 ** Theming and graphical settings
 Setting the *superior* tokyo-night theme.😎
-I changed the background to be inline with my overall theme.... FIXME: needs bettter implimentation
+I changed the background to be inline with my overall theme.... FIXME: needs bettter implementation
 #+BEGIN_SRC emacs-lisp :tangle config.el :results silent
 (setq doom-theme 'doom-tokyo-night)
-
 
 (load-theme doom-theme t)
 (set-face-attribute 'default nil :background "#121212")
@@ -365,11 +369,21 @@ A *superior* font is set here for all the text.
 #+END_SRC
 
 Make the highlighting global for the hl-words TODO/FIXME/NOTE/DEPRECATED/HACK/REVIEW with ~hl-todo-mode~.
-FIXME: hl-todo-mode is not functioning properly right now. TODO and 'TODO' is not highlighted and "TODO" is..
 #+BEGIN_SRC emacs-lisp :tangle config.el :results silent
-(define-globalized-minor-mode my-global-hl-todo-mode hl-todo-mode
-    (lambda () (hl-todo-mode 1)))
-(my-global-hl-todo-mode 1)
+(after! hl-todo
+  ;; Tokyo Night palette
+  (setq hl-todo-keyword-faces
+        '(("TODO"       . "#7aa2f7") ; blue
+          ("FIXME"      . "#f7768e") ; red
+          ("BUG"        . "#f7768e") ; red
+          ("HACK"       . "#bb9af7") ; purple
+          ("NOTE"       . "#7dcfff") ; cyan
+          ("REVIEW"     . "#9ece6a") ; green
+          ("DEPRECATED" . "#e0af68") ; yellow
+          ("WARN"       . "#ff9e64"))) ; orange
+  ;; hl-todo already provides this global mode.
+  (global-hl-todo-mode +1))
+
 #+END_SRC
 
 To align the Emacs window with text in the middle of the screen  visual-fill is used. This configuration is especially useful for maximized windows on an ultrawide monitor, providing a clean and centered workspace. This alignment will work with text files and also with programming language files. I also set it for my terminal ghostel (and vterm).
@@ -608,13 +622,21 @@ A terminal emulator for Emacs powered by libghostty-vt.
 ** LLMs in emacs
 In this elisp code, `with-temp-buffer` creates a temporary buffer for reading the contents of the file. `insert-file-contents` reads the contents of the file into the buffer. `string-trim` removes any whitespace characters at the beginning and end of the buffer's contents, and the resulting string is set to the variable `gptel-api-key`.
 A chatGPT key can be generated here: https://platform.openai.com/account/api-keys.
+
 #+BEGIN_SRC emacs-lisp :tangle config.el :results silent
-(use-package! gptel
- :config
-(with-temp-buffer
-  (insert-file-contents "~/stack/Code/OpenAI/api_key")
-  (setq! gptel-api-key (string-trim (buffer-string)))))
-(setq gpt-openai-engine "gpt-4")
+(after! gptel
+  (setq gptel-api-key
+        (string-trim
+         (with-temp-buffer
+           (insert-file-contents "~/stack/Code/OpenAI/api_key")
+           (buffer-string))))
+  (setq gptel-backend
+        (gptel-make-openai "OpenAI"
+          :key gptel-api-key
+          :stream t
+          :models '("gpt-5.5" "gpt-5.4-mini")))
+  ;;(setq gptel-model "gpt-5.4-mini"))
+  (setq gptel-model "gpt-5.5"))
 #+END_SRC
 
 An helper for my LLM (gptel). I am usually working with code at the bottom of a buffer and want to select the text from the cursor below to the bottom and send that region to the chatbot.
@@ -635,13 +657,13 @@ An helper for my LLM (gptel). I am usually working with code at the bottom of a 
 
 ** Jumping around
 Jump right forward to the last jump in the jump-list.
-FIXME: improve this function! Barely working...
 #+BEGIN_SRC emacs-lisp :tangle config.el :results silent
 (defun my-evil-jump-forward-to-end ()
-  "Jump right to the most forward evil-jump."
+  "Jump forward through the Evil jump list until the end."
   (interactive)
-  (with-temp-buffer
-            (+ivy/jump-list)))
+  (while (ignore-errors
+           (evil-jump-forward)
+           t)))
 #+END_SRC
 
 ** Org-mode configuration
@@ -672,8 +694,7 @@ Some preferences that I like: hide the emphasis markup for: /italic/, *bold*, ~c
 
 Automatically tangling by the org-auto-tangle package.
 #+BEGIN_SRC emacs-lisp :tangle config.el :results silent
-(use-package org-auto-tangle
-  :load-path "site-lisp/org-auto-tangle/"
+(use-package! org-auto-tangle
   :defer t
   :hook (org-mode . org-auto-tangle-mode))
 #+END_SRC
@@ -1016,7 +1037,7 @@ Sometimes pdf files are password protected and it should be removed. The followi
 #+END_SRC
 
 Convert images to pdfs.
-#+begin_src emacs-lisp
+#+BEGIN_SRC emacs-lisp :tangle config.el :results silent
 (defun my-image-to-pdf ()
   "Convert an image file to a PDF and save as pdf, then open the PDF."
   (interactive)
