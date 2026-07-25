@@ -105,13 +105,11 @@ hl.config({
     col = {
       active_border   = { colors = { tokyo_night.fg } },
       inactive_border = tokyo_night.bg_highlight,
-      --inactive_border = tokyo_night.bg,
     },
 
     -- Set to true to enable resizing windows by clicking and dragging on borders and gaps
     resize_on_border = false,
 
-    -- Please see https://wiki.hypr.land/Configuring/Advanced-and-Cool/Tearing/ before you turn this on
     allow_tearing = false,
 
     -- Dependent on the hostname layout is changed, see the SYSTEM SPECIFIC SETTINGS section above
@@ -139,7 +137,6 @@ hl.config({
   },
 })
 
--- Animations not used in my config, see https://wiki.hypr.land/Configuring/Advanced-and-Cool/Animations/
 hl.config({
   dwindle = {
       preserve_split = true, -- You probably want this
@@ -264,9 +261,7 @@ end
 
 -- Resize active window
 hl.bind(mainMod .. " + CTRL + H",  hl.dsp.window.resize({ x = -50, y = 0, relative = true }), { repeating = true })
--- FIXME: grow down does not work in Master (does work in dwindle.  )
 hl.bind(mainMod .. " + CTRL + J",  hl.dsp.window.resize({ x = 0,  y = 50, relative = true }), { repeating = true })
--- FIXME:  shrink up does not work in Master (does work in dwindle.  )
 hl.bind(mainMod .. " + CTRL + K",    hl.dsp.window.resize({ x = 0, y = -50, relative = true }), { repeating = true })
 hl.bind(mainMod .. " + CTRL + L", hl.dsp.window.resize({ x = 50,  y = 0, relative = true }), { repeating = true })
 
@@ -278,6 +273,7 @@ hl.bind(mainMod .. " + mouse:273", hl.dsp.window.resize(), { mouse = true })
 ---- APPLICATION BINDINGS ------
 --------------------------------
 
+hl.bind(appsMod .. " + A", hl.dsp.exec_cmd("ghostty -e zsh -lc ~/.config/aandelen.py"))
 hl.bind(appsMod .. " + E", hl.dsp.exec_cmd("~/.config/open_emacs.sh"))
 hl.bind(appsMod .. " + G", hl.dsp.exec_cmd("gimp"))
 hl.bind(appsMod .. " + M", hl.dsp.exec_cmd("mousepad"))
@@ -336,18 +332,16 @@ hl.window_rule({
   opacity = 0.8,
 })
 
---hl.window_rule({ match = { class = "Emacs" }, border_color = tokyo_night.teal }) -- Tokyo Night green
-hl.window_rule({ match = { class = "Emacs" }, border_color = tokyo_night.orange }) -- Tokyo Night green
-hl.window_rule({ match = { class = "com.mitchellh.ghostty" }, border_color = tokyo_night.green }) -- Tokyo Night green
-hl.window_rule({ match = { class = "brave-browser" }, border_color = tokyo_night.purple }) -- Tokyo Night green
+hl.window_rule({ match = { class = "Emacs" }, border_color = tokyo_night.orange })
+hl.window_rule({ match = { class = "com.mitchellh.ghostty" }, border_color = tokyo_night.green })
+hl.window_rule({ match = { class = "brave-browser" }, border_color = tokyo_night.purple })
 
 --------------------------------
 ---- WINDOWS AND WORKSPACES ----
 --------------------------------
 
--- FIXME I want maximization to be done inside the window. For instance when a youtube clip is clicked onto for fullscreen, it should maximize inside the window, I want this to be the default in the browser, how to set it?? The next line can .
-
 -- Fake fullscreen: YouTube fills the window/tile, bar stays
+-- FIXME I this to be the default. Right now it must be toggled first...
 hl.bind(mainMod .. " + CTRL + F", hl.dsp.window.fullscreen_state({
   internal = 0,
   client = 2,

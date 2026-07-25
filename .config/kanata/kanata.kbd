@@ -77,6 +77,6 @@
   j (tap-hold 10 400 j rctrl)
   k (tap-hold 10 400 k rmet)
   l (tap-hold 10 400 l ralt)
-
 )
+
 

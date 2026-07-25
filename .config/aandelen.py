@@ -142,10 +142,13 @@ def main() -> None:
     if not df_degiro.empty:
         frames.append(df_degiro)
 
+    print(df_degiro) # dit werkt
+    
     df_rabo = read_portfolio_csv(
         latest_rabo,
         ";",
-        {OMSCHR_COL: "Naam", EUR_COL: "Huidig €"},
+        #{OMSCHR_COL: "Naam", EUR_COL: "Huidig €"},
+        {OMSCHR_COL: "Naam", EUR_COL: "Huidig"},
     )
     if not df_rabo.empty:
         frames.append(df_rabo)

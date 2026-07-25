@@ -415,12 +415,6 @@ To align the Emacs window with text in the middle of the screen  visual-fill is 
             (setq-local visual-fill-column-center-text t)))
 #+END_SRC
 
-Get a glimpse of the desktop background by setting a low transparency for Emacs.
-#+BEGIN_SRC emacs-lisp :tangle config.el :results silent
-;;(set-frame-parameter (selected-frame) 'alpha '(85 80))
-;;(add-to-list 'default-frame-alist '(alpha 85 80))
-#+END_SRC
-
 By setting the line numbers to relative it makes jumping in texts easier, allowing you to quickly find the line position to jump to from the current line.
 #+BEGIN_SRC emacs-lisp :tangle config.el :results silent
 (global-display-line-numbers-mode)
@@ -635,8 +629,8 @@ A chatGPT key can be generated here: https://platform.openai.com/account/api-key
           :key gptel-api-key
           :stream t
           :models '("gpt-5.5" "gpt-5.4-mini")))
-  ;;(setq gptel-model "gpt-5.4-mini"))
-  (setq gptel-model "gpt-5.5"))
+  (setq gptel-model "gpt-5.4-mini"))
+  ;;(setq gptel-model "gpt-5.5"))
 #+END_SRC
 
 An helper for my LLM (gptel). I am usually working with code at the bottom of a buffer and want to select the text from the cursor below to the bottom and send that region to the chatbot.

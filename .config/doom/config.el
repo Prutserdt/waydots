@@ -194,9 +194,6 @@
             (visual-fill-column-mode)
             (setq-local visual-fill-column-center-text t)))
 
-;;(set-frame-parameter (selected-frame) 'alpha '(85 80))
-;;(add-to-list 'default-frame-alist '(alpha 85 80))
-
 (global-display-line-numbers-mode)
 (setq display-line-numbers-type 'relative)
 
@@ -341,8 +338,8 @@
           :key gptel-api-key
           :stream t
           :models '("gpt-5.5" "gpt-5.4-mini")))
-  ;;(setq gptel-model "gpt-5.4-mini"))
-  (setq gptel-model "gpt-5.5"))
+  (setq gptel-model "gpt-5.4-mini"))
+  ;;(setq gptel-model "gpt-5.5"))
 
 (defun my-region-select-gptel-send ()
   "Select text at point to the end of buffer and send this to the LLM (gptel-send). The output will be generated at the bottom of the buffer."
