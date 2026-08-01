@@ -33,7 +33,9 @@ def prompt_int(label: str) -> int:
 
 def latest_file(pattern: str) -> Path | None:
     matches = list(glob.iglob(pattern))
-    return Path(max(matches, key=os.path.getctime)) if matches else None
+    if not matches:
+        return None
+    return Path(max(matches, key=os.path.getctime))
 
 
 def parse_euro_series(series: pd.Series) -> pd.Series:
@@ -50,6 +52,9 @@ def read_portfolio_csv(
     delimiter: str,
     column_name_map: dict[str, str],
 ) -> pd.DataFrame:
+    if not filename.exists():
+        return pd.DataFrame(columns=[OMSCHR_COL, EUR_COL])
+
     try:
         raw = pd.read_csv(filename, sep=delimiter, usecols=list(column_name_map.values()))
         raw = raw.rename(columns={v: k for k, v in column_name_map.items()})
@@ -63,10 +68,8 @@ def read_portfolio_csv(
 
         return df
 
-    except FileNotFoundError:
-        print(f"Error: file '{filename}' not found.")
     except pd.errors.EmptyDataError:
-        print(f"Error: file '{filename}' is empty.")
+        print(f"Warning: file '{filename}' is empty.")
     except Exception as e:
         print(f"Error while processing '{filename}': {e}")
 
@@ -110,7 +113,10 @@ def add_percentage_columns(
 ) -> pd.DataFrame:
     df = df.copy()
 
-    df[AA_COL] = 0 if kapitaal <= 0 else np.ceil(df[EUR_COL] / kapitaal * 100).astype(int)
+    if kapitaal <= 0:
+        df[AA_COL] = 0
+    else:
+        df[AA_COL] = np.ceil(df[EUR_COL] / kapitaal * 100).astype(int)
 
     if kapitaal_zonder_huis <= 0:
         df[AA_MIN_HUIS_COL] = ""
@@ -127,11 +133,6 @@ def main() -> None:
     huis = prompt_int("Voer overwaarde huis in")
     rabo_cash = prompt_int("Voer Bunq en Rabo cash in")
 
-    latest_rabo = latest_file(RABO_GLOB)
-    if latest_rabo is None:
-        print("Error: no Rabo portfolio CSV file found.")
-        sys.exit(1)
-
     frames: list[pd.DataFrame] = []
 
     df_degiro = read_portfolio_csv(
@@ -141,17 +142,22 @@ def main() -> None:
     )
     if not df_degiro.empty:
         frames.append(df_degiro)
+    else:
+        print("Warning: Portfolio.csv not found or empty, continuing without DeGiro data.")
 
-    print(df_degiro) # dit werkt
-    
-    df_rabo = read_portfolio_csv(
-        latest_rabo,
-        ";",
-        #{OMSCHR_COL: "Naam", EUR_COL: "Huidig €"},
-        {OMSCHR_COL: "Naam", EUR_COL: "Huidig"},
-    )
-    if not df_rabo.empty:
-        frames.append(df_rabo)
+    latest_rabo = latest_file(RABO_GLOB)
+    if latest_rabo is not None:
+        df_rabo = read_portfolio_csv(
+            latest_rabo,
+            ";",
+            {OMSCHR_COL: "Naam", EUR_COL: "Huidig"},
+        )
+        if not df_rabo.empty:
+            frames.append(df_rabo)
+        else:
+            print(f"Warning: Rabo file '{latest_rabo}' found but empty, continuing without Rabo data.")
+    else:
+        print("Warning: no Rabo portfolio CSV file found, continuing without Rabo data.")
 
     frames.append(
         pd.DataFrame(
@@ -161,6 +167,10 @@ def main() -> None:
             }
         )
     )
+
+    if not frames:
+        print("Error: no data to process.")
+        sys.exit(1)
 
     df = pd.concat(frames, ignore_index=True)
     df[OMSCHR_COL] = df[OMSCHR_COL].map(format_name)
@@ -180,7 +190,12 @@ def main() -> None:
         }
     )
 
-    tstamp = time.strftime("%Y-%m-%d", time.localtime(os.path.getctime(DEGIRO_FILE)))
+    timestamp_source = DEGIRO_FILE if DEGIRO_FILE.exists() else latest_rabo
+    if timestamp_source is None:
+        tstamp = time.strftime("%Y-%m-%d")
+    else:
+        tstamp = time.strftime("%Y-%m-%d", time.localtime(os.path.getctime(timestamp_source)))
+
     title = f"*** <{tstamp}> Assets(zonder huis): {kapitaal_zonder_huis} Euro.\n\n"
     org_name = f"#+NAME: tbl_{tstamp}\n"
 
