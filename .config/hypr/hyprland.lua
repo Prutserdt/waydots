@@ -303,6 +303,7 @@ hl.bind(mainMod .. " + SHIFT + D", hl.dsp.exec_cmd("~/stack/rofi/rofi_app_list_u
 ---- MULTIMEDIA BINDINGS -------
 --------------------------------
 
+
 -- Laptop multimedia keys for volume and LCD brightness
 hl.bind("XF86AudioRaiseVolume", hl.dsp.exec_cmd("wpctl set-volume -l 1 @DEFAULT_AUDIO_SINK@ 5%+"), { locked = true, repeating = true })
 hl.bind("XF86AudioLowerVolume", hl.dsp.exec_cmd("wpctl set-volume @DEFAULT_AUDIO_SINK@ 5%-"),      { locked = true, repeating = true })
@@ -327,15 +328,30 @@ hl.bind(mainMod .. " + SHIFT + B", hl.dsp.exec_cmd("emacsclient -c -a \"emacs\" 
 --------------------------------
 
 hl.window_rule({
+  match = { class = "qalculate-gtk" },
+  move = "2 500",
+})
+
+hl.window_rule({
   name  = "opacity-emacs",
   match = { class = "^Emacs$" },
   opacity = 0.8,
 })
 
-hl.window_rule({ match = { class = "Emacs" }, border_color = tokyo_night.orange })
-hl.window_rule({ match = { class = "com.mitchellh.ghostty" }, border_color = tokyo_night.green })
-hl.window_rule({ match = { class = "brave-browser" }, border_color = tokyo_night.purple })
+hl.window_rule({
+        match = { class = "Emacs" },
+        border_color = tokyo_night.orange
+})
 
+hl.window_rule({
+        match = { class = "com.mitchellh.ghostty" },
+        border_color = tokyo_night.green
+})
+
+hl.window_rule({
+        match = { class = "brave-browser" },
+        border_color = tokyo_night.purple
+})
 --------------------------------
 ---- WINDOWS AND WORKSPACES ----
 --------------------------------
