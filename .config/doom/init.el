@@ -1,11 +1,12 @@
-;;; init.el -*- lexical-binding: t; -*-
-
 ;; NOTE: This file is generated from ~/.config/doom/README.org
 ;;      Please only edit that file and org-babel-tangle (emacs)
 
+;;; -*- lexical-binding: t; -*-
+
 (doom! :completion
        company             ; the ultimate code completion backend
-       (ivy +childframe)   ; a search engine for love and life
+       ;;(ivy +childframe)   ; a search engine for love and life
+       ivy  ; a search engine for love and life
 
        :ui
        doom                ; what makes DOOM look the way it does
@@ -34,7 +35,7 @@
        :term
        vterm               ; the best terminal emulation in Emacs
 
-       :checkers
+       :checker
        syntax              ; tasing you for every semicolon you forget
        ;;grammar           ; tasing grammar mistake every you make
 
@@ -62,5 +63,5 @@
        tty                 ; zou terminal experience moeten verbeteren...
 
        :config
-/       (default +bindings +smartparens)
+       (default +bindings +smartparens)
 )

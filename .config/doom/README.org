@@ -31,7 +31,6 @@
   - [[#pdf-helpers][PDF helpers]]
   - [[#inserting-characters-words-and-strings][Inserting characters, words and strings]]
   - [[#handling-the-smiles-in-chemistry][Handling the SMILES in chemistry]]
-  - [[#splash-screen][Splash screen]]
 - [[#credits][Credits]]
 
 * About this config
@@ -39,24 +38,22 @@ This is my personal [[https://github.com/hlissner/doom-emacs][Doom Emacs]] confi
 NOTE: if the startup is slow then it has nothing to do with the configuration but the daemon is probably not running. Start it by entering ~emacs --daemon~ to the terminal. After that it should open much snapier.
 
 * init.el
-This file controls what Doom modules are enabled and what order they load in and the first line of the file is lexical binding. This makes the file run (slightly) faster.
-#+BEGIN_SRC emacs-lisp :tangle init.el :results silent
-;;; init.el -*- lexical-binding: t; -*-
-#+END_SRC
-
+This file controls what Doom modules are enabled and what order they load in
 Add a note to ~init.el~ to highlight that this file should not be edited directly.
 #+BEGIN_SRC emacs-lisp :tangle init.el :results silent
 ;; NOTE: This file is generated from ~/.config/doom/README.org
 ;;      Please only edit that file and org-babel-tangle (emacs)
 #+END_SRC
 
+
 The list of available modules can be checked in Doom Emacs by ~M-x~ ~Doom/help-modules~ and can be added to the list of modules listed below. Online module info can also be found [[https://github.com/doomemacs/doomemacs/blob/master/docs/modules.org][here]].
 #+BEGIN_SRC emacs-lisp :tangle init.el :results silent
-
+;;; -*- lexical-binding: t; -*-
 
 (doom! :completion
        company             ; the ultimate code completion backend
-       (ivy +childframe)   ; a search engine for love and life
+       ;;(ivy +childframe)   ; a search engine for love and life
+       ivy  ; a search engine for love and life
 
        :ui
        doom                ; what makes DOOM look the way it does
@@ -85,7 +82,7 @@ The list of available modules can be checked in Doom Emacs by ~M-x~ ~Doom/help-m
        :term
        vterm               ; the best terminal emulation in Emacs
 
-       :checkers
+       :checker
        syntax              ; tasing you for every semicolon you forget
        ;;grammar           ; tasing grammar mistake every you make
 
@@ -113,20 +110,21 @@ The list of available modules can be checked in Doom Emacs by ~M-x~ ~Doom/help-m
        tty                 ; zou terminal experience moeten verbeteren...
 
        :config
-/       (default +bindings +smartparens)
+       (default +bindings +smartparens)
 )
 #+END_SRC
 
 * packages.el
-Here the packages are defined which should be installed. This is an addition to the already installed and loaded modules of ~init.el~. This file shouln't be byte compiled.
-#+BEGIN_SRC emacs-lisp :tangle packages.el :results silent
-;; -*- no-byte-compile: t; -*-
-#+END_SRC
-
 Again a NOTE is added to ~packages.el~ to *not* edit this file.
 #+BEGIN_SRC emacs-lisp :tangle packages.el :results silent
 ;; NOTE: This file is generated from ~/.config/doom/README.org
 ;;      Please only edit that file and org-babel-tangle (emacs)
+#+END_SRC
+
+Here the packages are defined which should be installed. This is an addition to the already installed and loaded modules of ~init.el~. This file shouln't be byte compiled.
+#+BEGIN_SRC emacs-lisp :tangle packages.el :results silent
+;; -*- no-byte-compile: t; -*-
+;;; -*- lexical-binding: t; -*-
 #+END_SRC
 
 Centering text to the middle of the window can be done by the visual-fill-column package.
@@ -158,7 +156,6 @@ Ghostel is a emacs package for the ghostty terminal. For now I also keep the vte
 The large language model package gptel.
 #+BEGIN_SRC emacs-lisp :tangle packages.el :results silent
 (package! gptel)
-(package! python-mode)
 #+END_SRC
 
 ~org-roam~ is a plain-text knowledge management system. It brings some of Roam's more powerful features into the Org-mode ecosystem. ~org-roam-ui~ is a frontend for exploring and interacting with your org-roam notes. Unpinning is necessary for Roam emacs according to de developer of org-roam-ui.
@@ -176,22 +173,27 @@ Let's remind the reader of ~config.el~ to not edit this file directly.
 ;;      Please only edit that file and org-babel-tangle (emacs)
 #+END_SRC
 
+Lexical binding makes the file run (slightly) faster.
+#+BEGIN_SRC emacs-lisp :tangle config.el :results silent
+;;; -*- lexical-binding: t; -*-
+#+END_SRC
+
+Enables =recentf= and configures Emacs to open the most recently used file at startup.  
+Uses both =initial-buffer-choice= and =emacs-startup-hook=, with =when-let= safely checking for an available file.
 #+BEGIN_SRC emacs-lisp :tangle config.el :results silent
 (require 'recentf)
 (require 'subr-x)
 (require 'cl-lib)
 
+
 (recentf-mode 1)
 
-(setq initial-buffer-choice
-      (lambda ()
-        (when recentf-list
-          (find-file (car recentf-list)))))
+(defun my-open-latest-recent-file ()
+  "Open the first existing file from `recentf-list` at startup."
+  (when-let ((file (cl-find-if #'file-exists-p recentf-list)))
+    (find-file file)))
 
-(add-hook 'emacs-startup-hook
-          (lambda ()
-            (when-let ((f (car recentf-list)))
-              (find-file f))))
+(setq initial-buffer-choice #'my-open-latest-recent-file)
 
 #+END_SRC
 
@@ -203,7 +205,7 @@ Everything should be placed in the system clipboard.
 #+END_SRC
 
 ** Custom keybindings
-Emacs uses a lot of keybindings and Doom Emacs adds even more on top of it, much of them are Evil mode which is VIM emulation. Now let's add some extra!
+Emacs uses lots of keybindings and Doom Emacs even more on top of it, much of them are Evil mode which is VIM emulation. 
 
 I want to use the =undo-redo= package in Evil mode and therefore add the keybinding =U= here.
 #+BEGIN_SRC emacs-lisp :tangle config.el :results silent
@@ -230,8 +232,8 @@ The following are keybindings that are bound to my leader key, which is =space=,
             :desc "Column width toggle"          "c" #'my-column-width-toggle)
         (:prefix ("e" . "Excel table stuff")
             :desc "At point org tbl to exl"      "a" #'my-export-org-table-to-system-clipboard
-            :desc "Clipb.: org to exl"           "e" #'my-convert-tabs-to-org-table-in-clipboard
-            :desc "Clipb.: exl to org"           "o" #'my-convert-tabs-to-org-table-in-clipboard)
+            :desc "Clipb.: org to excel"         "e" #'my-convert-comma-to-tab-in-clipboard
+            :desc "Clipb.: excel to org"         "o" #'my-convert-tabs-to-org-table-in-clipboard)
         (:prefix ("f" . "Financial stuff")
             :desc "Show my capital"              "c" #'my-asset-allocation-in-time)
         :desc "Toggle hacking mode"              "h" #'my-toggle-hacking-layout
@@ -334,18 +336,24 @@ The =smartparens= package in Emacs is designed to enhance editing parentheses an
 (sp-local-pair 'org-mode "~" "~" :post-handlers '(:add ("||_" "SPC")))
 
 (defun sp-insert-equal ()
-  "Insert '==' and place the cursor in the middle."
-  (interactive)
-  (insert "==")
-  (backward-char 1))
+   "Insert '==' and place the cursor in the middle."
+   (interactive)
+   (insert "==")
+   (backward-char 1))
 
 (defun sp-insert-tilde ()
-  "Insert '~~' and place the cursor in the middle."
-  (interactive)
-  (insert "~~")
-  (backward-char 1))
+   "Insert '~~' and place the cursor in the middle."
+   (interactive)
+   (insert "~~")
+   (backward-char 1))
 
-;; Bind the functions to the = and ~ keys in org mode
+
+
+
+
+
+
+; Bind the functions to the = and ~ keys in org mode
 (with-eval-after-load 'smartparens
   (define-key smartparens-mode-map (kbd "=") 'sp-insert-equal)
   (define-key smartparens-mode-map (kbd "~") 'sp-insert-tilde))
@@ -570,13 +578,12 @@ Flashing of yanked text is already set out of the box in Doom Emacs. I'm kinda s
 
 ** General settings
 I want to use an org file as a permanent scratch buffer. If it does not exist then it should be created. I changed the visualiszation of this particular file by changing the line colors, that is added in  =my-line-number-color-according-to-evil-state=.
-#+BEGIN_SRC emacs-lisp :tangle config.el  :results silent
-(unless (file-exists-p "~/.config/doom/scratch.org")
-  (with-temp-file "~/.config/doom/scratch.org"
-  (insert "* ❗ An _org-mode_ ~scratch buffer~ /for/ *hacking* ❗\n Just delete this text, this doesn't need to be sticky!")))
 
-(eval-after-load 'org
-  '(find-file "~/.config/doom/scratch.org"))
+#+BEGIN_SRC emacs-lisp :tangle config.el  :results silent
+(unless (file-exists-p (expand-file-name "~/.config/doom/scratch.org"))
+  (with-temp-file (expand-file-name "~/.config/doom/scratch.org")
+    (insert "* ❗ An _org-mode_ ~scratch buffer~ /for/ *hacking* ❗\n"
+            "Just delete this text, this doesn't need to be sticky!")))
 #+END_SRC
 
 Arduino .ino files are a type of C++ code. Let's help Emacs remember this by setting it as a major mode.
@@ -627,10 +634,8 @@ A chatGPT key can be generated here: https://platform.openai.com/account/api-key
   (setq gptel-backend
         (gptel-make-openai "OpenAI"
           :key gptel-api-key
-          :stream t
-          :models '("gpt-5.5" "gpt-5.4-mini")))
-  (setq gptel-model "gpt-5.4-mini"))
-  ;;(setq gptel-model "gpt-5.5"))
+          :stream t))
+  (setq gptel-model "gpt-5.6-luna"))
 #+END_SRC
 
 An helper for my LLM (gptel). I am usually working with code at the bottom of a buffer and want to select the text from the cursor below to the bottom and send that region to the chatbot.
@@ -1117,23 +1122,6 @@ A function that will convert a SMILES string in a line (at point) to an image an
     (sleep-for 0.5)
     (execute-kbd-macro (kbd "RET"))))
 #+END_SRC
-
-** Splash screen
-A useless but pretty Emacs welcome screen is created including an image and some text based on the default Doom emacs welcome screen. It is so useless that I'm not using it anymore 🙂.
-#+BEGIN_SRC emacs-lisp :tangle config.el :results silent
-(setq fancy-splash-image (if (zerop (random 2))
-                           "~/.config/doom/doom-emacs.png"
-                           "~/.config/doom/doom-emacs-stallman.png"))
-(remove-hook '+doom-dashboard-functions #'doom-dashboard-widget-shortmenu)
-
-(add-hook! '+doom-dashboard-functions :append
-    (insert "\n" (+doom-dashboard--center +doom-dashboard--width "An Emacs framework for the stubborn martian hacker, modified.\n\n")
-    (+doom-dashboard--center +doom-dashboard--width "It is a story as old as time.\n")
-    (+doom-dashboard--center +doom-dashboard--width "A stubborn, shell-dwelling and melodramatic\n")
-    (+doom-dashboard--center +doom-dashboard--width "vimmer spirals into despair\n")
-    (+doom-dashboard--center +doom-dashboard--width "before he succumbs to the dark side. \n\n")))
-#+END_SRC
-
 
 * Credits
 My configuration of Doom Emacs is partially based on these:

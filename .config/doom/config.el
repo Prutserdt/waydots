@@ -1,21 +1,21 @@
 ;; NOTE: This file is generated from ~/.config/doom/README.org
 ;;      Please only edit that file and org-babel-tangle (emacs)
 
+;;; -*- lexical-binding: t; -*-
+
 (require 'recentf)
 (require 'subr-x)
 (require 'cl-lib)
 
+
 (recentf-mode 1)
 
-(setq initial-buffer-choice
-      (lambda ()
-        (when recentf-list
-          (find-file (car recentf-list)))))
+(defun my-open-latest-recent-file ()
+  "Open the first existing file from `recentf-list` at startup."
+  (when-let ((file (cl-find-if #'file-exists-p recentf-list)))
+    (find-file file)))
 
-(add-hook 'emacs-startup-hook
-          (lambda ()
-            (when-let ((f (car recentf-list)))
-              (find-file f))))
+(setq initial-buffer-choice #'my-open-latest-recent-file)
 
 (setq select-enable-clipboard t)
 (setq select-enable-primary t)
@@ -40,8 +40,8 @@
             :desc "Column width toggle"          "c" #'my-column-width-toggle)
         (:prefix ("e" . "Excel table stuff")
             :desc "At point org tbl to exl"      "a" #'my-export-org-table-to-system-clipboard
-            :desc "Clipb.: org to exl"           "e" #'my-convert-tabs-to-org-table-in-clipboard
-            :desc "Clipb.: exl to org"           "o" #'my-convert-tabs-to-org-table-in-clipboard)
+            :desc "Clipb.: org to excel"         "e" #'my-convert-comma-to-tab-in-clipboard
+            :desc "Clipb.: excel to org"         "o" #'my-convert-tabs-to-org-table-in-clipboard)
         (:prefix ("f" . "Financial stuff")
             :desc "Show my capital"              "c" #'my-asset-allocation-in-time)
         :desc "Toggle hacking mode"              "h" #'my-toggle-hacking-layout
@@ -129,18 +129,24 @@
 (sp-local-pair 'org-mode "~" "~" :post-handlers '(:add ("||_" "SPC")))
 
 (defun sp-insert-equal ()
-  "Insert '==' and place the cursor in the middle."
-  (interactive)
-  (insert "==")
-  (backward-char 1))
+   "Insert '==' and place the cursor in the middle."
+   (interactive)
+   (insert "==")
+   (backward-char 1))
 
 (defun sp-insert-tilde ()
-  "Insert '~~' and place the cursor in the middle."
-  (interactive)
-  (insert "~~")
-  (backward-char 1))
+   "Insert '~~' and place the cursor in the middle."
+   (interactive)
+   (insert "~~")
+   (backward-char 1))
 
-;; Bind the functions to the = and ~ keys in org mode
+
+
+
+
+
+
+; Bind the functions to the = and ~ keys in org mode
 (with-eval-after-load 'smartparens
   (define-key smartparens-mode-map (kbd "=") 'sp-insert-equal)
   (define-key smartparens-mode-map (kbd "~") 'sp-insert-tilde))
@@ -300,12 +306,10 @@
 
 (setq evil-goggles-duration 1.0)
 
-(unless (file-exists-p "~/.config/doom/scratch.org")
-  (with-temp-file "~/.config/doom/scratch.org"
-  (insert "* ❗ An _org-mode_ ~scratch buffer~ /for/ *hacking* ❗\n Just delete this text, this doesn't need to be sticky!")))
-
-(eval-after-load 'org
-  '(find-file "~/.config/doom/scratch.org"))
+(unless (file-exists-p (expand-file-name "~/.config/doom/scratch.org"))
+  (with-temp-file (expand-file-name "~/.config/doom/scratch.org")
+    (insert "* ❗ An _org-mode_ ~scratch buffer~ /for/ *hacking* ❗\n"
+            "Just delete this text, this doesn't need to be sticky!")))
 
 (add-to-list 'auto-mode-alist '("\\.ino\\'" . c-mode))
 
@@ -336,10 +340,8 @@
   (setq gptel-backend
         (gptel-make-openai "OpenAI"
           :key gptel-api-key
-          :stream t
-          :models '("gpt-5.5" "gpt-5.4-mini")))
-  (setq gptel-model "gpt-5.4-mini"))
-  ;;(setq gptel-model "gpt-5.5"))
+          :stream t))
+  (setq gptel-model "gpt-5.6-luna"))
 
 (defun my-region-select-gptel-send ()
   "Select text at point to the end of buffer and send this to the LLM (gptel-send). The output will be generated at the bottom of the buffer."
@@ -715,15 +717,3 @@ Brain shelve: %s.
     (previous-line)
     (sleep-for 0.5)
     (execute-kbd-macro (kbd "RET"))))
-
-(setq fancy-splash-image (if (zerop (random 2))
-                           "~/.config/doom/doom-emacs.png"
-                           "~/.config/doom/doom-emacs-stallman.png"))
-(remove-hook '+doom-dashboard-functions #'doom-dashboard-widget-shortmenu)
-
-(add-hook! '+doom-dashboard-functions :append
-    (insert "\n" (+doom-dashboard--center +doom-dashboard--width "An Emacs framework for the stubborn martian hacker, modified.\n\n")
-    (+doom-dashboard--center +doom-dashboard--width "It is a story as old as time.\n")
-    (+doom-dashboard--center +doom-dashboard--width "A stubborn, shell-dwelling and melodramatic\n")
-    (+doom-dashboard--center +doom-dashboard--width "vimmer spirals into despair\n")
-    (+doom-dashboard--center +doom-dashboard--width "before he succumbs to the dark side. \n\n")))

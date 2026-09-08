@@ -18,7 +18,8 @@ notify-send "Rofi bookmarks" "Selected: $url"
 
 # Ask for search input if the selected URL is a search engine
 search_query=""
-if [[ "$url" == *"duckduckgo.com"* || "$url" == *"search.brave.com"* || "$url" == *"google.com"* ]]; then
+
+if [[ "$url" == *"duckduckgo.com"* || "$url" == *"search.brave.com"* || "$url" == *"google.com"* || "$url" == *"youtube.com"* ]]; then
     search_query=$(rofi -i -dmenu -width 1200 -l 1 -p "Search words")
     printf "Search query: %s\n" "$search_query"
     notify-send "Rofi bookmarks" "Search: $search_query"
@@ -43,6 +44,10 @@ if [[ -n "$search_query" ]]; then
     if [[ "$url" == *"duckduckgo.com"* ]]; then
         final_url="${url%/}/?q=$(printf '%s' "$search_query" | jq -sRr @uri)"
     elif [[ "$url" == *"google.com"* ]]; then
+        final_url="${url%/}/search?q=$(printf '%s' "$search_query" | jq -sRr @uri)"
+    elif [[ "$url" == *"youtube.com"* ]]; then
+        final_url="https://www.youtube.com/results?search_query=$(printf '%s' "$search_query" | jq -sRr @uri)"
+    elif [[ "$url" == *"search.brave.com"* ]]; then
         final_url="${url%/}/search?q=$(printf '%s' "$search_query" | jq -sRr @uri)"
     fi
 fi
