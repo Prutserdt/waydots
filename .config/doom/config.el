@@ -45,7 +45,9 @@
         (:prefix ("f" . "Financial stuff")
             :desc "Show my capital"              "c" #'my-asset-allocation-in-time)
         :desc "Toggle hacking mode"              "h" #'my-toggle-hacking-layout
-        :desc "Insert key words"                 "i" #'my-insert-characters-and-text
+        (:prefix ("i" . "insert special characters")
+            :desc "Switch input method"                     "s" #'toggle-input-method
+            :desc "Insert my key words"                   "n" #'my-insert-characters-and-text)
         :desc "Keyboard reset"                   "k" #'my-keyboard-reset
         :desc "Watch images via org links"       "l" #'my-generate-org-links-to-pictures-subdir
         :desc "Reload Doom: doom/reload"         "r" #'doom/reload
