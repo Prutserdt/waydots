@@ -283,6 +283,7 @@ hl.bind(appsMod .. " + SHIFT + T", hl.dsp.exec_cmd("pcmanfm"))
 hl.bind(appsMod .. " + T", hl.dsp.exec_cmd("ghostty -e zsh -lc yazi"))
 hl.bind(appsMod .. " + L", hl.dsp.exec_cmd("hyprlock"))
 
+hl.bind(appsMod .. " + V", hl.dsp.exec_cmd("ghostty -e zsh -lc ~/.config/visho.py"))
 ------------------------
 ---- ROFI BINDINGS -----
 ------------------------

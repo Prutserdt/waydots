@@ -42,7 +42,8 @@ alias S='~/.config/open_image_viewer_subdirs.sh'
 # Move pics. Select a picture by marking (m) and then it will be removed to the direcory 'Minder_en_dubbelop'
 alias sm='~/.config/open_image_viewer_move_pics.sh'
 # Show gps location of pic in maps. Select a picture by marking (m)
-alias sg='~/.config/open_image_viewer_to_open_googlemaps.sh'
+#alias sg='~/.config/open_image_viewer_to_open_googlemaps.sh'
+alias sg='cd ~/Downloads/2026_09_Sicilie_september; ~/.config/open_image_viewer_to_open_googlemaps.sh'
 
 # emacs commandline
 #alias emacs="/usr/bin/emacs"
