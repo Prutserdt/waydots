@@ -45,7 +45,8 @@
        lookup              ; navigate your code and its documentation
        pdf                 ; pdf enhancements
        lsp                 ; M-x vscode
-       ;;evil-magit         ; An evil porcelain for Emacs
+       llm                 ; 
+       ;;evil-magit        ; An evil porcelain for Emacs
 
        :lang
        rust                ; rust roest

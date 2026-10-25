@@ -18,7 +18,10 @@
 (package! vterm-toggle)
 (package! vundo)
 
-(package! gptel)
+;;(package! gptel)
+(package! gptel :recipe (:nonrecursive t))
 
 (unpin! org-roam)
 (package! org-roam-ui)
+
+(package! literate-calc-mode)

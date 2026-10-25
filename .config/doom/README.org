@@ -16,6 +16,7 @@
   - [[#distractionsdistraction-free][Distractions/distraction free]]
   - [[#evil-mode-configuration][Evil mode configuration]]
   - [[#general-settings][General settings]]
+  - [[#calculate-in-prose][Calculate in prose]]
   - [[#vterm-toggle][Vterm-toggle]]
   - [[#ghostel-ghostty-in-emacs][Ghostel, ghostty in emacs]]
   - [[#llms-in-emacs][LLMs in emacs]]
@@ -27,7 +28,6 @@
   - [[#download-emacs-configuration][Download Emacs configuration]]
   - [[#nsxiv-create-org-link-to-open-pictures-via-a-shell-script][NSXIV: create org link to open pictures via a shell script]]
   - [[#show-asset-allocation][Show asset allocation]]
-  - [[#keyboard-functions][Keyboard functions]]
   - [[#pdf-helpers][PDF helpers]]
   - [[#inserting-characters-words-and-strings][Inserting characters, words and strings]]
   - [[#handling-the-smiles-in-chemistry][Handling the SMILES in chemistry]]
@@ -92,7 +92,8 @@ The list of available modules can be checked in Doom Emacs by ~M-x~ ~Doom/help-m
        lookup              ; navigate your code and its documentation
        pdf                 ; pdf enhancements
        lsp                 ; M-x vscode
-       ;;evil-magit         ; An evil porcelain for Emacs
+       llm                 ; 
+       ;;evil-magit        ; An evil porcelain for Emacs
 
        :lang
        rust                ; rust roest
@@ -121,7 +122,7 @@ Again a NOTE is added to ~packages.el~ to *not* edit this file.
 ;;      Please only edit that file and org-babel-tangle (emacs)
 #+END_SRC
 
-Here the packages are defined which should be installed. This is an addition to the already installed and loaded modules of ~init.el~. This file shouln't be byte compiled.
+Here the packages are defined which should be installed. This is an addition to the already installed and loaded modules of ~init.el~. This file shouldn't be byte compiled.
 #+BEGIN_SRC emacs-lisp :tangle packages.el :results silent
 ;; -*- no-byte-compile: t; -*-
 ;;; -*- lexical-binding: t; -*-
@@ -155,13 +156,19 @@ Ghostel is a emacs package for the ghostty terminal. For now I also keep the vte
 
 The large language model package gptel.
 #+BEGIN_SRC emacs-lisp :tangle packages.el :results silent
-(package! gptel)
+;;(package! gptel)
+(package! gptel :recipe (:nonrecursive t))
 #+END_SRC
 
 ~org-roam~ is a plain-text knowledge management system. It brings some of Roam's more powerful features into the Org-mode ecosystem. ~org-roam-ui~ is a frontend for exploring and interacting with your org-roam notes. Unpinning is necessary for Roam emacs according to de developer of org-roam-ui.
 #+BEGIN_SRC emacs-lisp :tangle packages.el :results silent
 (unpin! org-roam)
 (package! org-roam-ui)
+#+END_SRC
+
+I added this package as an alternative to my simple function. I think I like my function more, because it is much more simple and can be used inside texts.
+#+BEGIN_SRC emacs-lisp :tangle packages.el :results silent
+(package! literate-calc-mode)
 #+END_SRC
 
 * config.el
@@ -224,6 +231,7 @@ The following are keybindings that are bound to my leader key, which is =space=,
         :desc "Ghostel, ghosttty for emacs"      "SPC" #'ghostel
         :desc "Run aandelen elisp script"        "a" (lambda () (interactive) (load-file "~/stack/Documenten/Aandelen/aandelen.el"))
         :desc "Beach mode/dark mode toggle"      "b" #'my-beach-or-dark-theme-switch
+        :desc "Calculate in prose at point"      "c" #'my-calculate-prose-at-point
         (:prefix ("d" . "Distraction free")
             :desc "Toggle distraction free"      "d" #'my-distractionfree-toggle
             :desc "Transparency togglee"         "t" #'my-transparency-toggle
@@ -240,7 +248,6 @@ The following are keybindings that are bound to my leader key, which is =space=,
         (:prefix ("i" . "insert special characters")
             :desc "Switch input method"                     "s" #'toggle-input-method
             :desc "Insert my key words"                   "n" #'my-insert-characters-and-text)
-        :desc "Keyboard reset"                   "k" #'my-keyboard-reset
         :desc "Watch images via org links"       "l" #'my-generate-org-links-to-pictures-subdir
         :desc "Reload Doom: doom/reload"         "r" #'doom/reload
         (:prefix ("o" . "org mode")
@@ -282,6 +289,11 @@ The following are keybindings that are bound to my leader key, which is =space=,
             ;;:desc "jump list"                    "l" #'+ivy/jump-list)
             :desc "jump list"                    "l" #'evil-show-jumps)
 
+    (:prefix ("o") ;; Default Doom keybinding
+        (:prefix ("l") ;; Default Doom keybinding
+            :desc "My way. At point 2 bottom"    "l" #'my-region-select-gptel-send
+            :desc "Simple gptel"   "z" #'gptel))
+    
     (:prefix ("r" . "org-roam") ;; Similar to the Doom default, SPC n r, but shorter
         :desc "Open random node"                 "a" #'org-roam-node-random
         (:prefix ("d" . "dailies")
@@ -348,12 +360,6 @@ The =smartparens= package in Emacs is designed to enhance editing parentheses an
    (interactive)
    (insert "~~")
    (backward-char 1))
-
-
-
-
-
-
 
 ; Bind the functions to the = and ~ keys in org mode
 (with-eval-after-load 'smartparens
@@ -579,7 +585,7 @@ Flashing of yanked text is already set out of the box in Doom Emacs. I'm kinda s
 #+END_SRC
 
 ** General settings
-I want to use an org file as a permanent scratch buffer. If it does not exist then it should be created. I changed the visualiszation of this particular file by changing the line colors, that is added in  =my-line-number-color-according-to-evil-state=.
+I want to use an org file as a permanent scratch buffer. If it does not exist then it should be created. I changed the visualization of this particular file by changing the line colors, that is added in  =my-line-number-color-according-to-evil-state=.
 
 #+BEGIN_SRC emacs-lisp :tangle config.el  :results silent
 (unless (file-exists-p (expand-file-name "~/.config/doom/scratch.org"))
@@ -593,10 +599,101 @@ Arduino .ino files are a type of C++ code. Let's help Emacs remember this by set
 (add-to-list 'auto-mode-alist '("\\.ino\\'" . c-mode))
 #+END_SRC
 
-No more conformation messages whilst closing emacs.
+No more confirmation messages whilst closing emacs.
 #+BEGIN_SRC emacs-lisp :tangle config.el :results silent
 (setq confirm-kill-emacs nil)
 #+END_SRC
+
+** Calculate in prose
+A function to calculate results of calculations in prose.
+Example prose: =The overall costs were €300 * 3.=
+Place the cursor on calcuation and convert it to: ==The overall costs were €300 * 3 = €900.=
+
+#+BEGIN_SRC emacs-lisp :tangle config.el  :results silent
+(require 'calc)
+(require 'subr-x)
+
+(defconst my-currency-symbols
+  '("$" "€" "£" "¥" "₹" "₽" "₩" "₪" "₫" "₴"
+    "₦" "₱" "฿" "₡" "₲" "₵" "₸" "₺" "₼" "₾"
+    "₭" "₮" "₥" "₢" "₠" "¢" "₿")
+  "Currency symbols recognized by the calculator.")
+
+(defun my-calculate-prose-at-point ()
+  "Calculate the arithmetic expression around point.
+
+Currency symbols and commas are allowed in the expression.
+Commas and currency symbols are removed before calculation.
+The first currency symbol found is added to the result."
+  (interactive)
+
+  (let* ((currency-chars
+          (apply #'concat my-currency-symbols))
+         ;; The hyphen is at the end so it is treated literally.
+         (expression-chars
+          (concat "0-9.,+*/() \t-" currency-chars))
+         start
+         end
+         expression
+         currency
+         result)
+
+    ;; Find the expression surrounding point.
+    (save-excursion
+      (skip-chars-backward expression-chars)
+      (setq start (point))
+
+      (skip-chars-forward expression-chars)
+      (setq end (point)))
+
+    ;; Remove whitespace at the beginning and end.
+    (while (and (< start end)
+                (memq (char-after start) '(?\s ?\t)))
+      (setq start (1+ start)))
+
+    (while (and (> end start)
+                (memq (char-before end) '(?\s ?\t)))
+      (setq end (1- end)))
+
+    ;; Do not include a sentence-ending period.
+    (when (and (> end start)
+               (eq (char-before end) ?.))
+      (setq end (1- end)))
+
+    ;; Preserve the original expression for currency detection.
+    (setq expression
+          (buffer-substring-no-properties start end))
+
+    (when (string-empty-p (string-trim expression))
+      (user-error "No arithmetic expression found at point"))
+
+    ;; Find the first currency symbol in the original expression.
+    (dolist (symbol my-currency-symbols)
+      (when (and (null currency)
+                 (string-match-p (regexp-quote symbol) expression))
+        (setq currency symbol)))
+
+    ;; Remove commas and currency symbols before calling Calc.
+    (setq expression
+          (replace-regexp-in-string
+           (regexp-opt (append my-currency-symbols '(",")))
+           ""
+           expression))
+
+    ;; Calculate the cleaned expression.
+    (condition-case err
+        (setq result (calc-eval expression))
+      (error
+       (user-error "Cannot calculate %S: %s"
+                   expression
+                   (error-message-string err))))
+
+    ;; Insert the result, preserving the currency when present.
+    (goto-char end)
+    (insert " = "
+            (or currency "")
+            result)))
+#+end_src
 
 ** Vterm-toggle
 I like to use Vterm as a scratch terminal, this can be done by the vterm-toggle package.
@@ -735,7 +832,7 @@ This function will convert the content of the clipboard from a tab separated for
     (clipboard-kill-region (point-min) (point-max))))
 #+END_SRC
 
-This function will convert the content of the clipboard. It will change the commas to tabs. This is particular usefull for converting comma separated data to tabs separated data and is used in the =my-export-org-table-to-system-clipboard= function.
+This function will convert the content of the clipboard. It will change the commas to tabs. This is particular useful for converting comma separated data to tabs separated data and is used in the =my-export-org-table-to-system-clipboard= function.
 #+BEGIN_SRC emacs-lisp :tangle config.el :results silent
 (defun my-convert-comma-to-tab-in-clipboard ()
   "Convert commas to tabs in clipboard contents."
@@ -855,7 +952,7 @@ This function will open the last org roam daily file based on the filename (YYYY
 I want to be able to open a new daily and place the content of the last daily in it. This is very handy since there is usually a lot of overlap with previous daily. No more need to do this manually every day :-).
 #+BEGIN_SRC emacs-lisp :tangle config.el :results silent
 (defun my-goto-today-paste-previous-daily ()
-  "Create a new daily containg previous daily note data"
+  "Create a new daily containing previous daily note data"
   (interactive)
 
   ; Go to today's daily note
@@ -966,26 +1063,30 @@ This Emacs Lisp function, =my-generate-org-links-to-pictures-subdir=, creates li
 ** Show asset allocation
 Show a map of my asset allocation in time by running a Python script.
 #+BEGIN_SRC emacs-lisp :tangle config.el  :results silent
-(defun my-asset-allocation-in-time ()
-  "Show my asset allocation vs time in a chart. Done by running a Python script."
-  (interactive)
-  (let ((script-path "~/stack/Documenten/Aandelen/Plotten_AA_in_de_tijd.py"))
-    (setq default-directory (file-name-directory script-path))
-    (shell-command (concat "notify-send -t 1000 'Displaying my AA plot: " script-path "'"))
-    (shell-command (concat "python3 " script-path)
-                   "*Python Output*")
-    (message (concat "Python script executed: " script-path))))
-#+END_SRC
 
-** Keyboard functions
-Remap my keyboard with xmodmap. Right now I'm running two shell aliases plus the alias q to exit.
-#+BEGIN_SRC emacs-lisp :tangle config.el  :results silent
-(defun my-keyboard-reset ()
-  "Right meta/super/control for my Sweep keyboard. Plus quick key repeats."
+(defun my-asset-allocation-in-time ()
+  "Show my asset allocation versus time."
   (interactive)
-  (comint-send-string (get-buffer-process (shell)) "e\nk\nq\n")
-  (kill-buffer (current-buffer)))
-#+END_SRC
+  (let* ((script-path
+          (expand-file-name
+           "~/stack/Documenten/Aandelen/Plotten_AA_in_de_tijd.py"))
+         (default-directory (file-name-directory script-path))
+         (python (or (executable-find "python3")
+                     (executable-find "python")))
+         (output-buffer "*Python Output*"))
+    (unless python
+      (user-error "Python executable not found"))
+
+    (shell-command
+     (format "notify-send -t 1000 %s"
+             (shell-quote-argument "Displaying my AA plot")))
+
+    (let ((status (call-process python nil output-buffer t script-path)))
+      (if (zerop status)
+          (message "Python script executed: %s" script-path)
+        (pop-to-buffer output-buffer)
+        (error "Python script failed with status %s" status)))))
+#+end_src
 
 ** PDF helpers
 Fetch the text of a pdf file and puts it in an org buffer.

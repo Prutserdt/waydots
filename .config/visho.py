@@ -4,6 +4,8 @@ import csv
 import json
 import os
 import subprocess
+import readline
+import shlex
 from concurrent.futures import ThreadPoolExecutor
 from pathlib import Path
 
@@ -296,13 +298,15 @@ button:disabled {
     <h2 id="viewer-title">Select a picture</h2>
 
     <div id="viewer-navigation">
+
         <button class="viewer-navigation"
                 aria-label="Previous picture"
-                onclick="showPreviousPicture()">&lt;</button>
+                onclick="showPreviousPicture()">↑</button>
 
         <button class="viewer-navigation"
                 aria-label="Next picture"
-                onclick="showNextPicture()">&gt;</button>
+                onclick="showNextPicture()">↓</button>
+
     </div>
 
     <div id="viewer-image-container">
@@ -784,17 +788,90 @@ imageContainer.addEventListener("pointercancel", function() {
     imageContainer.classList.remove("dragging");
 });
 
+
+
+
+
+
+let pendingG = false;
+let pendingGTimer = null;
+
 document.addEventListener("keydown", function(event) {
-    if (event.key === "p") {
+    if (event.ctrlKey || event.altKey || event.metaKey) {
+        return;
+    }
+
+    if (event.key === "Home") {
+        event.preventDefault();
+
+        if (locations.length) {
+            showPicture(0, false);
+        }
+
+        return;
+    }
+
+    if (event.key === "End") {
+        event.preventDefault();
+
+        if (locations.length) {
+            showPicture(locations.length - 1, false);
+        }
+
+        return;
+    }
+
+    /* Vim-style gg: go to the first picture */
+    if (event.key === "g" && !event.shiftKey) {
+        event.preventDefault();
+
+        if (pendingG && locations.length) {
+            showPicture(0, false);
+            pendingG = false;
+            clearTimeout(pendingGTimer);
+        } else {
+            pendingG = true;
+
+            clearTimeout(pendingGTimer);
+            pendingGTimer = setTimeout(function() {
+                pendingG = false;
+            }, 700);
+        }
+
+        return;
+    }
+
+    /* Vim-style G: go to the last picture */
+    if (event.key === "G") {
+        event.preventDefault();
+
+        if (locations.length) {
+            showPicture(locations.length - 1, false);
+        }
+
+        pendingG = false;
+        clearTimeout(pendingGTimer);
+        return;
+    }
+
+    if (event.key === "p" || event.key === "ArrowUp") {
+        event.preventDefault();
         showPreviousPicture();
-    } else if (event.key === "n") {
+    } else if (event.key === "n" || event.key === "ArrowDown") {
+        event.preventDefault();
         showNextPicture();
     } else if (event.key === "+" || event.key === "=") {
+        event.preventDefault();
         zoomImageIn();
     } else if (event.key === "-") {
+        event.preventDefault();
         zoomImageOut();
     } else if (event.key === "0") {
+        event.preventDefault();
         resetImageZoom();
+    } else {
+        pendingG = false;
+        clearTimeout(pendingGTimer);
     }
 });
 
@@ -828,34 +905,130 @@ if (locations.length > 0) {
 """
 
 
+def print_directory(directory):
+    """Print the contents of directory."""
+    try:
+        entries = sorted(
+            directory.iterdir(),
+            key=lambda path: (not path.is_dir(), path.name.lower()),
+        )
+    except OSError as error:
+        print(f"Cannot read directory: {error}")
+        return
+
+    if not entries:
+        print("  <empty>")
+        return
+
+    for entry in entries:
+        marker = "/" if entry.is_dir() else ""
+        print(f"  {entry.name}{marker}")
+
+
+def resolve_directory_path(current, value):
+    """Resolve a user-entered path relative to current."""
+    path = Path(value).expanduser()
+
+    if not path.is_absolute():
+        path = current / path
+
+    return path.resolve()
+
+
 def choose_directory():
     directory = DEFAULT_DIRECTORY
 
     while True:
-        print(f"\nPhoto directory:\n  {directory}")
-        answer = input("Use this directory? [Y/n]: ").strip().lower()
+        if not directory.exists():
+            print(f"\nDirectory does not exist:\n  {directory}")
+            directory = directory.parent
+            continue
 
-        if answer in {"", "y", "yes"}:
-            if not directory.is_dir():
-                print("Directory does not exist.")
-                create = input("Create it? [y/N]: ").strip().lower()
+        if not directory.is_dir():
+            print(f"Not a directory: {directory}")
+            directory = directory.parent
+            continue
 
-                if create in {"y", "yes"}:
-                    directory.mkdir(parents=True, exist_ok=True)
-                else:
-                    continue
+        print(f"#######################")
+        print(f"## VISHO application ##")
+        print(f"#######################")
+        print(f"\nCurrent directory:  {directory}")
+        print(f"Command options:\ny  = pick this directory\ncd = change directory\nh  = help\ne  = exit ")
+        try:
+            command_line = input(
+                "Command: "
+            ).strip()
+        except (EOFError, KeyboardInterrupt):
+            print()
+            raise SystemExit
 
+        if not command_line:
+            continue
+
+        try:
+            arguments = shlex.split(command_line)
+        except ValueError as error:
+            print(f"Invalid command: {error}")
+            continue
+
+        command = arguments[0].lower()
+        values = arguments[1:]
+
+        if command in {"use", "select", "y", "yes"}:
             return directory
 
-        if answer in {"n", "no"}:
-            selected = input("Enter another directory: ").strip()
+        if command in {"quit", "q", "exit", "e"}:
+            raise SystemExit
 
-            if selected:
-                directory = Path(selected).expanduser().resolve()
+        if command in {"help", "h", "?"}:
+            print(
+                "\nCommands:\n"
+                "  y, yes, select       Select the current directory\n"
+                "  cd PATH              Change directory\n"
+                "  ls [PATH]            List a directory\n"
+                "  pwd                  Show the current directory\n"
+                "  up                   Go to the parent directory\n"
+                "  h, help, ?           Show this help\n"
+                "  e, q, quit, exit     Exit the application\n"
+            )
+            continue
+
+        if command == "pwd":
+            print(directory)
+            continue
+
+        if command == "up":
+            directory = directory.parent
+            continue
+
+        if command == "ls":
+            target = directory
+
+            if values:
+                target = resolve_directory_path(directory, values[0])
+
+            if target.is_dir():
+                print_directory(target)
+            else:
+                print(f"Not a directory: {target}")
 
             continue
 
-        print("Please answer y or n.")
+        if command == "cd":
+            if len(values) != 1:
+                print("Usage: cd PATH")
+                continue
+
+            target = resolve_directory_path(directory, values[0])
+
+            if target.is_dir():
+                directory = target
+            else:
+                print(f"Not a directory: {target}")
+
+            continue
+
+        print(f"Unknown command: {command!r}. Type 'help' for help.")
 
 
 def is_valid_image(path):
@@ -869,14 +1042,23 @@ def is_valid_image(path):
         print(f"Skipping invalid JPEG {path.name}: {error}")
         return False
 
-
+    
 def find_photos(directory):
+    try:
+        entries = sorted(directory.iterdir())
+    except OSError as error:
+        print(f"Could not read {directory}: {error}")
+        return []
+
     photos = []
 
-    for path in sorted(directory.iterdir()):
-        if path.is_file() and path.suffix.lower() in IMAGE_EXTENSIONS:
-            if is_valid_image(path):
-                photos.append(path)
+    for path in entries:
+        if (
+            path.is_file()
+            and path.suffix.casefold() in IMAGE_EXTENSIONS
+            and is_valid_image(path)
+        ):
+            photos.append(path)
 
     return photos
 
@@ -975,7 +1157,7 @@ def create_thumbnail(image_path, thumbnail_directory):
 
     except Exception as error:
         print(f"Could not create thumbnail for {image_path.name}: {error}")
-        return image_path
+        return None
 
     return thumbnail_path
 
@@ -1068,13 +1250,20 @@ def write_csv(locations, output_directory):
 def write_html(locations, output_directory):
     html_path = output_directory / "locations.html"
 
-    html = HTML_TEMPLATE.replace(
-        "__LOCATION_DATA__",
+    location_data = (
         json.dumps(
             locations,
             ensure_ascii=False,
             separators=(",", ":"),
-        ),
+        )
+        .replace("<", "\\u003c")
+        .replace(">", "\\u003e")
+        .replace("&", "\\u0026")
+    )
+
+    html = HTML_TEMPLATE.replace(
+        "__LOCATION_DATA__",
+        location_data,
     )
 
     html_path.write_text(html, encoding="utf-8")

@@ -32,6 +32,7 @@
         :desc "Ghostel, ghosttty for emacs"      "SPC" #'ghostel
         :desc "Run aandelen elisp script"        "a" (lambda () (interactive) (load-file "~/stack/Documenten/Aandelen/aandelen.el"))
         :desc "Beach mode/dark mode toggle"      "b" #'my-beach-or-dark-theme-switch
+        :desc "Calculate in prose at point"      "c" #'my-calculate-prose-at-point
         (:prefix ("d" . "Distraction free")
             :desc "Toggle distraction free"      "d" #'my-distractionfree-toggle
             :desc "Transparency togglee"         "t" #'my-transparency-toggle
@@ -48,7 +49,6 @@
         (:prefix ("i" . "insert special characters")
             :desc "Switch input method"                     "s" #'toggle-input-method
             :desc "Insert my key words"                   "n" #'my-insert-characters-and-text)
-        :desc "Keyboard reset"                   "k" #'my-keyboard-reset
         :desc "Watch images via org links"       "l" #'my-generate-org-links-to-pictures-subdir
         :desc "Reload Doom: doom/reload"         "r" #'doom/reload
         (:prefix ("o" . "org mode")
@@ -90,6 +90,11 @@
             ;;:desc "jump list"                    "l" #'+ivy/jump-list)
             :desc "jump list"                    "l" #'evil-show-jumps)
 
+    (:prefix ("o") ;; Default Doom keybinding
+        (:prefix ("l") ;; Default Doom keybinding
+            :desc "My way. At point 2 bottom"    "l" #'my-region-select-gptel-send
+            :desc "Simple gptel"   "z" #'gptel))
+    
     (:prefix ("r" . "org-roam") ;; Similar to the Doom default, SPC n r, but shorter
         :desc "Open random node"                 "a" #'org-roam-node-random
         (:prefix ("d" . "dailies")
@@ -141,12 +146,6 @@
    (interactive)
    (insert "~~")
    (backward-char 1))
-
-
-
-
-
-
 
 ; Bind the functions to the = and ~ keys in org mode
 (with-eval-after-load 'smartparens
@@ -316,6 +315,90 @@
 (add-to-list 'auto-mode-alist '("\\.ino\\'" . c-mode))
 
 (setq confirm-kill-emacs nil)
+
+(require 'calc)
+(require 'subr-x)
+
+(defconst my-currency-symbols
+  '("$" "€" "£" "¥" "₹" "₽" "₩" "₪" "₫" "₴"
+    "₦" "₱" "฿" "₡" "₲" "₵" "₸" "₺" "₼" "₾"
+    "₭" "₮" "₥" "₢" "₠" "¢" "₿")
+  "Currency symbols recognized by the calculator.")
+
+(defun my-calculate-prose-at-point ()
+  "Calculate the arithmetic expression around point.
+
+Currency symbols and commas are allowed in the expression.
+Commas and currency symbols are removed before calculation.
+The first currency symbol found is added to the result."
+  (interactive)
+
+  (let* ((currency-chars
+          (apply #'concat my-currency-symbols))
+         ;; The hyphen is at the end so it is treated literally.
+         (expression-chars
+          (concat "0-9.,+*/() \t-" currency-chars))
+         start
+         end
+         expression
+         currency
+         result)
+
+    ;; Find the expression surrounding point.
+    (save-excursion
+      (skip-chars-backward expression-chars)
+      (setq start (point))
+
+      (skip-chars-forward expression-chars)
+      (setq end (point)))
+
+    ;; Remove whitespace at the beginning and end.
+    (while (and (< start end)
+                (memq (char-after start) '(?\s ?\t)))
+      (setq start (1+ start)))
+
+    (while (and (> end start)
+                (memq (char-before end) '(?\s ?\t)))
+      (setq end (1- end)))
+
+    ;; Do not include a sentence-ending period.
+    (when (and (> end start)
+               (eq (char-before end) ?.))
+      (setq end (1- end)))
+
+    ;; Preserve the original expression for currency detection.
+    (setq expression
+          (buffer-substring-no-properties start end))
+
+    (when (string-empty-p (string-trim expression))
+      (user-error "No arithmetic expression found at point"))
+
+    ;; Find the first currency symbol in the original expression.
+    (dolist (symbol my-currency-symbols)
+      (when (and (null currency)
+                 (string-match-p (regexp-quote symbol) expression))
+        (setq currency symbol)))
+
+    ;; Remove commas and currency symbols before calling Calc.
+    (setq expression
+          (replace-regexp-in-string
+           (regexp-opt (append my-currency-symbols '(",")))
+           ""
+           expression))
+
+    ;; Calculate the cleaned expression.
+    (condition-case err
+        (setq result (calc-eval expression))
+      (error
+       (user-error "Cannot calculate %S: %s"
+                   expression
+                   (error-message-string err))))
+
+    ;; Insert the result, preserving the currency when present.
+    (goto-char end)
+    (insert " = "
+            (or currency "")
+            result)))
 
 (use-package! vterm-toggle
   :after vterm
@@ -507,7 +590,7 @@ Brain shelve: %s.
       (find-file (expand-file-name (car (last (sort files #'string<))) my-org-roam-dailies-dir)))))
 
 (defun my-goto-today-paste-previous-daily ()
-  "Create a new daily containg previous daily note data"
+  "Create a new daily containing previous daily note data"
   (interactive)
 
   ; Go to today's daily note
@@ -596,20 +679,27 @@ Brain shelve: %s.
         (insert (concat "[[shell: cd " subdir "; find . -maxdepth 1 -type f -iname '*.jpeg' -o -iname '*.jpg' -o -iname '*.png' -o -iname '*.gif' | sort | nsxiv -ftio][" last-dir "]]\n"))))))
 
 (defun my-asset-allocation-in-time ()
-  "Show my asset allocation vs time in a chart. Done by running a Python script."
+  "Show my asset allocation versus time."
   (interactive)
-  (let ((script-path "~/stack/Documenten/Aandelen/Plotten_AA_in_de_tijd.py"))
-    (setq default-directory (file-name-directory script-path))
-    (shell-command (concat "notify-send -t 1000 'Displaying my AA plot: " script-path "'"))
-    (shell-command (concat "python3 " script-path)
-                   "*Python Output*")
-    (message (concat "Python script executed: " script-path))))
+  (let* ((script-path
+          (expand-file-name
+           "~/stack/Documenten/Aandelen/Plotten_AA_in_de_tijd.py"))
+         (default-directory (file-name-directory script-path))
+         (python (or (executable-find "python3")
+                     (executable-find "python")))
+         (output-buffer "*Python Output*"))
+    (unless python
+      (user-error "Python executable not found"))
 
-(defun my-keyboard-reset ()
-  "Right meta/super/control for my Sweep keyboard. Plus quick key repeats."
-  (interactive)
-  (comint-send-string (get-buffer-process (shell)) "e\nk\nq\n")
-  (kill-buffer (current-buffer)))
+    (shell-command
+     (format "notify-send -t 1000 %s"
+             (shell-quote-argument "Displaying my AA plot")))
+
+    (let ((status (call-process python nil output-buffer t script-path)))
+      (if (zerop status)
+          (message "Python script executed: %s" script-path)
+        (pop-to-buffer output-buffer)
+        (error "Python script failed with status %s" status)))))
 
 (defun my-open-pdf-as-org-text (pdf-file)
   "Insert text from a PDF file into a new Org mode buffer using pdftotext."
