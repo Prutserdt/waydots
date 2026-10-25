@@ -605,7 +605,7 @@ No more confirmation messages whilst closing emacs.
 ** Calculate in prose
 A function to calculate results of calculations in prose.
 Example prose: =The overall costs were €300 * 3.=
-Place the cursor on calcuation and convert it to: ==The overall costs were €300 * 3 = €900.=
+Place the cursor on calcuation and convert it to: =The overall costs were €300 * 3 = €900.=
 
 #+BEGIN_SRC emacs-lisp :tangle config.el  :results silent
 (require 'calc)
@@ -616,7 +616,7 @@ Place the cursor on calcuation and convert it to: ==The overall costs were €30
     "₦" "₱" "฿" "₡" "₲" "₵" "₸" "₺" "₼" "₾"
     "₭" "₮" "₥" "₢" "₠" "¢" "₿"))
 
-(defun my-calculate-prose-at-point-v05 ()
+(defun my-calculate-prose-at-point ()
   "Calculate the arithmetic expression around point."
   (interactive)
   (let* ((currency-regexp (regexp-opt my-currency-symbols))

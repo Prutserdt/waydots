@@ -323,7 +323,7 @@
     "₦" "₱" "฿" "₡" "₲" "₵" "₸" "₺" "₼" "₾"
     "₭" "₮" "₥" "₢" "₠" "¢" "₿"))
 
-(defun my-calculate-prose-at-point-v05 ()
+(defun my-calculate-prose-at-point ()
   "Calculate the arithmetic expression around point."
   (interactive)
   (let* ((currency-regexp (regexp-opt my-currency-symbols))
