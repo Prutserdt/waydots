@@ -7,7 +7,6 @@
 (require 'subr-x)
 (require 'cl-lib)
 
-
 (recentf-mode 1)
 
 (defun my-open-latest-recent-file ()
@@ -322,71 +321,49 @@
 (defconst my-currency-symbols
   '("$" "€" "£" "¥" "₹" "₽" "₩" "₪" "₫" "₴"
     "₦" "₱" "฿" "₡" "₲" "₵" "₸" "₺" "₼" "₾"
-    "₭" "₮" "₥" "₢" "₠" "¢" "₿")
-  "Currency symbols recognized by the calculator.")
+    "₭" "₮" "₥" "₢" "₠" "¢" "₿"))
 
-(defun my-calculate-prose-at-point ()
-  "Calculate the arithmetic expression around point.
-
-Currency symbols and commas are allowed in the expression.
-Commas and currency symbols are removed before calculation.
-The first currency symbol found is added to the result."
+(defun my-calculate-prose-at-point-v05 ()
+  "Calculate the arithmetic expression around point."
   (interactive)
+  (let* ((currency-regexp (regexp-opt my-currency-symbols))
+         (allowed-chars
+          (concat "0-9.,+*/() \t"
+                  (apply #'concat my-currency-symbols)
+                  "-"))
+         start end expression currency result)
 
-  (let* ((currency-chars
-          (apply #'concat my-currency-symbols))
-         ;; The hyphen is at the end so it is treated literally.
-         (expression-chars
-          (concat "0-9.,+*/() \t-" currency-chars))
-         start
-         end
-         expression
-         currency
-         result)
-
-    ;; Find the expression surrounding point.
+    ;; Find the surrounding expression.
     (save-excursion
-      (skip-chars-backward expression-chars)
+      (skip-chars-backward allowed-chars)
       (setq start (point))
-
-      (skip-chars-forward expression-chars)
+      (skip-chars-forward allowed-chars)
       (setq end (point)))
 
-    ;; Remove whitespace at the beginning and end.
-    (while (and (< start end)
-                (memq (char-after start) '(?\s ?\t)))
-      (setq start (1+ start)))
-
-    (while (and (> end start)
-                (memq (char-before end) '(?\s ?\t)))
-      (setq end (1- end)))
-
-    ;; Do not include a sentence-ending period.
-    (when (and (> end start)
-               (eq (char-before end) ?.))
-      (setq end (1- end)))
-
-    ;; Preserve the original expression for currency detection.
+    ;; Remove surrounding whitespace and a final period.
     (setq expression
-          (buffer-substring-no-properties start end))
+          (string-trim
+           (buffer-substring-no-properties start end)))
 
-    (when (string-empty-p (string-trim expression))
+    (when (string-suffix-p "." expression)
+      (setq expression (substring expression 0 -1)))
+
+    (when (string-empty-p expression)
       (user-error "No arithmetic expression found at point"))
 
-    ;; Find the first currency symbol in the original expression.
+    ;; Remember the first currency symbol.
     (dolist (symbol my-currency-symbols)
       (when (and (null currency)
                  (string-match-p (regexp-quote symbol) expression))
         (setq currency symbol)))
 
-    ;; Remove commas and currency symbols before calling Calc.
+    ;; Remove commas and currency symbols before calculating.
     (setq expression
           (replace-regexp-in-string
-           (regexp-opt (append my-currency-symbols '(",")))
+           (regexp-opt (cons "," my-currency-symbols))
            ""
            expression))
 
-    ;; Calculate the cleaned expression.
     (condition-case err
         (setq result (calc-eval expression))
       (error
@@ -394,11 +371,16 @@ The first currency symbol found is added to the result."
                    expression
                    (error-message-string err))))
 
-    ;; Insert the result, preserving the currency when present.
+    ;; Insert after an existing equals sign, or create one.
     (goto-char end)
-    (insert " = "
-            (or currency "")
-            result)))
+    (skip-chars-forward " \t")
+
+    (if (eq (char-after) ?=)
+        (forward-char 1)
+      (insert " = "))
+
+    (skip-chars-forward " \t")
+    (insert (or currency "") result)))
 
 (use-package! vterm-toggle
   :after vterm
