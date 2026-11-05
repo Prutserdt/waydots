@@ -20,9 +20,9 @@ hl.monitor({
 ---- SYSTEM SPECIFIC SETTINGS ----
 ----------------------------------
 
--- Obtain hostname
+-- Obtain hostname. Used for system specific settings, for instance selecting dwindle
+-- layout on my thinkpad laptop.
 local hostname = io.popen("uname -n"):read("*l") or "unknown"
--- os.execute("notify-send 'Hostname' '" .. hostname .. "'")
 
 local layout = "master"
 
@@ -116,6 +116,14 @@ hl.config({
     layout = layout,
   },
   decoration = {
+    wobble = {
+      enabled = true,
+      mesh = 16,
+      stiffness = 250,
+      damping = 10,
+      mass = 0.3,
+      intensity = 0.5,
+    },
     rounding       = 10,
     rounding_power = 10,
 
@@ -130,8 +138,8 @@ hl.config({
     blur = {
       enabled = false,
     },
-  },
 
+  },
   animations = {
     enabled = false,
   },
@@ -164,15 +172,9 @@ hl.config({
 
 hl.config({
   misc = {
-    force_default_wallpaper = -1,    -- Set to 0 or 1 to disable the anime mascot wallpapers
-    disable_hyprland_logo   = false, -- If true disables the random hyprland logo / anime girl background. :(
-    },
-})
-
--- Window swallowing for my terminal
-hl.config({
-  misc = {
-    enable_swallow = true,
+    force_default_wallpaper = -1,            -- Set to 0 or 1 to disable the anime mascot wallpapers
+    disable_hyprland_logo   = false,         -- If true disables the random hyprland logo / anime girl background. :(
+    enable_swallow = true,                   -- Window swallowing for my terminal
     swallow_regex = "com.mitchellh.ghostty", -- The classname of ghostty is very weird!
   },
 })
@@ -223,7 +225,6 @@ hl.bind(mainMod .. " + SHIFT + H", hl.dsp.window.move({ direction = "left" }))
 hl.bind(mainMod .. " + SHIFT + L", hl.dsp.window.move({ direction = "right" }))
 hl.bind(mainMod .. " + SHIFT + K", hl.dsp.window.move({ direction = "up" }))
 hl.bind(mainMod .. " + SHIFT + J", hl.dsp.window.move({ direction = "down" }))
-
 
 -- Switch layouts
 hl.bind(mainMod .. " + Y", function()
@@ -303,7 +304,6 @@ hl.bind(mainMod .. " + SHIFT + D", hl.dsp.exec_cmd("~/stack/rofi/rofi_app_list_u
 --------------------------------
 ---- MULTIMEDIA BINDINGS -------
 --------------------------------
-
 
 -- Laptop multimedia keys for volume and LCD brightness
 hl.bind("XF86AudioRaiseVolume", hl.dsp.exec_cmd("wpctl set-volume -l 1 @DEFAULT_AUDIO_SINK@ 5%+"), { locked = true, repeating = true })
@@ -392,7 +392,6 @@ hl.window_rule({
 hl.window_rule({
   name  = "move-hyprland-run",
   match = { class = "hyprland-run" },
-
   move  = "20 monitor_h-120",
   float = true,
 })
