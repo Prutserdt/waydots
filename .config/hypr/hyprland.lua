@@ -294,12 +294,15 @@ hl.bind(rofiMod .. " + B",      hl.dsp.exec_cmd("~/.config/rofi/rofi_internet_bo
 hl.bind(rofiMod .. " + D",      hl.dsp.exec_cmd("~/.config/rofi/rofi_app_launcher.sh"))
 hl.bind(rofiMod .. " + M",      hl.dsp.exec_cmd("~/.config/rofi/rofi_drive_mounter.sh"))
 hl.bind(rofiMod .. " + S",      hl.dsp.exec_cmd("~/.config/rofi/rofi_monitor_selector.sh"))
+hl.bind(rofiMod .. " + N",      hl.dsp.exec_cmd("~/.config/rofi/rofi_notification_list.sh"))
 hl.bind(rofiMod .. " + V",      hl.dsp.exec_cmd("~/.config/rofi/rofi_clipboard_manager.sh"))
 hl.bind(rofiMod .. " + W",      hl.dsp.exec_cmd("~/.config/rofi/rofi_wallpaper_selector.sh"))
 hl.bind(rofiMod .. " + Q",      hl.dsp.exec_cmd("~/.config/rofi/rofi_exit_hyprland.sh"))
 
 -- Not a rofi binding, but related to the app launcher: update the application list
 hl.bind(mainMod .. " + SHIFT + D", hl.dsp.exec_cmd("~/stack/rofi/rofi_app_list_update.sh"))
+
+-- bind = SUPER, N, exec, dunstctl history
 
 --------------------------------
 ---- MULTIMEDIA BINDINGS -------
