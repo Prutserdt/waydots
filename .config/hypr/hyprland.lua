@@ -197,6 +197,9 @@ local mainMod = "SUPER"
 local rofiMod = "SUPER + CTRL"
 local appsMod= "SUPER + CTRL + ALT"
 
+-- Show my keybinds (hotkeys)
+hl.bind(mainMod .. " + SLASH", hl.dsp.exec_cmd("cat ~/.config/hypr/hypr_hotkey_list.org | rofi -dmenu -c -bw 2 -l 40 -i -p 'Search'"))
+
 -- Make selected window the master
 hl.bind(mainMod .. " + SPACE", hl.dsp.layout("swapwithmaster master"))
 
@@ -212,7 +215,6 @@ hl.bind(mainMod .. " + T", hl.dsp.window.float({ action = "toggle" }))
 
 -- Waybar toggle
 hl.bind(mainMod .. " + B", hl.dsp.exec_cmd("pkill waybar || waybar"))
-
 
 -- Move focus with mainMod + vim keys
 hl.bind(mainMod .. " + H",  hl.dsp.focus({ direction = "left" }))

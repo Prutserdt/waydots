@@ -1,0 +1,115 @@
+This is a list of my hyprland hotkeys
+
+* Main bindings
+
+|---------------------+---------------------------------------------|
+| Hotkey              | Action                                      |
+|---------------------+---------------------------------------------|
+| `SUPER+SPACE`       | Make selected window the master             |
+| `SUPER+SHIFT+ENTER` | Open Alacritty                              |
+| `SUPER+ENTER`       | Open Ghostty                                |
+| `SUPER+Q`           | Close active window using `close_window.sh` |
+| `SUPER+T`           | Toggle floating                             |
+| `SUPER+B`           | Toggle Waybar                               |
+| `SUPER+H`           | Focus window to the left                    |
+| `SUPER+L`           | Focus window to the right                   |
+| `SUPER+J`           | Focus window below                          |
+| `SUPER+K`           | Focus window above                          |
+| `SUPER+SHIFT+H`     | Move window left                            |
+| `SUPER+SHIFT+L`     | Move window right                           |
+| `SUPER+SHIFT+J`     | Move window down                            |
+| `SUPER+SHIFT+K`     | Move window up                              |
+| `SUPER+Y`           | Switch to master layout                     |
+| `SUPER+U`           | Switch to dwindle layout                    |
+| `SUPER+I`           | Switch to monocle layout                    |
+| `SUPER+O`           | Switch to scrolling layout                  |
+| `SUPER+F`           | Toggle fullscreen                           |
+| `SUPER+CTRL+F`      | Toggle fake fullscreen                      |
+| `SUPER+CTRL+H`      | Resize window left                          |
+| `SUPER+CTRL+J`      | Increase window height                      |
+| `SUPER+CTRL+K`      | Decrease window height                      |
+| `SUPER+CTRL+L`      | Resize window right                         |
+|---------------------+---------------------------------------------|
+
+* Workspaces
+
+|-----------------+-----------------------------------|
+| Hotkey          | Action                            |
+|-----------------+-----------------------------------|
+| `SUPER+1`       | Focus workspace 1                 |
+| `SUPER+2`       | Focus workspace 2                 |
+| `SUPER+3`       | Focus workspace 3                 |
+| `SUPER+4`       | Focus workspace 4                 |
+| `SUPER+5`       | Focus workspace 5                 |
+| `SUPER+SHIFT+1` | Move active window to workspace 1 |
+| `SUPER+SHIFT+2` | Move active window to workspace 2 |
+| `SUPER+SHIFT+3` | Move active window to workspace 3 |
+| `SUPER+SHIFT+4` | Move active window to workspace 4 |
+| `SUPER+SHIFT+5` | Move active window to workspace 5 |
+|-----------------+-----------------------------------|
+
+* Application bindings
+
+|--------------------------+-------------------------------|
+| Hotkey                   | Action                        |
+|--------------------------+-------------------------------|
+| `SUPER+CTRL+ALT+A`       | Open `aandelen.py` in Ghostty |
+| `SUPER+CTRL+ALT+E`       | Open Emacs                    |
+| `SUPER+CTRL+ALT+G`       | Open GIMP                     |
+| `SUPER+CTRL+ALT+M`       | Open Mousepad                 |
+| `SUPER+CTRL+ALT+P`       | Open KeePass database         |
+| `SUPER+CTRL+ALT+SHIFT+T` | Open PCManFM                  |
+| `SUPER+CTRL+ALT+T`       | Open Yazi in Ghostty          |
+| `SUPER+CTRL+ALT+L`       | Lock screen with Hyprlock     |
+| `SUPER+CTRL+ALT+V`       | Open `visho.py` in Ghostty    |
+|--------------------------+-------------------------------|
+
+* Rofi bindings
+
+|---------------------+--------------------------|
+| Hotkey              | Action                   |
+|---------------------+--------------------------|
+| `SUPER+CTRL+DELETE` | Delete/kill process menu |
+| `SUPER+CTRL+B`      | Internet bookmarks       |
+| `SUPER+CTRL+D`      | Application launcher     |
+| `SUPER+CTRL+M`      | Drive mounter            |
+| `SUPER+CTRL+S`      | Monitor selector         |
+| `SUPER+CTRL+N`      | Notification history     |
+| `SUPER+CTRL+V`      | Clipboard manager        |
+| `SUPER+CTRL+W`      | Wallpaper picker         |
+| `SUPER+CTRL+Q`      | Exit Hyprland menu       |
+| `SUPER+SHIFT+D`     | Update application list  |
+|---------------------+--------------------------|
+
+* Multimedia and hardware keys
+
+|-------------------------+-------------------------------|
+| Hotkey                  | Action                        |
+|-------------------------+-------------------------------|
+| `XF86AudioRaiseVolume`  | Increase volume by 5%         |
+| `XF86AudioLowerVolume`  | Decrease volume by 5%         |
+| `XF86AudioMute`         | Toggle audio mute             |
+| `XF86Calculator`        | Open Qalculate                |
+| `XF86MonBrightnessDown` | Decrease Hyprsunset gamma     |
+| `XF86MonBrightnessUp`   | Increase Hyprsunset gamma     |
+| `XF86Launch9`           | Reset Hyprsunset gamma        |
+| `PRINT`                 | Start region screenshot       |
+| `SHIFT+PRINT`           | Run screenshot-to-text script |
+|-------------------------+-------------------------------|
+
+* Mouse bindings
+
+|----------------------------+------------------|
+| Binding                    | Action           |
+|----------------------------+------------------|
+| `SUPER+Left Mouse Button`  | Drag/move window |
+| `SUPER+Right Mouse Button` | Resize window    |
+|----------------------------+------------------|
+
+* Gesture
+
+|-------------------------------+------------------|
+| Gesture                       | Action           |
+|-------------------------------+------------------|
+| Three-finger horizontal swipe | Switch workspace |
+|-------------------------------+------------------|
