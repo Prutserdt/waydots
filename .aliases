@@ -45,6 +45,9 @@ alias sm='~/.config/open_image_viewer_move_pics.sh'
 #alias sg='~/.config/open_image_viewer_to_open_googlemaps.sh'
 alias sg='cd ~/Downloads/2026_09_Sicilie_september; ~/.config/open_image_viewer_to_open_googlemaps.sh'
 
+# visho, visualizing pictures
+alias v="ghostty -e ~/Downloads/visho_app/run_visho.py"
+
 # emacs commandline
 #alias emacs="/usr/bin/emacs"
 #alias emacs="emacsclient -c -a 'emacs'"  # Works on my thinkpad
@@ -96,3 +99,4 @@ alias dr="cd $HOME/stack/Code/rust/Rust_by_example"
 # zsh
 alias ze="vim $HOME/.zshrc"                         # edit the .zshrc file
 alias zs="source $HOME/.zshrc"                      # source the .zshrc 
+
