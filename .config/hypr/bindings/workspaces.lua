@@ -1,3 +1,5 @@
+-- ~/.config/hypr/bindings/workspaces.lua
+
 local M = {}
 
 local mainMod = "SUPER"
