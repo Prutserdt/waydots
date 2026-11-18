@@ -54,7 +54,7 @@ function M.setup()
   -- Update the application list used by the launcher
   hl.bind(
     "SUPER + SHIFT + D",
-    hl.dsp.exec_cmd("~/stack/rofi/rofi_app_list_update.sh")
+    hl.dsp.exec_cmd("~/.config/rofi/rofi_app_list_update.sh")
   )
 end
 

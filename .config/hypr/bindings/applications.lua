@@ -38,13 +38,14 @@ function M.setup()
   -- PCManFM
   hl.bind(
     appsMod .. " + SHIFT + T",
+    --hl.dsp.exec_cmd("ghostty -e zsh -lc yazi")
     hl.dsp.exec_cmd("pcmanfm")
   )
 
-  -- Yazi
+  -- Doublecmb
   hl.bind(
     appsMod .. " + T",
-    hl.dsp.exec_cmd("ghostty -e zsh -lc yazi")
+    hl.dsp.exec_cmd("QT_STYLE_OVERRIDE=Adwaita-Dark QT_QPA_PLATFORMTHEME=gtk3 doublecmd")
   )
 
   -- Hyprlock
