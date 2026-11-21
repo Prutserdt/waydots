@@ -196,7 +196,7 @@ def main() -> None:
     else:
         tstamp = time.strftime("%Y-%m-%d", time.localtime(os.path.getctime(timestamp_source)))
 
-    title = f"*** <{tstamp}> Assets(zonder huis): {kapitaal_zonder_huis} Euro.\n\n"
+    title = f"* <{tstamp}> Assets(zonder huis): {kapitaal_zonder_huis} Euro.\n\n"
     org_name = f"#+NAME: tbl_{tstamp}\n"
 
     output = (

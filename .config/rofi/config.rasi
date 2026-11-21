@@ -1,3 +1,4 @@
+@theme "gruvbox-dark-soft"
 configuration {
 /*	modes: "window,drun,run,ssh";*/
 /*	font: "mono 12";*/
@@ -165,11 +166,20 @@ configuration {
       directories-first: true;
       sorting-method:    "name";
   }
-
+  case-sensitive: true;
+  transparency: "real";
   case-sensitive: true;
 }
-@theme "gruvbox-dark-soft"
+
 window {
     width: 700px;
-    height: 60%;
+    background-color: rgba(30, 30, 30, 85%);
+    border: 8px;
+    border-color: rgba(255, 255, 255, 20%);
+    border-radius: 18px;
+}
+
+listview {
+    lines: 50;          /* maximum number of visible rows */
+    fixed-height: false;
 }

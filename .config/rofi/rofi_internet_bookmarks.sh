@@ -14,7 +14,7 @@ while true; do
         {
             printf '%s\n' "$manual_entry"
             cat "$bookmark_file"
-        } | rofi -i -dmenu -width 1500 -l 20 -p "Bookmarks"
+        } | rofi -i -dmenu -width 1500 -p "Bookmarks"
     )
 
     if (( $? != 0 )); then

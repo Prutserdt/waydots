@@ -76,6 +76,15 @@ function M.setup(theme)
     move = "20 monitor_h-120",
     float = true,
   })
+
+  hl.window_rule({
+    name = "opacity-rofi",
+    match = {
+      class = "^Rofi$",
+    },
+    opacity = 0.90,
+    --opacity = "0.90 override 0.90 override",
+  })
 end
 
 return M

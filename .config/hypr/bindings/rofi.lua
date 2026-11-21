@@ -17,8 +17,18 @@ function M.setup()
   )
 
   hl.bind(
+    rofiMod .. " + C",
+    hl.dsp.exec_cmd("~/.config/rofi/rofi_calculator.sh")
+  )
+  
+  hl.bind(
     rofiMod .. " + D",
     hl.dsp.exec_cmd("~/.config/rofi/rofi_app_launcher.sh")
+  )
+
+  hl.bind(
+    rofiMod .. " + F",
+    hl.dsp.exec_cmd("~/.config/rofi/rofi_file_picker.sh")
   )
 
   hl.bind(
@@ -27,15 +37,20 @@ function M.setup()
   )
 
   hl.bind(
-    rofiMod .. " + S",
-    hl.dsp.exec_cmd("~/.config/rofi/rofi_monitor_selector.sh")
-  )
-
-  hl.bind(
     rofiMod .. " + N",
     hl.dsp.exec_cmd("~/.config/rofi/rofi_notification_list.sh")
   )
 
+  hl.bind(
+    rofiMod .. " + P",
+    hl.dsp.exec_cmd("~/.config/rofi/rofi_pic_picker.sh")
+  )
+  
+  hl.bind(
+    rofiMod .. " + S",
+    hl.dsp.exec_cmd("~/.config/rofi/rofi_monitor_selector.sh")
+  )
+  
   hl.bind(
     rofiMod .. " + V",
     hl.dsp.exec_cmd("~/.config/rofi/rofi_clipboard_manager.sh")

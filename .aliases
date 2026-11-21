@@ -68,18 +68,6 @@ alias doomhelp="~/.config/emacs/bin/doom help"
 alias dotfiles="/usr/bin/git --git-dir=$HOME/.dotfiles.git/ --work-tree=$HOME"
 alias d="~/.config/dotfiles_script.sh"
 
-# Jump to directories
-alias ga="cd $HOME/stack/Afbeeldingen"
-alias gc="cd $HOME/.config"
-alias gd="cd $HOME/Downloads"
-alias gh="cd $HOME/"
-alias gH="cd $HOME/projects/Hyprland"
-alias gq="cd $HOME/.config/qtile"
-alias go="cd $HOME/.config/doom"
-alias gs="cd $HOME/stack"
-alias gv="cd $HOME/stack/Afbeeldingen/Vakantie"
-alias gw="cd $HOME/stack/Afbeeldingen/Wallpapers"
-alias gr="cd $HOME/stack/Code/rust/Rust_by_example"
 
 # Jump to directories
 # Note, these are my old aliases, will change to the gh, ga to be inline with yazi filemanaged
@@ -91,12 +79,13 @@ alias dh="cd $HOME/"
 alias dH="cd $HOME/projects/Hyprland"
 #alias do="cd $HOME/.config/doom" # Do not use this alias, will break zsh done function!
 alias dq="cd $HOME/.config/qtile"
+alias drofi="cd $HOME/.config/rofi"
 alias ds="cd $HOME/stack"
 alias dv="cd $HOME/stack/Afbeeldingen/Vakantie"
 alias dw="cd $HOME/stack/Afbeeldingen/Wallpapers"
 alias dr="cd $HOME/stack/Code/rust/Rust_by_example"
 
 # zsh
-alias ze="vim $HOME/.zshrc"                         # edit the .zshrc file
+alias ze="nvim $HOME/.zshrc"                         # edit the .zshrc file
 alias zs="source $HOME/.zshrc"                      # source the .zshrc 
 

@@ -41,6 +41,12 @@ function M.setup()
     hl.dsp.exec_cmd("~/.config/close_window.sh")
   )
 
+  -- Reload hyprland configuration
+  hl.bind(
+    mainMod .. " + R",
+    hl.dsp.exec_cmd("hyprctl reload")
+  )
+
   -- Toggle floating
   hl.bind(
     mainMod .. " + T",
