@@ -1,6 +1,20 @@
 @theme "gruvbox-dark-soft"
 configuration {
-	location: 2;
+    location: 2;              /* top-center */
+    fixed-num-lines: false;
+    case-sensitive: true;
+    transparency: "real";
+    
+    timeout {
+        action: "kb-cancel";
+        delay: 0;
+    }
+
+    filebrowser {
+        directories-first: true;
+        sorting-method: "name";
+    }
+
 /*	modes: "window,drun,run,ssh";*/
 /*	font: "mono 12";*/
 /*	location: 0;*/
@@ -173,7 +187,6 @@ configuration {
 }
 
 window {
-    //width: 700px;
     width: 800px;
     border: 6px;
     border-color: rgba(255, 158, 100, 50%);
@@ -181,6 +194,6 @@ window {
 }
 
 listview {
-    lines: 52;          /* maximum number of visible rows */
-    fixed-height: false;
+    lines: 52;              /* maximum number of visible rows */
+    fixed-height: false;    /* shrink when fewer entries exist */
 }
