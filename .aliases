@@ -50,10 +50,13 @@ alias v="ghostty -e ~/Downloads/visho_app/run_visho.py"
 
 # emacs commandline
 #alias emacs="/usr/bin/emacs"
-#alias emacs="emacsclient -c -a 'emacs'"  # Works on my thinkpad
 #alias emacs="emacsclient -c -a 'emacs'"  # Works on my thinkpad and desktop
 alias emacsvanilla="emacs --init-directory ~/emacs"             # vanilla
 alias doom='pgrep -u "$USER" -f "emacs --daemon" > /dev/null || emacs --daemon; emacsclient -c -n' # doom
+alias doomerror='emacsclient -e '\''(emacs-pid)'\'' >/dev/null 2>&1 || (emacs --daemon >/tmp/emacs-daemon.log 2>&1 &); until emacsclient -e '\''(emacs-pid)'\'' >/dev/null 2>&1; do sleep 0.1; done; emacsclient -c -n'
+
+
+
 #alias doom="emacs --init-directory ~/.config/emacs"             # doom
 alias em="emacs --init-directory ~/.config/emacs -nw"           # doom, terminal
 alias e="emacsclient -nw"                                       # open file in current terminal
@@ -62,12 +65,12 @@ alias doomsync="~/.config/emacs/bin/doom sync"
 alias doomdoctor="~/.config/emacs/bin/doom doctor"
 alias doomupgrade="~/.config/emacs/bin/doom upgrade"
 alias doombuild="~/.config/emacs/bin/doom build"
+alias doomrebuild="~/.config/emacs/bin/doom rebuild"
 alias doompurge="~/.config/emacs/bin/doom purge"
 alias doomhelp="~/.config/emacs/bin/doom help"
 
 alias dotfiles="/usr/bin/git --git-dir=$HOME/.dotfiles.git/ --work-tree=$HOME"
 alias d="~/.config/dotfiles_script.sh"
-
 
 # Jump to directories
 # Note, these are my old aliases, will change to the gh, ga to be inline with yazi filemanaged
