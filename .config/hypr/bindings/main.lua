@@ -135,24 +135,6 @@ function M.setup()
     })
   )
 
---  ----------------
---  -- WORKSPACES
---  ----------------------
-
---  for i = 1, 5 do
---    -- Switch workspace
---    khl.bind(
---      mainMod .. " + " .. i,
---      hl.dsp.focus({ workspace = i })
---    )
-
---    -- Move active window to workspace
---    hl.bind(
---      mainMod .. " + SHIFT + " .. i,
---      hl.dsp.window.move({ workspace = i })
---    )
---  end
-
   ----------------
   -- RESIZING
   ----------------

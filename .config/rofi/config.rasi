@@ -1,5 +1,6 @@
 @theme "gruvbox-dark-soft"
 configuration {
+	location: 2;
 /*	modes: "window,drun,run,ssh";*/
 /*	font: "mono 12";*/
 /*	location: 0;*/
@@ -172,14 +173,14 @@ configuration {
 }
 
 window {
-    width: 700px;
-    background-color: rgba(30, 30, 30, 85%);
-    border: 8px;
-    border-color: rgba(255, 255, 255, 20%);
-    border-radius: 18px;
+    //width: 700px;
+    width: 800px;
+    border: 6px;
+    border-color: rgba(255, 158, 100, 50%);
+    border-radius: 10px;
 }
 
 listview {
-    lines: 50;          /* maximum number of visible rows */
+    lines: 52;          /* maximum number of visible rows */
     fixed-height: false;
 }

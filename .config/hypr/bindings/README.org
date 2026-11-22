@@ -68,10 +68,12 @@
 |-------------------+--------------------------|
 | SUPER+CTRL+DELETE | Delete/kill process menu |
 | SUPER+CTRL+B      | Internet bookmarks       |
+| SUPER+CTRL+C      | Calculator               |
 | SUPER+CTRL+D      | Application launcher     |
+| SUPER+CTRL+F      | File picker              |
 | SUPER+CTRL+M      | Drive mounter            |
-| SUPER+CTRL+S      | Monitor selector         |
 | SUPER+CTRL+N      | Notification history     |
+| SUPER+CTRL+S      | Monitor selector         |
 | SUPER+CTRL+V      | Clipboard manager        |
 | SUPER+CTRL+W      | Wallpaper picker         |
 | SUPER+CTRL+Q      | Exit Hyprland menu       |
