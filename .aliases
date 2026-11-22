@@ -75,6 +75,7 @@ alias da="cd $HOME/stack/Afbeeldingen"
 alias daan="cd $HOME/stack/Documenten/Aandelen"
 alias dc="cd $HOME/.config"
 alias dd="cd $HOME/Downloads"
+alias ddoom="cd $HOME/.config/doom"
 alias dh="cd $HOME/"
 alias dH="cd $HOME/projects/Hyprland"
 #alias do="cd $HOME/.config/doom" # Do not use this alias, will break zsh done function!
