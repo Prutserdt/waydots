@@ -31,7 +31,8 @@ while true; do
                 break  # Exit the inner loop and go back to the clipboard selection
                 ;;
             "Show selected text")
-                echo "$decoded_item" | rofi -dmenu -p "Selected text" -width 800 -height 600
+#                echo "$decoded_item" | rofi -dmenu -p "Selected text -width 800 -height 600
+                echo "$decoded_item" | rofi -dmenu -p "Selected text"
                 ;;
             "Go back to clipboard selection")
                 break  # Exit the inner loop to go back to the clipboard selection

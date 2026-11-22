@@ -1,6 +1,7 @@
 @theme "gruvbox-dark-soft"
 configuration {
-    location: 2;              /* top-center */
+//  location: 2;              /* top-center */
+    location: 0;              /* top-center */
 //    fixed-num-lines: false;
     case-sensitive: true;
     transparency: "real";
@@ -71,7 +72,7 @@ configuration {
 /*	max-history-size: 25;*/
 /*	combi-hide-mode-prefix: false;*/
 /*	combi-display-format: "{mode} {text}";*/
-/*	matching-negate-char: '-' /* unsupported */;*/
+/*	matching-negate-char: '-' */
 /*	cache-dir: ;*/
 /*	window-thumbnail: false;*/
 /*	drun-use-desktop-cache: false;*/
@@ -183,11 +184,11 @@ configuration {
   }
   case-sensitive: true;
   transparency: "real";
-  case-sensitive: true;
 }
 
 window {
-    height: 100%;
+//    height: 100%;
+//    height: auto;
     width: 800px;
     border: 6px;
     border-color: rgba(255, 158, 100, 50%);
@@ -196,9 +197,23 @@ window {
 
 listview {
     lines: 52;              /* maximum number of visible rows */
+    dynamic: true;          /* shrink to fit fewer entries */
     fixed-height: false;    /* shrink when fewer entries exist */
 }
 
-/* im using this config on multiple pcs with different screensizes.
-On smaller screens when i have a lot of lines in rofi then it is not all on the screen,
-I want it to autoscale to the size of the screen if the amount of lines does not fit */
+/* my config does not work as intended. It should autoscale if there
+   are not enough lines in rofi. Now it does not shrink when fewer entries
+   exist.
+   I want to use it for several computers, meaning several screen sizes.
+   That is why I cannot set the amount of lines, since this will be taken
+   used when the number of lines is higher then that in rofi.
+   rofi -version
+   rofi version 2.1.1-dirty
+   rofi -dump-theme | grep -E 'dynamic|fixed-height|lines'
+   fixed-height: false;
+   lines:        82;
+   dynamic:      true;
+   height: auto; this lines leads to error: synthax error unexpected invalid property value.
+   rofi -dump-theme | grep -E 'dynamic|fixed-height|lines'
+   fixed-height: 0;
+*/
