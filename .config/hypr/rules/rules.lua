@@ -2,6 +2,9 @@
 
 local M = {}
 
+-- Match Emacs windows, allowing either uppercase or lowercase "E".
+local emacs_class = "^[Ee]macs$"
+
 function M.setup(theme)
   -- Qalculate
   hl.window_rule({
@@ -15,7 +18,7 @@ function M.setup(theme)
   hl.window_rule({
     name = "opacity-emacs",
     match = {
-      class = "^Emacs$",
+        class = emacs_class,
     },
     opacity = 0.8,
   })
@@ -23,7 +26,7 @@ function M.setup(theme)
   -- Emacs border
   hl.window_rule({
     match = {
-      class = "Emacs",
+        class = emacs_class,
     },
     border_color = theme.orange,
   })

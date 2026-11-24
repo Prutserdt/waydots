@@ -24,6 +24,9 @@
 
 (map! :leader
       :desc "Unbind SPC SPC" "SPC" nil
+      :desc "Switch to another buffer" "," #'counsel-switch-buffer
+      :desc "Scratch buffer" "[" (cmd! (find-file "~/.config/doom/scratch.org"))
+     ;; :desc "Switch to another buffer" "," #'counsel-switch-buffer)
 ;;    :desc "Scratch buffer" "[" (lambda () (interactive) (switch-to-buffer "scratch.org"))
       :desc "Scratch buffer" "[" (cmd! (find-file "~/.config/doom/scratch.org"))
       
