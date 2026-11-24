@@ -20,7 +20,6 @@
   - [[#vterm-toggle][Vterm-toggle]]
   - [[#ghostel-ghostty-in-emacs][Ghostel, ghostty in emacs]]
   - [[#llms-in-emacs][LLMs in emacs]]
-  - [[#jumping-around][Jumping around]]
   - [[#org-mode-configuration][Org-mode configuration]]
   - [[#org-roam-configuration][Org-roam configuration]]
   - [[#org-roam-ui-configuration][Org-roam-ui configuration]]
@@ -42,7 +41,7 @@ This file controls what Doom modules are enabled and what order they load in
 Add a note to ~init.el~ to highlight that this file should not be edited directly.
 #+BEGIN_SRC emacs-lisp :tangle init.el :results silent
 ;; NOTE: This file is generated from ~/.config/doom/README.org
-;;      Please only edit that file and org-babel-tangle (emacs)
+;;       Do not edit directly and modify the org file and tangle in emacs
 #+END_SRC
 
 
@@ -119,7 +118,7 @@ The list of available modules can be checked in Doom Emacs by ~M-x~ ~Doom/help-m
 Again a NOTE is added to ~packages.el~ to *not* edit this file.
 #+BEGIN_SRC emacs-lisp :tangle packages.el :results silent
 ;; NOTE: This file is generated from ~/.config/doom/README.org
-;;      Please only edit that file and org-babel-tangle (emacs)
+;;       Do not edit directly and modify the org file and tangle in emacs
 #+END_SRC
 
 Here the packages are defined which should be installed. This is an addition to the already installed and loaded modules of ~init.el~. This file shouldn't be byte compiled.
@@ -135,9 +134,9 @@ Centering text to the middle of the window can be done by the visual-fill-column
 
 Settings for python hacking.
 #+BEGIN_SRC emacs-lisp :tangle packages.el :results silent
-(package! org-babel-eval-in-repl)
-(package! eval-in-repl)
-(package! jupyter)
+;;(package! org-babel-eval-in-repl)
+;;(package! eval-in-repl)
+;;(package! jupyter)
 #+END_SRC
 
 To automate tangling of code blocks in org-mode, the following package is installed. For auto tangling to work the following line should be added to the start of the org file ~#+auto_tangle: t~. When this is added the source blocks are automatically tangled when an org document is saved, pretty sweet😃.
@@ -177,7 +176,7 @@ My custom configurations are set here. For instance theme settings, image to the
 Let's remind the reader of ~config.el~ to not edit this file directly.
 #+BEGIN_SRC emacs-lisp :tangle config.el :results silent
 ;; NOTE: This file is generated from ~/.config/doom/README.org
-;;      Please only edit that file and org-babel-tangle (emacs)
+;;       Do not edit directly and modify the org file and tangle in emacs
 #+END_SRC
 
 Lexical binding makes the file run (slightly) faster.
@@ -224,10 +223,6 @@ The following are keybindings that are bound to my leader key, which is =space=,
       :desc "Unbind SPC SPC" "SPC" nil
       :desc "Switch to another buffer" "," #'counsel-switch-buffer
       :desc "Scratch buffer" "[" (cmd! (find-file "~/.config/doom/scratch.org"))
-     ;; :desc "Switch to another buffer" "," #'counsel-switch-buffer)
-;;    :desc "Scratch buffer" "[" (lambda () (interactive) (switch-to-buffer "scratch.org"))
-      :desc "Scratch buffer" "[" (cmd! (find-file "~/.config/doom/scratch.org"))
-      
       (:prefix ("SPC" . "Personal Bindings")
         :desc "Ghostel, ghosttty for emacs"      "SPC" #'ghostel
         :desc "Run aandelen elisp script"        "a" (lambda () (interactive) (load-file "~/stack/Documenten/Aandelen/aandelen.el"))
@@ -281,13 +276,10 @@ The following are keybindings that are bound to my leader key, which is =space=,
             :desc "gptel-rewrite"                "r" #'gptel-rewrite))
 
     :desc "Open files in emacs" "e" #'recentf-open-files
-    ;;(:desc "Open files in emacs" "e" #'recentf-open-files)
 
     (:prefix ("j" . "Jump around");; An addition to the default Doom keybinding (j is not present!)
             :desc "jump backward one step"       "j" #'evil-jump-backward
             :desc "jump forward one step"        "k" #'evil-jump-forward
-            :desc "jump forward completely"      "K" #'my-evil-jump-forward-to-end
-            ;;:desc "jump list"                    "l" #'+ivy/jump-list)
             :desc "jump list"                    "l" #'evil-show-jumps)
 
     (:prefix ("o") ;; Default Doom keybinding
@@ -305,7 +297,6 @@ The following are keybindings that are bound to my leader key, which is =space=,
             :desc "Goto tomorrow"                "m" #'org-roam-dailies-goto-tomorrow
             :desc "Capture tomorrow"             "M" #'org-roam-dailies-capture-tomorrow
             :desc "Select dailies calendar"      "o" #'org-roam-dailies-goto-date
-           ;:desc "Goto today"                   "t" #'org-roam-dailies-goto-today
             :desc "Goto today, paste previous"   "t" #'my-goto-today-paste-previous-daily
             :desc "Capture today"                "T" #'org-roam-dailies-capture-today
             :desc "Goto yesterday"               "y" #'org-roam-dailies-goto-yesterday
@@ -320,7 +311,7 @@ The following are keybindings that are bound to my leader key, which is =space=,
         :desc "Launch roam buffer"               "R" #'org-roam-buffer-display-dedicated
         :desc "Search text"                      "s" #'my-search-roam-files
         :desc "Search filename"                  "S" #'my-search-roam-filename
-        :desc "UI in browser"                    "u" #'org-roam-ui-mode))
+        :desc "UI in browser"                    "u" #'my-org-roam-ui-mode))
 #+END_SRC
 
 *** Emacs keybindings
@@ -342,7 +333,7 @@ The top menu is removed but this does give interesting information. I bound it t
 #+END_SRC
 
 ** Smart parens
-The =smartparens= package in Emacs is designed to enhance editing parentheses and other paired structures (like brackets and quotes). I am adding the '=' and '~' signs to it, but only for org mode, therefore it is a mode specific keybindings (sp-local-pair)'.
+The =smartparens= package in Emacs is designed to enhance editing parentheses and other paired structures (like brackets and quotes). I am adding the '=' and '~' signs to it.
 #+BEGIN_SRC emacs-lisp :tangle config.el :results silent
 (require 'smartparens)
 
@@ -362,7 +353,7 @@ The =smartparens= package in Emacs is designed to enhance editing parentheses an
    (insert "~~")
    (backward-char 1))
 
-; Bind the functions to the = and ~ keys in org mode
+; Bind the functions to the = and ~ keysin all modes.
 (with-eval-after-load 'smartparens
   (define-key smartparens-mode-map (kbd "=") 'sp-insert-equal)
   (define-key smartparens-mode-map (kbd "~") 'sp-insert-tilde))
@@ -372,11 +363,10 @@ The =smartparens= package in Emacs is designed to enhance editing parentheses an
 
 ** Theming and graphical settings
 Setting the *superior* tokyo-night theme.😎
-I changed the background to be inline with my overall theme.... FIXME: needs bettter implementation
 #+BEGIN_SRC emacs-lisp :tangle config.el :results silent
 (setq doom-theme 'doom-tokyo-night)
 
-(load-theme doom-theme t)
+;;(load-theme doom-theme t)
 (set-face-attribute 'default nil :background "#121212")
 #+END_SRC
 
@@ -405,45 +395,33 @@ Make the highlighting global for the hl-words TODO/FIXME/NOTE/DEPRECATED/HACK/RE
 
 To align the Emacs window with text in the middle of the screen  visual-fill is used. This configuration is especially useful for maximized windows on an ultrawide monitor, providing a clean and centered workspace. This alignment will work with text files and also with programming language files. I also set it for my terminal ghostel (and vterm).
 #+BEGIN_SRC emacs-lisp :tangle config.el :results silent
+;; Use a 110-column text area everywhere.
 (setq-default fill-column 110)
-(global-display-fill-column-indicator-mode)
+(setq-default visual-fill-column-width 110)
 (setq-default visual-fill-column-center-text t)
-(add-hook 'visual-line-mode-hook 'visual-fill-column-mode)
+
+;; Do not display the fill-column guide.
+(global-display-fill-column-indicator-mode -1)
+;; Wrap and center text in all regular buffers.
+(global-visual-line-mode 1)
+(global-visual-fill-column-mode 1)
+
+(setq display-line-numbers-type 'relative)
 
 (defun my-prog-mode-hook ()
-  "Set fill-column and visual-fill settings for programming modes. This function configures the fill-column to 140 for programming files, enables visual-fill-column-mode, and ensures text wrapping is enabled by toggling truncate-lines off."
-  (setq-local fill-column 140)
-  (toggle-truncate-lines 0)
-  (visual-fill-column-mode))
+  "Enable wrapped, centered text in programming buffers."
+;;  (setq-local fill-column 110)
+  (setq-local truncate-lines nil))
 
-(add-hook 'prog-mode-hook 'my-prog-mode-hook)
-
-(add-hook 'vterm-mode-hook
-          (lambda ()
-            (setq-local fill-column 110)
-            (visual-fill-column-mode)
-            (setq-local visual-fill-column-center-text t)))
-
-
-(add-hook 'ghostel-mode-hook
-          (lambda ()
-            (setq-local fill-column 110)
-            (visual-fill-column-mode)
-            (setq-local visual-fill-column-center-text t)))
-#+END_SRC
-
-By setting the line numbers to relative it makes jumping in texts easier, allowing you to quickly find the line position to jump to from the current line.
-#+BEGIN_SRC emacs-lisp :tangle config.el :results silent
-(global-display-line-numbers-mode)
-(setq display-line-numbers-type 'relative)
-#+END_SRC
+(add-hook 'prog-mode-hook #'my-prog-mode-hook)
+#+end_src
 
 To remember the current state (normal, insert or visual mode), we can customize the line number colors using Emacs Lisp. Here's the code that sets the line number color based on the Evil state. Also the line colors are changed when scratch.org is displayed to stand out from other buffers. I am giving the colors a name so that they can be used elsewhere.
 A side note: for some reason I sometimes trigger "emacs state" accidentally. This can be escaped by M-x =evil-exit-emacs-state= or C-z.
 #+BEGIN_SRC emacs-lisp :tangle config.el :results silent
 (defvar my-color-visual-state    "#765825") ;; dark yellow brown
 (defvar my-color-insert-state    "#3e6752") ;; pale grey green
-(defvar my-color-grey-green      "#505753") ;; grey green
+;;(defvar my-color-grey-green      "#505753") ;; grey green
 (defvar my-color-normal-state    "#453a39") ;; brown terra
 (defvar my-color-current-line    "#EF7168") ;; orange red
 
@@ -737,17 +715,6 @@ An helper for my LLM (gptel). I am usually working with code at the bottom of a 
     (deactivate-mark)))    ; Deselect the region
 #+END_SRC
 
-** Jumping around
-Jump right forward to the last jump in the jump-list.
-#+BEGIN_SRC emacs-lisp :tangle config.el :results silent
-(defun my-evil-jump-forward-to-end ()
-  "Jump forward through the Evil jump list until the end."
-  (interactive)
-  (while (ignore-errors
-           (evil-jump-forward)
-           t)))
-#+END_SRC
-
 ** Org-mode configuration
 More eye candy by superstar bullets in org mode instead of the default ~*~. This requires (org +pretty) in ~init.el~.
 #+BEGIN_SRC emacs-lisp :tangle config.el :results silent
@@ -983,7 +950,20 @@ Now that the websocket is setup the org-roam-ui can be set.
     (setq org-roam-ui-sync-theme t
           org-roam-ui-follow t
           org-roam-ui-update-on-save t
-          org-roam-ui-open-on-start t))
+          org-roam-ui-open-on-start nil))
+          ;; changed, otherwise websocket is always opened when using emacs...
+          ;; NOTE: testen en keuze maken..
+          ;;org-roam-ui-open-on-start t))
+#+END_SRC
+
+I used to autostart the websocket, this is not needed and can be done when needed with this function.
+#+BEGIN_SRC emacs-lisp :tangle config.el :results silent
+(defun my-org-roam-ui-mode ()
+  "Start org-roam-ui and open it in the browser."
+  (interactive)
+  (unless org-roam-ui-mode
+    (org-roam-ui-mode 1))
+  (org-roam-ui-open))
 #+END_SRC
 
 ** Layout for hacking code (scratch buffer and emacs messages)
@@ -1217,3 +1197,4 @@ My configuration of Doom Emacs is partially based on these:
 - 🔗 https://gitlab.com/zzamboni/dot-doom
 - 🔗 https://systemcrafters.net/
 - 🔗 https://gitlab.com/dwt1/dotfiles/-/blob/master/.config/doom/config.org
+

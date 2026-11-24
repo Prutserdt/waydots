@@ -1,5 +1,5 @@
 ;; NOTE: This file is generated from ~/.config/doom/README.org
-;;      Please only edit that file and org-babel-tangle (emacs)
+;;       Do not edit directly and modify the org file and tangle in emacs
 
 ;;; -*- lexical-binding: t; -*-
 
@@ -26,10 +26,6 @@
       :desc "Unbind SPC SPC" "SPC" nil
       :desc "Switch to another buffer" "," #'counsel-switch-buffer
       :desc "Scratch buffer" "[" (cmd! (find-file "~/.config/doom/scratch.org"))
-     ;; :desc "Switch to another buffer" "," #'counsel-switch-buffer)
-;;    :desc "Scratch buffer" "[" (lambda () (interactive) (switch-to-buffer "scratch.org"))
-      :desc "Scratch buffer" "[" (cmd! (find-file "~/.config/doom/scratch.org"))
-      
       (:prefix ("SPC" . "Personal Bindings")
         :desc "Ghostel, ghosttty for emacs"      "SPC" #'ghostel
         :desc "Run aandelen elisp script"        "a" (lambda () (interactive) (load-file "~/stack/Documenten/Aandelen/aandelen.el"))
@@ -83,13 +79,10 @@
             :desc "gptel-rewrite"                "r" #'gptel-rewrite))
 
     :desc "Open files in emacs" "e" #'recentf-open-files
-    ;;(:desc "Open files in emacs" "e" #'recentf-open-files)
 
     (:prefix ("j" . "Jump around");; An addition to the default Doom keybinding (j is not present!)
             :desc "jump backward one step"       "j" #'evil-jump-backward
             :desc "jump forward one step"        "k" #'evil-jump-forward
-            :desc "jump forward completely"      "K" #'my-evil-jump-forward-to-end
-            ;;:desc "jump list"                    "l" #'+ivy/jump-list)
             :desc "jump list"                    "l" #'evil-show-jumps)
 
     (:prefix ("o") ;; Default Doom keybinding
@@ -107,7 +100,6 @@
             :desc "Goto tomorrow"                "m" #'org-roam-dailies-goto-tomorrow
             :desc "Capture tomorrow"             "M" #'org-roam-dailies-capture-tomorrow
             :desc "Select dailies calendar"      "o" #'org-roam-dailies-goto-date
-           ;:desc "Goto today"                   "t" #'org-roam-dailies-goto-today
             :desc "Goto today, paste previous"   "t" #'my-goto-today-paste-previous-daily
             :desc "Capture today"                "T" #'org-roam-dailies-capture-today
             :desc "Goto yesterday"               "y" #'org-roam-dailies-goto-yesterday
@@ -122,7 +114,7 @@
         :desc "Launch roam buffer"               "R" #'org-roam-buffer-display-dedicated
         :desc "Search text"                      "s" #'my-search-roam-files
         :desc "Search filename"                  "S" #'my-search-roam-filename
-        :desc "UI in browser"                    "u" #'org-roam-ui-mode))
+        :desc "UI in browser"                    "u" #'my-org-roam-ui-mode))
 
 (global-set-key (kbd "<escape>")      'keyboard-escape-quit)
 
@@ -149,7 +141,7 @@
    (insert "~~")
    (backward-char 1))
 
-; Bind the functions to the = and ~ keys in org mode
+; Bind the functions to the = and ~ keysin all modes.
 (with-eval-after-load 'smartparens
   (define-key smartparens-mode-map (kbd "=") 'sp-insert-equal)
   (define-key smartparens-mode-map (kbd "~") 'sp-insert-tilde))
@@ -158,7 +150,7 @@
 
 (setq doom-theme 'doom-tokyo-night)
 
-(load-theme doom-theme t)
+;;(load-theme doom-theme t)
 (set-face-attribute 'default nil :background "#121212")
 
 (set-face-attribute 'default nil :height 130 :font "Hack 13")
@@ -177,38 +169,29 @@
   ;; hl-todo already provides this global mode.
   (global-hl-todo-mode +1))
 
+;; Use a 110-column text area everywhere.
 (setq-default fill-column 110)
-(global-display-fill-column-indicator-mode)
+(setq-default visual-fill-column-width 110)
 (setq-default visual-fill-column-center-text t)
-(add-hook 'visual-line-mode-hook 'visual-fill-column-mode)
+
+;; Do not display the fill-column guide.
+(global-display-fill-column-indicator-mode -1)
+;; Wrap and center text in all regular buffers.
+(global-visual-line-mode 1)
+(global-visual-fill-column-mode 1)
+
+(setq display-line-numbers-type 'relative)
 
 (defun my-prog-mode-hook ()
-  "Set fill-column and visual-fill settings for programming modes. This function configures the fill-column to 140 for programming files, enables visual-fill-column-mode, and ensures text wrapping is enabled by toggling truncate-lines off."
-  (setq-local fill-column 140)
-  (toggle-truncate-lines 0)
-  (visual-fill-column-mode))
+  "Enable wrapped, centered text in programming buffers."
+;;  (setq-local fill-column 110)
+  (setq-local truncate-lines nil))
 
-(add-hook 'prog-mode-hook 'my-prog-mode-hook)
-
-(add-hook 'vterm-mode-hook
-          (lambda ()
-            (setq-local fill-column 110)
-            (visual-fill-column-mode)
-            (setq-local visual-fill-column-center-text t)))
-
-
-(add-hook 'ghostel-mode-hook
-          (lambda ()
-            (setq-local fill-column 110)
-            (visual-fill-column-mode)
-            (setq-local visual-fill-column-center-text t)))
-
-(global-display-line-numbers-mode)
-(setq display-line-numbers-type 'relative)
+(add-hook 'prog-mode-hook #'my-prog-mode-hook)
 
 (defvar my-color-visual-state    "#765825") ;; dark yellow brown
 (defvar my-color-insert-state    "#3e6752") ;; pale grey green
-(defvar my-color-grey-green      "#505753") ;; grey green
+;;(defvar my-color-grey-green      "#505753") ;; grey green
 (defvar my-color-normal-state    "#453a39") ;; brown terra
 (defvar my-color-current-line    "#EF7168") ;; orange red
 
@@ -426,13 +409,6 @@
     (call-interactively 'gptel-send)
     (deactivate-mark)))    ; Deselect the region
 
-(defun my-evil-jump-forward-to-end ()
-  "Jump forward through the Evil jump list until the end."
-  (interactive)
-  (while (ignore-errors
-           (evil-jump-forward)
-           t)))
-
 (setq org-modern-star '( "◉" "○" "✿" "✸" "⁖" ))
 
 (custom-set-faces
@@ -615,7 +591,17 @@ Brain shelve: %s.
     (setq org-roam-ui-sync-theme t
           org-roam-ui-follow t
           org-roam-ui-update-on-save t
-          org-roam-ui-open-on-start t))
+          org-roam-ui-open-on-start nil))
+          ;; changed, otherwise websocket is always opened when using emacs...
+          ;; NOTE: testen en keuze maken..
+          ;;org-roam-ui-open-on-start t))
+
+(defun my-org-roam-ui-mode ()
+  "Start org-roam-ui and open it in the browser."
+  (interactive)
+  (unless org-roam-ui-mode
+    (org-roam-ui-mode 1))
+  (org-roam-ui-open))
 
 (defun my-toggle-hacking-layout ()
   "Toggle between a single buffer screen and layout with message window and scratch buffer."

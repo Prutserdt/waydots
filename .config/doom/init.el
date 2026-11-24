@@ -1,5 +1,5 @@
 ;; NOTE: This file is generated from ~/.config/doom/README.org
-;;      Please only edit that file and org-babel-tangle (emacs)
+;;       Do not edit directly and modify the org file and tangle in emacs
 
 ;;; -*- lexical-binding: t; -*-
 
