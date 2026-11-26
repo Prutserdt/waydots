@@ -5,7 +5,7 @@
 
 # Show main menu options
 show_main_menu() {
-    action=$(printf "Mount\nUnmount\nShow Drives" | rofi -dmenu -p "Choose action")
+    action=$(printf "Mount\nUnmount\nShow Drives" | rofi -dmenu -p "Mount options")
 }
 
 # Display available drives

@@ -1,6 +1,6 @@
 #!/bin/bash
 
-selected=$(ps -a -u "$USER" | rofi -dmenu -p "Process: delete, copy PID, copy name, or exit")
+selected=$(ps -a -u "$USER" | rofi -dmenu -p "Processes. Delete, copy PID, copy name, or exit")
 pid=$(echo "$selected" | awk '{print $1}')
 process_name=$(echo "$selected" | awk '{for(i=4;i<=NF;i++) printf $i " "; print ""}')
 
